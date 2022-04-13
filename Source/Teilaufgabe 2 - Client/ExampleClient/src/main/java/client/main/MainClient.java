@@ -11,6 +11,9 @@ import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.ERequestState;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.GameState;
+import client.controllers.GameStateController;
+import client.controllers.NetworkController;
+import client.network.Network;
 import reactor.core.publisher.Mono;
 
 public class MainClient {
@@ -69,9 +72,14 @@ public class MainClient {
 		//String serverBaseUrl = args[1];
 		//String gameId = args[2];
 		String serverBaseUrl = "http://swe1.wst.univie.ac.at";
-		String gameId = "kxNFU";
+		String gameId = "GdX2a";
+		
+		
+		GameStateController gameController = new GameStateController(gameId, serverBaseUrl);
+		
+		gameController.startGame();
 
-		// template WebClient configuration, will be reused/customized for each
+		/*// template WebClient configuration, will be reused/customized for each
 		// individual endpoint
 		// TIP: create it once in the CTOR of your network class and subsequently use it
 		// in each communication method
@@ -79,27 +87,21 @@ public class MainClient {
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE) // the network protocol uses
 																							// XML
 				.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_VALUE).build();
-
+*/
 		/*
 		 * Note, EACH client must only register a SINGLE player (i.e., you) ONCE! It is
 		 * OK, if you hard code your private data in your code. Here, this example shows
 		 * you how to perform a POST request (and a client registration), you can build
 		 * on this example to implement all the other messages which use POST. An
 		 * example of how to use GET requests is given below.
-		 * 
-		 * Always give your real UniView u:account username (e.g., musterm44) during the
-		 * registration phase. Otherwise, the automatic progress tracking will not be
-		 * able to determine and assign related bonus points. No, we will not assign
-		 * them manually if you fail to do so.
 		 */
-		PlayerRegistration playerReg = new PlayerRegistration("Ilinca", "Vultur",
+		/*PlayerRegistration playerReg = new PlayerRegistration("Ilinca", "Vultur",
 				"ilincav00");
 		Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.POST).uri("/" + gameId + "/players")
 				.body(BodyInserters.fromValue(playerReg)) // specify the data which is sent to the server
 				.retrieve().bodyToMono(ResponseEnvelope.class); // specify the object returned by the server
 
-		// WebClient support asynchronous message exchange. In SE1 we use a synchronous
-		// one for the sake of simplicity. So calling block is fine.
+
 		ResponseEnvelope<UniquePlayerIdentifier> resultReg = webAccess.block();
 
 		// always check for errors, and if some are reported, at least print them to the
@@ -117,7 +119,10 @@ public class MainClient {
 		} else {
 			UniquePlayerIdentifier uniqueID = resultReg.getData().get();
 			System.out.println("My Player ID: " + uniqueID.getUniquePlayerID());
-		}
+		}*/
+		
+		
+		
 
 		/*
 		 * TIP: Check out the network protocol documentation. It shows you with a nice
@@ -143,6 +148,13 @@ public class MainClient {
 		 * without violating the maximum turn time limit. Check out the network protocol
 		 * documentation for details on how to do so.
 		 */
+		
+		/*try {
+			exampleForGetRequests();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 
 	/*
@@ -158,10 +170,14 @@ public class MainClient {
 	 */
 	public static void exampleForGetRequests() throws Exception {
 		// you will need to fill the variables with the appropriate information
-		String baseUrl = "UseValueFromARGS_1 FROM main";
-		String gameId = "UseValueFromARGS_2 FROM main";
-		String playerId = "From the client registration";
-
+		//String baseUrl = "UseValueFromARGS_1 FROM main";
+		//String gameId = "UseValueFromARGS_2 FROM main";
+		//String playerId = "From the client registration";
+		String baseUrl = "http://swe1.wst.univie.ac.at";
+		String gameId = "6sEof";
+		String playerId = "fbb8d7a8-66f0-43da-bc06-35e14e04c87a";
+		//second player fbb8d7a8-66f0-43da-bc06-35e14e04c87a
+		//27fe2f56-a8ab-4f75-ac9e-3a48e170a1c6
 		// TIP: Use a global instance of the base WebClient throughout each
 		// communication
 		// you can init it once in the CTOR and use it in each of the network
