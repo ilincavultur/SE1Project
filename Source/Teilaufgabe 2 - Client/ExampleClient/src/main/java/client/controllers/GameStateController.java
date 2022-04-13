@@ -26,6 +26,12 @@ public class GameStateController {
 	
 	public void startGame() {
 		
+		// register Player
+		
+		// generate halfmap & send halfmap
+		
+		
+		
 	}
 	
 	

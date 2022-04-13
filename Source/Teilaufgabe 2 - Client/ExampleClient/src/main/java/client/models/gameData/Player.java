@@ -1,5 +1,11 @@
 package client.models.gameData;
 
-public class Player {
+import client.models.gameData.enums.PlayerState;
+import client.models.mapData.Coordinates;
 
+public class Player {
+	String playerID;
+	PlayerState playerState;
+	Boolean hasCollectedTreasure;
+	Coordinates playerPosition;
 }
