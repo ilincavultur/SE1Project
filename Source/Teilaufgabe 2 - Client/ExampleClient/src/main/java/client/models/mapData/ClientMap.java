@@ -6,9 +6,40 @@ public class ClientMap {
 	
 	Map<Coordinates, MapField> fields;
 	
+	String gameID;
+	
 	int xSize;
 
 	int ySize;
+	
+	
+	
+	public ClientMap() {
+		super();
+	}
+	
+	
+	
+	public ClientMap(Map<Coordinates, MapField> fields) {
+		super();
+		this.fields = fields;
+	}
+
+
+
+	public ClientMap(ClientMap myMap) {
+		this.fields = myMap.fields;
+		//this.xSize = myMap.xSize;
+		//this.ySize = myMap.ySize;
+	}
+
+	public ClientMap(Map<Coordinates, MapField> fields, String gameID, int xSize, int ySize) {
+		super();
+		this.fields = fields;
+		this.gameID = gameID;
+		this.xSize = xSize;
+		this.ySize = ySize;
+	}
 
 	public Map<Coordinates, MapField> getFields() {
 		return fields;

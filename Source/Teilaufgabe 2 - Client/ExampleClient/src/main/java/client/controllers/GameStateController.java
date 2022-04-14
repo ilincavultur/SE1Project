@@ -1,6 +1,8 @@
 package client.controllers;
 
 import MessagesBase.MessagesFromClient.PlayerRegistration;
+import client.models.mapData.ClientMap;
+import client.models.mapData.Coordinates;
 import client.ui.CLI;
 
 public class GameStateController {
@@ -12,8 +14,7 @@ public class GameStateController {
 	MovementController moveController;
 	PlayerController playerController;
 	CLI ui;
-	//constructor in the gamestatecontroller where you initialise your network classes and 
-	//based on the constructor it ends up in the network class
+	
 
 	public GameStateController(String gameId, String serverBaseUrl) {
 		super();
@@ -26,10 +27,20 @@ public class GameStateController {
 	
 	public void startGame() {
 		
-		// register Player
+		//PlayerRegistration playerReg = new PlayerRegistration("Ilinca", "Vultur",
+		//		"ilincav00");
 		
-		// generate halfmap & send halfmap
+		// register Player - network
+		//networkController.registerPlayer(playerReg);
 		
+		// generate halfmap - map
+		mapController.generateMap();
+		
+		// print halfmap
+		ui.printMap(mapController.getMyMap());
+		
+		// send halfmap - network
+		//networkController.sendMap(myMap);
 		
 		
 	}

@@ -13,6 +13,30 @@ public class MapField {
 	TreasureState treasureState;
 	FortState fortState;
 	
+	
+	
+	public MapField() {
+		super();
+	}
+	
+	public MapField createMapField(Coordinates pos) {
+		
+		MapField newMapField = new MapField();
+		newMapField.position = pos;
+		//this.position = pos;
+		newMapField.fortState = FortState.UNKNOWNIFFORT;
+		//this.fortState = FortState.UNKNOWNIFFORT;
+		newMapField.playerPositionState = PlayerPositionState.NOPLAYER;
+		//this.playerPositionState = PlayerPositionState.NOPLAYER;
+		newMapField.treasureState = TreasureState.UNKNOWNIFTREASURE;
+		//this.treasureState = TreasureState.UNKNOWNIFTREASURE;
+		newMapField.type = MapFieldType.GRASS;
+		//this.type = MapFieldType.GRASS;
+		
+		return newMapField;
+		
+	}
+
 	public MapField(Coordinates position, MapFieldType type, PlayerPositionState playerPositionState,
 			TreasureState treasureState, FortState fortState) {
 		super();

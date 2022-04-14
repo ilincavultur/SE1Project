@@ -7,8 +7,7 @@ import client.network.NetworkConverter;
 
 public class NetworkController {
 	
-	PlayerRegistration playerReg = new PlayerRegistration("Ilinca", "Vultur",
-			"ilincav00");
+	
 	
 	Network network;
 	NetworkConverter networkConverter;
@@ -25,7 +24,7 @@ public class NetworkController {
 	}
 	
 	void sendMap(ClientMap map) {
-		this.network.sendMap(this.networkConverter.convertMapTo(this.network.getPlayerID(), map));
+		network.sendMap(networkConverter.convertMapTo(network.getPlayerID(), map));
 	}
 	
 	
