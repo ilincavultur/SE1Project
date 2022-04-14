@@ -1,5 +1,7 @@
 package client.controllers;
 
+import java.util.Random;
+
 import client.models.mapData.ClientMap;
 import client.models.mapData.ClientMapGenerator;
 import client.models.mapData.Coordinates;
@@ -33,12 +35,18 @@ public class MapController {
 
 		myMapGenerator.createMap();
 		
-		ClientMap myNewMap = new ClientMap(myMapGenerator.getFields());		
+		ClientMap myNewMap = new ClientMap(myMapGenerator.getFields());	
+		
+		myNewMap.getFields().get(myMapGenerator.placeFort()).setFortState(FortState.MYFORT);
+		myNewMap.setxSize(8);
+		myNewMap.setySize(4);
+		System.out.println(myNewMap.getFields());
+
 		
 		if(validator.validateMap(myNewMap)) {
 			
 			this.myMap = myNewMap;
-			
+		
 		} else {
 			
 			System.out.println("NU E OK");
@@ -63,12 +71,7 @@ public class MapController {
 		
 	}
 	
-	public Coordinates placeFort() {
-		
-		// TO DO
-		return null;
-		
-	}
+	
 	
 	
 	

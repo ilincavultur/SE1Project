@@ -7,27 +7,29 @@ import client.models.mapData.enums.MapFieldType;
 
 public class CLI {
 	public void printMapField(MapField myMapField) {
-		System.out.println("Coordinates: " + myMapField.getPosition().getX() + " " + myMapField.getPosition().getY());
+		System.out.print(myMapField.getPosition().getX());
+		System.out.print(myMapField.getPosition().getY());
 		if(myMapField.getType() == MapFieldType.GRASS) {
-			System.out.println("GRASS");
+			System.out.print("G ");
 		}
 		if(myMapField.getType() == MapFieldType.MOUNTAIN) {
-			System.out.println("MOUNTAIN");			
+			System.out.print("M ");			
 		}
 		if(myMapField.getType() == MapFieldType.WATER) {
-			System.out.println("WATER");
+			System.out.print("W ");
 		}
 		
 	}
  	
 	public void printMap(ClientMap myMap) {
-		System.out.println(myMap.getFields() + "e ok");
 
-		for (int i = 0 ; i < 7; i++) {
-			for(int j = 0; j < 3; j++) {
-				Coordinates pos = new Coordinates(i, j);
+		for (int y = 0; y < 4; y++) {
+		
+			for(int x =0; x < 8; x++) {
+				Coordinates pos = new Coordinates(x, y);
 				printMapField(myMap.getFields().get(pos));
 			}
+			System.out.println("\n");
 		}
 	}
 }

@@ -31,7 +31,34 @@ public class MapField {
 		newMapField.treasureState = TreasureState.UNKNOWNIFTREASURE;
 		//this.treasureState = TreasureState.UNKNOWNIFTREASURE;
 		newMapField.type = MapFieldType.GRASS;
-		//this.type = MapFieldType.GRASS;
+
+		
+		
+		return newMapField;
+		
+	}
+	
+	public MapField createMapField(Coordinates pos, int fieldType) {
+		
+		MapField newMapField = new MapField();
+		newMapField.position = pos;
+		//this.position = pos;
+		newMapField.fortState = FortState.UNKNOWNIFFORT;
+		//this.fortState = FortState.UNKNOWNIFFORT;
+		newMapField.playerPositionState = PlayerPositionState.NOPLAYER;
+		//this.playerPositionState = PlayerPositionState.NOPLAYER;
+		newMapField.treasureState = TreasureState.UNKNOWNIFTREASURE;
+		//this.treasureState = TreasureState.UNKNOWNIFTREASURE;
+		if(fieldType == 0) {
+			newMapField.type = MapFieldType.GRASS;
+		}
+		if(fieldType == 1) {
+			newMapField.type = MapFieldType.MOUNTAIN;
+		}
+		if(fieldType == 2) {
+			newMapField.type = MapFieldType.WATER;
+		}
+		
 		
 		return newMapField;
 		
