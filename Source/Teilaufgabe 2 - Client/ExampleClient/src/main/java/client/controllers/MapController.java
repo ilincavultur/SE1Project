@@ -40,7 +40,7 @@ public class MapController {
 		myNewMap.getFields().get(myMapGenerator.placeFort()).setFortState(FortState.MYFORT);
 		myNewMap.setxSize(8);
 		myNewMap.setySize(4);
-		System.out.println(myNewMap.getFields());
+		//System.out.println(myNewMap.getFields());
 
 		
 		if(validator.validateMap(myNewMap)) {

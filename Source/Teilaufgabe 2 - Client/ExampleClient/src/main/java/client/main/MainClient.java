@@ -72,7 +72,7 @@ public class MainClient {
 		//String serverBaseUrl = args[1];
 		//String gameId = args[2];
 		String serverBaseUrl = "http://swe1.wst.univie.ac.at";
-		String gameId = "GdX2a";
+		String gameId = "9OoMq";
 		
 		
 		GameStateController gameController = new GameStateController(gameId, serverBaseUrl);
@@ -168,42 +168,5 @@ public class MainClient {
 	 * integrate this properly into their Client logic - and subsequently struggled
 	 * with the automatic evaluation.
 	 */
-	public static void exampleForGetRequests() throws Exception {
-		// you will need to fill the variables with the appropriate information
-		//String baseUrl = "UseValueFromARGS_1 FROM main";
-		//String gameId = "UseValueFromARGS_2 FROM main";
-		//String playerId = "From the client registration";
-		String baseUrl = "http://swe1.wst.univie.ac.at";
-		String gameId = "6sEof";
-		String playerId = "fbb8d7a8-66f0-43da-bc06-35e14e04c87a";
-		//second player fbb8d7a8-66f0-43da-bc06-35e14e04c87a
-		//27fe2f56-a8ab-4f75-ac9e-3a48e170a1c6
-		// TIP: Use a global instance of the base WebClient throughout each
-		// communication
-		// you can init it once in the CTOR and use it in each of the network
-		// communication methods in your networking class
-		WebClient baseWebClient = WebClient.builder().baseUrl(baseUrl + "/games")
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE) // the network protocol uses
-																							// XML
-				.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_VALUE).build();
-
-		Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.GET)
-				.uri("/" + gameId + "/states/" + playerId).retrieve().bodyToMono(ResponseEnvelope.class); // specify the
-																											// object
-																											// returned
-																											// by the
-																											// server
-
-		// WebClient support asynchronous message exchange. In SE1 we use a synchronous
-		// one for the sake of simplicity. So calling block is fine.
-		ResponseEnvelope<GameState> requestResult = webAccess.block();
-
-		// always check for errors, and if some are reported, at least print them to the
-		// console (logging should always be preferred!)
-		// so that you become aware of them during debugging! The provided server gives
-		// you constructive error messages.
-		if (requestResult.getState() == ERequestState.Error) {
-			System.err.println("Client error, errormessage: " + requestResult.getExceptionMessage());
-		}
-	}
+	
 }

@@ -1,7 +1,8 @@
 package client.models.gameData.enums;
 
-public enum PlayerState {
+public enum ClientPlayerState {
 	MUSTACT,
+	MUSTWAIT,
 	WON,
 	LOST	
 }

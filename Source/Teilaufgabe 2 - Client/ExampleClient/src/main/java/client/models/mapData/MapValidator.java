@@ -140,15 +140,15 @@ public class MapValidator {
 				}
 			}
 		}
-		System.out.println(waterFields);
+		/*System.out.println(waterFields);
 		System.out.println(grassFields);
 		System.out.println(mountainFields);
-
+*/
 		return (waterFields <= 0 && grassFields <= 0 && mountainFields <= 0);
 	}
 	
 	public boolean validateMap(ClientMap myMap) {
-		if(hasFort(myMap)) {
+		/*if(hasFort(myMap)) {
 			System.out.println("has fort is true");
 		}else {
 			System.out.println("has fort is false");
@@ -182,7 +182,8 @@ public class MapValidator {
 			System.out.println("verifyFieldTypesNo(myMap) is true");
 		}else {
 			System.out.println("verifyFieldTypesNo(myMap) is false");
-		}
+		}*/
+		
 		if ( hasFort(myMap) && hasNoIsland(myMap) && verifyNoOfFields(myMap) && verifyLongSides(myMap) && verifyShortSides(myMap) && verifyFieldTypesNo(myMap) ) {
 			return true;
 		}

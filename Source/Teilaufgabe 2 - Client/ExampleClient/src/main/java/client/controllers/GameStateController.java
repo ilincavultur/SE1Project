@@ -1,6 +1,8 @@
 package client.controllers;
 
 import MessagesBase.MessagesFromClient.PlayerRegistration;
+import client.models.gameData.GameStateData;
+import client.models.gameData.enums.ClientPlayerState;
 import client.models.mapData.ClientMap;
 import client.models.mapData.Coordinates;
 import client.ui.CLI;
@@ -27,20 +29,36 @@ public class GameStateController {
 	
 	public void startGame() {
 		
-		//PlayerRegistration playerReg = new PlayerRegistration("Ilinca", "Vultur",
-		//		"ilincav00");
-		
+		PlayerRegistration playerReg = new PlayerRegistration("Ilinca", "Vultur",
+				"ilincav00");
+	
 		// register Player - network
-		//networkController.registerPlayer(playerReg);
+		networkController.registerPlayer(playerReg);
+		networkController.registerPlayer(playerReg);
 		
 		// generate halfmap - map
 		mapController.generateMap();
 		
-		// print halfmap
-		ui.printMap(mapController.getMyMap());
 		
+		
+		
+		
+		
+		/*while (networkController.notMyTurn()) {
+			networkController.getGameState();	
+		}*/
+		
+		
+		// print halfmap
+		//ui.printMap(mapController.getMyMap());
+		
+		GameStateData state = new GameStateData(networkController.getGameState( networkController.getGameId(), networkController.getPlayerId()));
 		// send halfmap - network
-		//networkController.sendMap(myMap);
+		while(state.getPlayerState() != ClientPlayerState.MUSTACT) {
+			state = new GameStateData(networkController.getGameState(networkController.getPlayerId(), networkController.getGameId()));
+		}
+		networkController.sendMap(mapController.getMyMap());
+		networkController.sendMap(mapController.getMyMap());
 		
 		
 	}
