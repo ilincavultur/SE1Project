@@ -39,26 +39,18 @@ public class GameStateController {
 		// generate halfmap - map
 		mapController.generateMap();
 		
-		
-		
-		
-		
-		
-		/*while (networkController.notMyTurn()) {
-			networkController.getGameState();	
-		}*/
-		
-		
 		// print halfmap
-		//ui.printMap(mapController.getMyMap());
+		
 		
 		GameStateData state = new GameStateData(networkController.getGameState( networkController.getGameId(), networkController.getPlayerId()));
 		// send halfmap - network
 		while(state.getPlayerState() != ClientPlayerState.MUSTACT) {
-			state = new GameStateData(networkController.getGameState(networkController.getPlayerId(), networkController.getGameId()));
+			state = new GameStateData(networkController.getGameState(networkController.getGameId(), networkController.getPlayerId()));
 		}
 		networkController.sendMap(mapController.getMyMap());
-		networkController.sendMap(mapController.getMyMap());
+		ui.printMap(mapController.getMyMap());
+		//networkController.sendMap(mapController.getMyMap());
+		//ui.printMap(mapController.getMyMap());
 		
 		
 	}
