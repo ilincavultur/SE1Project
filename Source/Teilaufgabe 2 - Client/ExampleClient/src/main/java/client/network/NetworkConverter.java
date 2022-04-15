@@ -64,17 +64,15 @@ public class NetworkConverter {
 		
 		state.setGameStateId(gameState.getGameStateId());
 		Iterator<PlayerState> it = gameState.getPlayers().iterator();
+		
 		if(it.hasNext()) {
-			state.setPlayerState(convertPlayerStateFrom(it.next().getState()));
-			state.setPlayerId(it.next().getUniquePlayerID());
+			PlayerState element = it.next();
+			state.setPlayerState(convertPlayerStateFrom(element.getState()));
+			state.setPlayerId(element.getUniquePlayerID());
 		}
 		
 		state.setHasCollectedTreasure(false);
-		
-		//state.setHasCollectedTreasure(gameState.ge]\\\\);
-		//List<PlayerState> states =  new ArrayList<PlayerState>(gameState.getPlayers());
- 		//state.setHasCollectedTreasure(gameState.getPlayers().);
-		
+	
 		return state;
 		
 	}

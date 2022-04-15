@@ -2,6 +2,7 @@ package client.controllers;
 
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import client.models.gameData.GameStateData;
+import client.models.gameData.enums.ClientPlayerState;
 import client.models.mapData.ClientMap;
 import client.network.Network;
 import client.network.NetworkConverter;
@@ -36,8 +37,22 @@ public class NetworkController {
 		return gsd;
 	}
 	
-	void sendMap(ClientMap map) {
-		network.sendMap(networkConverter.convertMapTo(network.getPlayerID(), map));
+	boolean checkIfMyTurn(GameStateData state) {
+		
+		//state = new GameStateData(getGameState(network.getGameID(), network.getPlayerID()));
+		if(state.getPlayerState() == ClientPlayerState.MUSTACT) {
+			return true;
+		} 
+		
+		return false;
+		
+		
+	}
+	
+	void sendMap(ClientMap map, String plID) {
+		//for test
+		network.sendMap(networkConverter.convertMapTo(plID, map));
+		//network.sendMap(networkConverter.convertMapTo(network.getPlayerID(), map));
 	}
 	
 	

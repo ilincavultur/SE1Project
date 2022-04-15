@@ -63,6 +63,10 @@ public class Network {
 	public Network(String gameID, String serverBaseURL) {
 		super();
 		this.serverBaseUrl = serverBaseURL;
+		// template WebClient configuration, will be reused/customized for each
+		// individual endpoint
+		// TIP: create it once in the CTOR of your network class and subsequently use it
+		// in each communication method
 		this.baseWebClient = WebClient.builder().baseUrl(serverBaseURL + "/games")
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE) 																	
 				.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_VALUE).build();
@@ -95,16 +99,10 @@ public class Network {
 			//String gameId = "UseValueFromARGS_2 FROM main";
 			//String playerId = "From the client registration";
 			//String baseUrl = "http://swe1.wst.univie.ac.at";
-		//	String gameId = "6sEof";
-		//	String playerId = "fbb8d7a8-66f0-43da-bc06-35e14e04c87a";
-			//second player fbb8d7a8-66f0-43da-bc06-35e14e04c87a
-			//27fe2f56-a8ab-4f75-ac9e-3a48e170a1c6
-			// TIP: Use a global instance of the base WebClient throughout each
-			// communication
-			// you can init it once in the CTOR and use it in each of the network
-			// communication methods in your networking class
+	
+	
 		
-		System.out.println(gameId);
+		//System.out.println(gameId);
 
 			Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.GET)
 					.uri("/" + gameId + "/states/" + playerId).retrieve().bodyToMono(ResponseEnvelope.class); // specify the

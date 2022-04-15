@@ -72,17 +72,14 @@ public class MainClient {
 		//String serverBaseUrl = args[1];
 		//String gameId = args[2];
 		String serverBaseUrl = "http://swe1.wst.univie.ac.at";
-		String gameId = "jaCLm";
+		String gameId = "brZC5";
 		
 		
 		GameStateController gameController = new GameStateController(gameId, serverBaseUrl);
 		
 		gameController.startGame();
 
-		/*// template WebClient configuration, will be reused/customized for each
-		// individual endpoint
-		// TIP: create it once in the CTOR of your network class and subsequently use it
-		// in each communication method
+		/*
 		WebClient baseWebClient = WebClient.builder().baseUrl(serverBaseUrl + "/games")
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE) // the network protocol uses
 																							// XML
@@ -95,15 +92,7 @@ public class MainClient {
 		 * on this example to implement all the other messages which use POST. An
 		 * example of how to use GET requests is given below.
 		 */
-		/*PlayerRegistration playerReg = new PlayerRegistration("Ilinca", "Vultur",
-				"ilincav00");
-		Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.POST).uri("/" + gameId + "/players")
-				.body(BodyInserters.fromValue(playerReg)) // specify the data which is sent to the server
-				.retrieve().bodyToMono(ResponseEnvelope.class); // specify the object returned by the server
-
-
-		ResponseEnvelope<UniquePlayerIdentifier> resultReg = webAccess.block();
-
+	/*
 		// always check for errors, and if some are reported, at least print them to the
 		// console (logging should always be preferred!)
 		// so that you become aware of them during debugging! The provided server gives
@@ -149,12 +138,7 @@ public class MainClient {
 		 * documentation for details on how to do so.
 		 */
 		
-		/*try {
-			exampleForGetRequests();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		
 	}
 
 	/*
