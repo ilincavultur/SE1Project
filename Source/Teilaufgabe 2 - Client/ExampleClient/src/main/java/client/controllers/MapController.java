@@ -14,9 +14,9 @@ import client.models.mapData.enums.TreasureState;
 
 public class MapController {
 	
-	ClientMap myMap;
-	ClientMapGenerator myMapGenerator;
-	MapValidator validator;
+	private ClientMap myMap;
+	private ClientMapGenerator myMapGenerator;
+	private MapValidator validator;
 
 	public MapController() {
 		super();
@@ -46,15 +46,21 @@ public class MapController {
 		if(validator.validateMap(myNewMap)) {
 			
 			this.myMap = myNewMap;
+			return;
 		
 		} else {
-			
+			// generate map again?
+			generateMap();
 			System.out.println("NU E OK");
 			// TO DO
 
 		}
 		
 	}
+	
+	/*public boolean validateMap(ClientMap myMap) {
+		return validator.validateMap(myMap);
+	}*/
 	
 	public ClientMap getMyMap() {
 		return myMap;

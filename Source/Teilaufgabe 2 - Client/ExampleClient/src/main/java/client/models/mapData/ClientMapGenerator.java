@@ -9,7 +9,7 @@ import client.models.mapData.enums.MapFieldType;
 
 public class ClientMapGenerator {
 	
-	Map<Coordinates, MapField> fields;
+	private Map<Coordinates, MapField> fields;
 	
 	
 

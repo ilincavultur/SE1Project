@@ -11,7 +11,7 @@ import client.models.mapData.enums.MapFieldType;
 
 public class MapValidator {
 
-	List<Coordinates> alreadyVisited = new ArrayList<Coordinates>();
+	private List<Coordinates> alreadyVisited = new ArrayList<Coordinates>();
 
 	public boolean hasFort(ClientMap mapToVerify) {
 		
@@ -72,16 +72,16 @@ public class MapValidator {
 			return;
 		}else {
 			visitedNodes.add(startingPos);
-			checkIfReachable(new Coordinates(startingPos.X - 1, startingPos.Y), mapToVerify, visitedNodes);
-			checkIfReachable(new Coordinates(startingPos.X + 1, startingPos.Y), mapToVerify, visitedNodes);
-			checkIfReachable(new Coordinates(startingPos.X, startingPos.Y - 1), mapToVerify, visitedNodes);
-			checkIfReachable(new Coordinates(startingPos.X, startingPos.Y + 1), mapToVerify, visitedNodes);
+			checkIfReachable(new Coordinates(startingPos.getX() - 1, startingPos.getY()), mapToVerify, visitedNodes);
+			checkIfReachable(new Coordinates(startingPos.getX() + 1, startingPos.getY()), mapToVerify, visitedNodes);
+			checkIfReachable(new Coordinates(startingPos.getX(), startingPos.getY() - 1), mapToVerify, visitedNodes);
+			checkIfReachable(new Coordinates(startingPos.getX(), startingPos.getY() + 1), mapToVerify, visitedNodes);
 		}
 	}
 	
 	public boolean verifyNoOfFields(ClientMap mapToVerify) {
 
-		return (mapToVerify.xSize * mapToVerify.ySize == 32 && mapToVerify.xSize == 8 && mapToVerify.ySize == 4);
+		return (mapToVerify.getxSize() * mapToVerify.getySize() == 32 && mapToVerify.getxSize() == 8 && mapToVerify.getySize() == 4);
 		
 	}
 	
@@ -91,11 +91,11 @@ public class MapValidator {
 		//mapToVerify.xSize
 		for (int x = 0; x < 8 ; x++) {
 			Coordinates pos1 = new Coordinates(x, 0);
-			Coordinates pos2 = new Coordinates(x, mapToVerify.ySize - 1);
-			if (mapToVerify.getFields().get(pos1).type == MapFieldType.WATER) {
+			Coordinates pos2 = new Coordinates(x, mapToVerify.getySize() - 1);
+			if (mapToVerify.getFields().get(pos1).getType() == MapFieldType.WATER) {
 				waterNo1++;
 			}
-			if (mapToVerify.getFields().get(pos2).type == MapFieldType.WATER) {
+			if (mapToVerify.getFields().get(pos2).getType() == MapFieldType.WATER) {
 				waterNo2++;
 			}
 		}
@@ -109,11 +109,11 @@ public class MapValidator {
 		//mapToVerify.ySize
 		for (int y = 0; y < 4 ; y++) {
 			Coordinates pos1 = new Coordinates(0, y);
-			Coordinates pos2 = new Coordinates(mapToVerify.xSize - 1, y);
-			if (mapToVerify.getFields().get(pos1).type == MapFieldType.WATER) {
+			Coordinates pos2 = new Coordinates(mapToVerify.getxSize() - 1, y);
+			if (mapToVerify.getFields().get(pos1).getType() == MapFieldType.WATER) {
 				waterNo1++;
 			}
-			if (mapToVerify.getFields().get(pos2).type == MapFieldType.WATER) {
+			if (mapToVerify.getFields().get(pos2).getType() == MapFieldType.WATER) {
 				waterNo2++;
 			}
 		}

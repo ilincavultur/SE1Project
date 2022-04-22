@@ -9,8 +9,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import MessagesBase.ResponseEnvelope;
 import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
+import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.ERequestState;
 import MessagesBase.MessagesFromClient.HalfMap;
+import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.GameState;
 import reactor.core.publisher.Mono;
@@ -18,13 +20,13 @@ import reactor.core.publisher.Mono;
 
 public class Network {
 	
-	String serverBaseUrl;
+	private String serverBaseUrl;
 	
-	WebClient baseWebClient;
+	private WebClient baseWebClient;
 	
-	String gameID;
+	private String gameID;
 	
-	String playerID;
+	private String playerID;
 
 	
 	
@@ -139,6 +141,23 @@ public class Network {
 			System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
 		} else {
 			System.out.println("half map was correct");
+		}
+		
+		
+	}
+	
+	public void sendMove(PlayerMove networkMove) {
+		
+		Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.POST).uri("/" + this.gameID + "/moves")
+				.body(BodyInserters.fromValue(networkMove)) 
+				.retrieve().bodyToMono(ResponseEnvelope.class); 
+
+		ResponseEnvelope resultReg = webAccess.block();
+
+		if (resultReg.getState() == ERequestState.Error) {
+			System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
+		} else {
+			System.out.println("move was correct");
 		}
 		
 		

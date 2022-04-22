@@ -7,14 +7,24 @@ import java.util.Objects;
 import client.models.mapData.enums.MapFieldType;
 
 public class Coordinates {
-	int X;
+	private int X;
 	
-	int Y;
+	private int Y;
 
 	public Coordinates(int x, int y) {
 		super();
 		X = x;
 		Y = y;
+	}
+	
+	public Coordinates(Coordinates coords) {
+		super();
+		X = coords.X;
+		Y = coords.Y;
+	}
+	
+	public Coordinates() {
+		super();
 	}
 	
 	
@@ -37,33 +47,35 @@ public class Coordinates {
 		Y = y;
 	}
 	
-	public Coordinates getUpNeighbour(Coordinates field) {
+	//TODO check if it s still in the map ??
+	
+	public Coordinates getUpNeighbour() {
 		
-		Coordinates neighbour = new Coordinates(field.X, field.Y+1);
+		Coordinates neighbour = new Coordinates(this.X, this.Y+1);
+				
+		return neighbour;
+		
+	}
+	
+	public Coordinates getDownNeighbour() {
+		
+		Coordinates neighbour = new Coordinates(this.X, this.Y-1);
 		
 		return neighbour;
 		
 	}
 	
-	public Coordinates getDownNeighbour(Coordinates field) {
+	public Coordinates getLeftNeighbour() {
 		
-		Coordinates neighbour = new Coordinates(field.X, field.Y-1);
-		
-		return neighbour;
-		
-	}
-	
-	public Coordinates getLeftNeighbour(Coordinates field) {
-		
-		Coordinates neighbour = new Coordinates(field.X-1, field.Y);
+		Coordinates neighbour = new Coordinates(this.X-1, this.Y);
 		
 		return neighbour;
 		
 	}
 	
-	public Coordinates getRightNeighbour(Coordinates field) {
+	public Coordinates getRightNeighbour() {
 		
-		Coordinates neighbour = new Coordinates(field.X+1, field.Y);
+		Coordinates neighbour = new Coordinates(this.X+1, this.Y);
 		
 		return neighbour;
 		
@@ -87,31 +99,32 @@ public class Coordinates {
 		Coordinates other = (Coordinates) obj;
 		return X == other.X && Y == other.Y;
 	}
-
 	
-
-	/*public Map<Coordinates, MapField> getFieldsAround( MapField field ) {
+	public Map<String, Coordinates> getFieldsAround(ClientMap myMap) {
 		
-		Map<Coordinates, MapField> toReturn = new HashMap();
+		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();
 		
-		Coordinates pos = field.getPosition();
+		if (myMap.getFields().containsKey(this.getUpNeighbour())) {
+			toReturn.put("up", this.getUpNeighbour());
+		}
 		
-		if (field.getType() == MapFieldType.MOUNTAIN) {
-			for (int i = 0; i < 7; i++) {
-				MapField nodeToAdd = new MapField();
-					
-				
-				
-			}
+		if (myMap.getFields().containsKey(this.getDownNeighbour())) {
+			toReturn.put("down", this.getDownNeighbour());
+		}
+		
+		if (myMap.getFields().containsKey(this.getLeftNeighbour())) {
+			toReturn.put("left", this.getLeftNeighbour());
+		}
+		
+		if (myMap.getFields().containsKey(this.getRightNeighbour())) {
+			toReturn.put("right", this.getRightNeighbour());
 		}
 		
 		
-		//if (field.getFieldType() == MapFieldType.Mountain)
-		//if berg:
-		//toReturn.put(null, field)
 		
 		
-		return null;	
-	}*/
+		return toReturn;	
+	}
+
 	
 }

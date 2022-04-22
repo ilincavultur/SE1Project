@@ -72,7 +72,7 @@ public class MainClient {
 		//String serverBaseUrl = args[1];
 		//String gameId = args[2];
 		String serverBaseUrl = "http://swe1.wst.univie.ac.at";
-		String gameId = "brZC5";
+		String gameId = "6X9nZ";
 		
 		
 		GameStateController gameController = new GameStateController(gameId, serverBaseUrl);
