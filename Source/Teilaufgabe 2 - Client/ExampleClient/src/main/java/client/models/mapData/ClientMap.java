@@ -3,6 +3,9 @@ package client.models.mapData;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import client.models.mapData.enums.MapFieldType;
 
 public class ClientMap {
@@ -14,7 +17,8 @@ public class ClientMap {
 	private int xSize;
 
 	private int ySize;
-	
+	private static final Logger logger = LoggerFactory.getLogger(ClientMap.class);
+
 	
 	
 	public ClientMap() {
@@ -85,6 +89,7 @@ public class ClientMap {
 		
 		Map<Coordinates, MapField> fieldsGrassMountain = new HashMap<Coordinates, MapField>();
 		
+		logger.info("Client Map getVisitableNodes");
 		for( Map.Entry<Coordinates, MapField> mapEntry : this.getFields().entrySet() ) {
 			if (mapEntry.getValue().getType() == MapFieldType.GRASS || mapEntry.getValue().getType() == MapFieldType.MOUNTAIN) {
 				fieldsGrassMountain.put(mapEntry.getKey(), mapEntry.getValue());
@@ -95,5 +100,20 @@ public class ClientMap {
 		
 	}
 	
+	/*private Map<Coordinates, MapField> mapWithoutWaters () {
+		
+		Map<Coordinates, MapField> toReturn = new HashMap<Coordinates, MapField>();
+		
+		for( Map.Entry<Coordinates, MapField> mapEntry : fields.entrySet() ) {
+			
+			if (mapEntry.getValue().getType() != MapFieldType.WATER) {
+				toReturn.put(mapEntry.getKey(), mapEntry.getValue());
+			}
+		}
+		
+		return toReturn;
+		
+	}
+	*/
 	
 }

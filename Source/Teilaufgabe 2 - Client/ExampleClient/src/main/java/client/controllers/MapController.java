@@ -1,5 +1,7 @@
 package client.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import client.models.mapData.ClientMap;
@@ -51,16 +53,13 @@ public class MapController {
 		} else {
 			// generate map again?
 			generateMap();
-			System.out.println("NU E OK");
+			//System.out.println("NU E OK");
 			// TO DO
 
 		}
 		
 	}
 	
-	/*public boolean validateMap(ClientMap myMap) {
-		return validator.validateMap(myMap);
-	}*/
 	
 	public ClientMap getMyMap() {
 		return myMap;
@@ -77,7 +76,15 @@ public class MapController {
 		
 	}
 	
-	
+	public MapField getMyFortField() {
+
+		for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
+			if (mapEntry.getValue().getFortState() == FortState.MYFORT) {
+				return mapEntry.getValue();
+			}
+		}
+		return null;
+	}
 	
 	
 	

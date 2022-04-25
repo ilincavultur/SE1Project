@@ -1,6 +1,8 @@
 package client.models.mapData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -17,6 +19,7 @@ public class MapField {
 	private TreasureState treasureState;
 	private FortState fortState;
 	private int moves;
+	private List<Coordinates> shortestPath;
 	
 	
 	public MapField() {
@@ -37,6 +40,7 @@ public class MapField {
 		newMapField.type = MapFieldType.GRASS;
 
 		newMapField.moves = 1;
+		newMapField.shortestPath = new ArrayList<Coordinates>();
 		
 		return newMapField;
 		
@@ -65,6 +69,7 @@ public class MapField {
 			newMapField.type = MapFieldType.WATER;
 			newMapField.moves = 1;
 		}
+		newMapField.shortestPath = new ArrayList<Coordinates>();
 		
 		
 		return newMapField;
@@ -88,6 +93,7 @@ public class MapField {
 		if(type == MapFieldType.WATER) {
 			this.moves = 1;
 		}
+		this.shortestPath = new ArrayList<Coordinates>();
 	}
 
 	public Coordinates getPosition() {
@@ -139,6 +145,14 @@ public class MapField {
 	}
 	
 	
+
+	public List<Coordinates> getShortestPath() {
+		return shortestPath;
+	}
+
+	public void setShortestPath(List<Coordinates> shortestPath) {
+		this.shortestPath = shortestPath;
+	}
 
 	@Override
 	public int hashCode() {

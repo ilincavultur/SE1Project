@@ -51,7 +51,7 @@ public class Coordinates {
 	
 	public Coordinates getUpNeighbour() {
 		
-		Coordinates neighbour = new Coordinates(this.X, this.Y+1);
+		Coordinates neighbour = new Coordinates(this.X, this.Y-1);
 				
 		return neighbour;
 		
@@ -59,7 +59,7 @@ public class Coordinates {
 	
 	public Coordinates getDownNeighbour() {
 		
-		Coordinates neighbour = new Coordinates(this.X, this.Y-1);
+		Coordinates neighbour = new Coordinates(this.X, this.Y+1);
 		
 		return neighbour;
 		

@@ -18,21 +18,6 @@ import reactor.core.publisher.Mono;
 
 public class MainClient {
 
-	// ADDITIONAL TIPS ON THIS MATTER ARE GIVEN THROUGHOUT THE TUTORIAL SESSION!
-
-	/*
-	 * Below, you can find an example of how to use both required HTTP operations,
-	 * i.e., POST and GET to communicate with the server.
-	 * 
-	 * Note, this is only an example. Hence, your own implementation should NOT
-	 * place all the logic in a single main method!
-	 * 
-	 * Further, I would recommend that you check out: a) The JavaDoc of the network
-	 * message library, which describes all messages, and their ctors/methods. You
-	 * can find it here http://swe1.wst.univie.ac.at/ b) The informal network
-	 * documentation is given in Moodle, which describes which messages must be used
-	 * when and how.
-	 */
 	public static void main(String[] args) {
 
 		/*
@@ -72,85 +57,15 @@ public class MainClient {
 		//String serverBaseUrl = args[1];
 		//String gameId = args[2];
 		String serverBaseUrl = "http://swe1.wst.univie.ac.at";
-		String gameId = "6X9nZ";
+		String gameId = "7byCU";
 		
 		
 		GameStateController gameController = new GameStateController(gameId, serverBaseUrl);
 		
 		gameController.startGame();
 
-		/*
-		WebClient baseWebClient = WebClient.builder().baseUrl(serverBaseUrl + "/games")
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE) // the network protocol uses
-																							// XML
-				.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_VALUE).build();
-*/
-		/*
-		 * Note, EACH client must only register a SINGLE player (i.e., you) ONCE! It is
-		 * OK, if you hard code your private data in your code. Here, this example shows
-		 * you how to perform a POST request (and a client registration), you can build
-		 * on this example to implement all the other messages which use POST. An
-		 * example of how to use GET requests is given below.
-		 */
-	/*
-		// always check for errors, and if some are reported, at least print them to the
-		// console (logging should always be preferred!)
-		// so that you become aware of them during debugging! The provided server gives
-		// you constructive error messages.
-		if (resultReg.getState() == ERequestState.Error) {
-			// typically happens if you forgot to create a new game before the client
-			// execution or
-			// forgot to adapt the run configuration so that it supplies the id of the new
-			// game to the client
-			// open http://swe1.wst.univie.ac.at:18235/games in your browser to create a new
-			// game and obtain its game id
-			System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
-		} else {
-			UniquePlayerIdentifier uniqueID = resultReg.getData().get();
-			System.out.println("My Player ID: " + uniqueID.getUniquePlayerID());
-		}*/
-		
-		
-		
-
-		/*
-		 * TIP: Check out the network protocol documentation. It shows you with a nice
-		 * sequence diagram all the steps which are required to be executed by your
-		 * client along with a general overview on the required behavior (e.g., when it
-		 * is necessary to repeatedly ask the server for its state to determine if
-		 * actions can be sent or not). When the client will need to wait for the other
-		 * client and when you client should stop sending any more messages to the
-		 * server.
-		 */
-
-		/*
-		 * TIP: A game consists of two clients. How can I get two clients for testing
-		 * purposes? Start your client two times. You can do this in Eclipse by hitting
-		 * the green start button twice. Or you can start your jar file twice in two
-		 * different terminals. When you hit the debug button twice, you can even debug
-		 * both clients "independently" from each other.
-		 */
-
-		/*
-		 * TIP: To ease debugging and development, you can create special games. Such
-		 * games can get assigned a dummy competitor, or you can stop and debug them
-		 * without violating the maximum turn time limit. Check out the network protocol
-		 * documentation for details on how to do so.
-		 */
-		
 		
 	}
 
-	/*
-	 * This example method shall show you how to create a GET request. Here, it
-	 * shows you how to use a GET request to request the state of a game. You can
-	 * define all GET requests accordingly.
-	 * 
-	 * The only reason to use GET requests in the Client should be to request
-	 * states. We strongly advise NOT to use the Client to create new games
-	 * programmatically. This is because multiple students before you failed to
-	 * integrate this properly into their Client logic - and subsequently struggled
-	 * with the automatic evaluation.
-	 */
 	
 }

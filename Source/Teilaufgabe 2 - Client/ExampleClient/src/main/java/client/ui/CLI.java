@@ -13,6 +13,7 @@ public class CLI implements PropertyChangeListener {
 	public void printMapField(MapField myMapField) {
 		System.out.print(myMapField.getPosition().getX());
 		System.out.print(myMapField.getPosition().getY());
+		//System.out.print(myMapField.getMoves());
 		if(myMapField.getType() == MapFieldType.GRASS) {
 			System.out.print("G ");
 		}
@@ -26,6 +27,9 @@ public class CLI implements PropertyChangeListener {
 	}
  	
 	public void printMap(ClientMap myMap) {
+		
+		System.out.println("ysize" + myMap.getySize());
+		System.out.println("xsize" + myMap.getxSize());
 
 		for (int y = 0; y < myMap.getySize(); y++) {
 		

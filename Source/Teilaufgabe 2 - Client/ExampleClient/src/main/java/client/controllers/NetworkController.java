@@ -65,9 +65,10 @@ public class NetworkController {
 		return gsd;
 	}
 	
-	boolean checkIfMyTurn() {
+	boolean checkIfMyTurn(String playerId) {
 		
-		GameStateData state = new GameStateData(getGameState( getGameId(), getPlayerId()));
+		//GameStateData state = networkConverter.convertGameStateFrom(network.getGameState(network.getGameID(), network.getPlayerID()));
+		GameStateData state = networkConverter.convertGameStateFrom(network.getGameState(network.getGameID(), playerId));
 		
 		return state.getPlayerState() == ClientPlayerState.MUSTACT;
 	

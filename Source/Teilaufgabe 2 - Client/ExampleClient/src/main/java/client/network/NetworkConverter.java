@@ -138,6 +138,12 @@ public class NetworkConverter {
 		Coordinates pos = new Coordinates(fullMapNode.getX(), fullMapNode.getY());
 		toReturn.setPosition(pos);
 		toReturn.setTreasureState(convertTreasureStateFrom(fullMapNode.getTreasureState()));
+		if(fullMapNode.getTerrain() == ETerrain.Grass || fullMapNode.getTerrain() == ETerrain.Water) {
+			toReturn.setMoves(1);	
+		} else {
+			toReturn.setMoves(2);	
+		}
+		toReturn.setShortestPath(new ArrayList<Coordinates>());
 		
 		return toReturn;
 		
@@ -165,8 +171,8 @@ public class NetworkConverter {
 			//toReturn.getFields().put(field.getPosition(), field);
 		}
 		toReturn.setFields(newMp);
-		toReturn.setxSize(maxX);
-		toReturn.setySize(maxY);
+		toReturn.setxSize(maxX + 1);
+		toReturn.setySize(maxY + 1);
 		
 		return toReturn;
 		
@@ -183,6 +189,7 @@ public class NetworkConverter {
 			PlayerState element = it.next();
 			state.setPlayerState(convertPlayerStateFrom(element.getState()));
 			state.setPlayerId(element.getUniquePlayerID());
+			
 		}
 		if(gameState.getMap().isPresent()) {
 			state.setFullMap(convertFullMapFrom(gameState.getMap().get()));	

@@ -14,7 +14,7 @@ public class MapValidator {
 	private List<Coordinates> alreadyVisited = new ArrayList<Coordinates>();
 
 	public boolean hasFort(ClientMap mapToVerify) {
-		
+		//TODO my fort was once on a mountain
 		for(int y =0; y < 4; y++) {
 			for (int x = 0; x < 8; x++) {
 				Coordinates pos = new Coordinates(x, y);
@@ -44,10 +44,7 @@ public class MapValidator {
 	
 	public boolean hasNoIsland(ClientMap mapToVerify) {
 		
-		//Map<Coordinates, MapField> alreadyVisited = new HashMap<Coordinates, MapField>();
-		
-		
-		//random starting pos
+		this.alreadyVisited = new ArrayList<Coordinates>();
 		
 		Random randomNo = new Random();
 		int randomX = randomNo.nextInt(8);
@@ -140,49 +137,11 @@ public class MapValidator {
 				}
 			}
 		}
-		/*System.out.println(waterFields);
-		System.out.println(grassFields);
-		System.out.println(mountainFields);
-*/
+
 		return (waterFields <= 0 && grassFields <= 0 && mountainFields <= 0);
 	}
 	
 	public boolean validateMap(ClientMap myMap) {
-		/*if(hasFort(myMap)) {
-			System.out.println("has fort is true");
-		}else {
-			System.out.println("has fort is false");
-		}
-		
-		if(hasNoIsland(myMap)) {
-			System.out.println("hasNoIsland(myMap) is true");
-		}else {
-			System.out.println("hasNoIsland(myMap) is false");
-		}
-		
-		if(verifyNoOfFields(myMap)) {
-			System.out.println("verifyNoOfFields(myMap) is true");
-		}else {
-			System.out.println("verifyNoOfFields(myMap) is false");
-		}
-		
-		if(verifyLongSides(myMap)) {
-			System.out.println("verifyLongSides(myMap) is true");
-		}else {
-			System.out.println("verifyLongSides(myMap) is false");
-		}
-		
-		if(verifyShortSides(myMap)) {
-			System.out.println("verifyShortSides(myMap) is true");
-		}else {
-			System.out.println("verifyShortSides(myMap) is false");
-		}
-		
-		if(verifyFieldTypesNo(myMap)) {
-			System.out.println("verifyFieldTypesNo(myMap) is true");
-		}else {
-			System.out.println("verifyFieldTypesNo(myMap) is false");
-		}*/
 		
 		if ( hasFort(myMap) && hasNoIsland(myMap) && verifyNoOfFields(myMap) && verifyLongSides(myMap) && verifyShortSides(myMap) && verifyFieldTypesNo(myMap) ) {
 			return true;
