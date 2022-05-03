@@ -42,8 +42,6 @@ public class MapController {
 		myNewMap.getFields().get(myMapGenerator.placeFort()).setFortState(FortState.MYFORT);
 		myNewMap.setxSize(8);
 		myNewMap.setySize(4);
-		//System.out.println(myNewMap.getFields());
-
 		
 		if(validator.validateMap(myNewMap)) {
 			
@@ -53,8 +51,6 @@ public class MapController {
 		} else {
 			// generate map again?
 			generateMap();
-			//System.out.println("NU E OK");
-			// TO DO
 
 		}
 		
@@ -85,9 +81,5 @@ public class MapController {
 		}
 		return null;
 	}
-	
-	
-	
-	
 
 }

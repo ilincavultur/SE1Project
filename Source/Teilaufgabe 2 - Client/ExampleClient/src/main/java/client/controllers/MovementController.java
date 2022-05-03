@@ -16,7 +16,8 @@ import client.movement.enums.MoveCommand;
 public class MovementController {
 	
 	private PathCalculator pathCalc;
-	private MapField currentField;
+	//private MapField currentField;
+	private Coordinates currentField;
 	private ClientMap fullMap;
 	List<MoveCommand> movesList;
 	
@@ -31,7 +32,7 @@ public class MovementController {
 
 
 
-	public MovementController(PathCalculator pathCalc, MapField currentField, ClientMap fullMap) {
+	public MovementController(PathCalculator pathCalc, Coordinates currentField, ClientMap fullMap) {
 		super();
 		this.pathCalc = pathCalc;
 		this.currentField = currentField;
@@ -52,13 +53,13 @@ public class MovementController {
 
 
 
-	public MapField getCurrentField() {
+	public Coordinates getCurrentField() {
 		return currentField;
 	}
 
 
 
-	public void setCurrentField(MapField currentField) {
+	public void setCurrentField(Coordinates currentField) {
 		this.currentField = currentField;
 	}
 
@@ -105,7 +106,7 @@ public class MovementController {
 		Coordinates targetPosition = new Coordinates(fullMap.getxSize()-1,fullMap.getySize()-1);
 		MapField targetField = fullMap.getFields().get(targetPosition);
 		
-		System.out.println("current field" + currentField.getPosition().getX() + currentField.getPosition().getY());
+		System.out.println("current field" + currentField.getX() + currentField.getY());
 		System.out.println("target field" + targetField.getPosition().getX() + targetField.getPosition().getY());
 		
 		pathCalc.getShortestPath(currentField, targetField);
@@ -124,7 +125,10 @@ public class MovementController {
 		MoveCommand toRet = MoveCommand.DOWN;
 		if (this.movesList.size()!=0) {
 			
-			toRet = this.movesList.get(0);	
+			
+			toRet = pathCalc.getNextMove(this.movesList);	
+			
+			
 			
 			System.out.println("move: " + toRet.toString());
 			this.movesList.remove(0);
@@ -214,12 +218,12 @@ public class MovementController {
 		return null;
 	}
 	*/
-	public boolean validateMove(MoveCommand move) {
+	/*public boolean validateMove(MoveCommand move) {
 		MoveValidator moveValidator = new MoveValidator(this.fullMap);
 		
 		return moveValidator.validateMove(currentField.getPosition(), move);
 	
-	}
+	}*/
 	
 	
 	

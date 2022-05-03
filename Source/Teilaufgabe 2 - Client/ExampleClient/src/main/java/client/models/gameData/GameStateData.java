@@ -5,12 +5,16 @@ import java.beans.PropertyChangeSupport;
 import java.util.Map;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import client.models.gameData.enums.ClientPlayerState;
 import client.models.mapData.ClientMap;
 import client.models.mapData.Coordinates;
 import client.models.mapData.MapField;
 import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.PlayerPositionState;
+import client.movement.PathCalculator;
 
 public class GameStateData {
 	
@@ -21,6 +25,8 @@ public class GameStateData {
 	private Coordinates playerPosition;
 	private ClientMap fullMap;
 	private final PropertyChangeSupport notifyChanges = new PropertyChangeSupport(this);
+	private static final Logger logger = LoggerFactory.getLogger(GameStateData.class);
+
 	
 	public void registerInterestedView(PropertyChangeListener listener) {
 		notifyChanges.addPropertyChangeListener(listener);
@@ -38,7 +44,9 @@ public class GameStateData {
 		this.playerId = obj.playerId;
 		if(obj.fullMap != null) {
 			this.fullMap = obj.fullMap;		
+			this.playerPosition = obj.getPlayerPosition();
 		}
+		
 	
 	}
 
@@ -94,6 +102,18 @@ public class GameStateData {
 		this.hasCollectedTreasure = hasCollectedTreasure;
 	}
 
+	
+	
+
+	public Coordinates getPlayerPosition() {
+		return playerPosition;
+	}
+
+
+	public void setPlayerPosition(Coordinates playerPosition) {
+		this.playerPosition = playerPosition;
+	}
+
 
 	public ClientMap getFullMap() {
 		return fullMap;
@@ -103,11 +123,15 @@ public class GameStateData {
 		this.fullMap = fullMap;
 	}
 	
-	public MapField getMyCurrentPosition() {
+	public MapField getMyCurrentPosition(ClientMap myMap) {
 
-		if (fullMap !=null) {
-			for( Map.Entry<Coordinates, MapField> mapEntry : fullMap.getFields().entrySet() ) {
+		if (myMap !=null) {
+			
+			for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
+				
 				if (mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.MYPLAYER || mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.BOTH) {
+					//logger.info("gettiing my current position");
+					this.setPlayerPosition(mapEntry.getKey());
 					return mapEntry.getValue();
 				}
 			}

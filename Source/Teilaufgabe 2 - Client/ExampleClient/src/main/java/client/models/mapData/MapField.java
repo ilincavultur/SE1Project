@@ -18,7 +18,6 @@ public class MapField {
 	private PlayerPositionState playerPositionState;
 	private TreasureState treasureState;
 	private FortState fortState;
-	private int moves;
 	private List<Coordinates> shortestPath;
 	
 	
@@ -39,13 +38,13 @@ public class MapField {
 		//this.treasureState = TreasureState.UNKNOWNIFTREASURE;
 		newMapField.type = MapFieldType.GRASS;
 
-		newMapField.moves = 1;
 		newMapField.shortestPath = new ArrayList<Coordinates>();
 		
 		return newMapField;
 		
 	}
-	
+	/*
+
 	public MapField createMapField(Coordinates pos, int fieldType) {
 		
 		MapField newMapField = new MapField();
@@ -74,8 +73,8 @@ public class MapField {
 		
 		return newMapField;
 		
-	}
-
+	}*/
+/*
 	public MapField(Coordinates position, MapFieldType type, PlayerPositionState playerPositionState,
 			TreasureState treasureState, FortState fortState) {
 		super();
@@ -94,7 +93,7 @@ public class MapField {
 			this.moves = 1;
 		}
 		this.shortestPath = new ArrayList<Coordinates>();
-	}
+	}*/
 
 	public Coordinates getPosition() {
 		return position;
@@ -136,16 +135,6 @@ public class MapField {
 		this.fortState = fortState;
 	}
 
-	public int getMoves() {
-		return moves;
-	}
-
-	public void setMoves(int moves) {
-		this.moves = moves;
-	}
-	
-	
-
 	public List<Coordinates> getShortestPath() {
 		return shortestPath;
 	}
@@ -156,7 +145,7 @@ public class MapField {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(fortState, moves, playerPositionState, position, treasureState, type);
+		return Objects.hash(fortState, playerPositionState, position, treasureState, type);
 	}
 
 	@Override
@@ -168,7 +157,7 @@ public class MapField {
 		if (getClass() != obj.getClass())
 			return false;
 		MapField other = (MapField) obj;
-		return fortState == other.fortState && moves == other.moves && playerPositionState == other.playerPositionState
+		return fortState == other.fortState && playerPositionState == other.playerPositionState
 				&& Objects.equals(position, other.position) && treasureState == other.treasureState
 				&& type == other.type;
 	}

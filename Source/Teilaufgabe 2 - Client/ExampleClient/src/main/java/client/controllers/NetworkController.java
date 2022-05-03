@@ -1,5 +1,8 @@
 package client.controllers;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.GameState;
 import client.models.gameData.GameStateData;
@@ -60,14 +63,21 @@ public class NetworkController {
 		network.registerPlayer(playerReg);
 	}
 	
+	
+	
 	GameStateData getGameState(String gameId, String playerId) {
-		GameStateData gsd = new GameStateData(networkConverter.convertGameStateFrom(network.getGameState(gameId, playerId)));
+		GameStateData gsd = new GameStateData();
+		
+		gsd = networkConverter.convertGameStateFrom(network.getGameState(gameId, playerId));
+		//System.out.println("acum suntem aiciiiiii in networ controller : " + gsd.getPlayerPosition().getX() + " " + gsd.getPlayerPosition().getY());
+
 		return gsd;
 	}
 	
 	boolean checkIfMyTurn(String playerId) {
 		
 		//GameStateData state = networkConverter.convertGameStateFrom(network.getGameState(network.getGameID(), network.getPlayerID()));
+		
 		GameStateData state = networkConverter.convertGameStateFrom(network.getGameState(network.getGameID(), playerId));
 		
 		return state.getPlayerState() == ClientPlayerState.MUSTACT;

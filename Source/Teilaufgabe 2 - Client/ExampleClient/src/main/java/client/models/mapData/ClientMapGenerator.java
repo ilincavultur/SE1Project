@@ -55,7 +55,6 @@ public class ClientMapGenerator {
 			if(newfields.get(pos).getType() == MapFieldType.GRASS) {
 				
 				newfields.get(pos).setType(MapFieldType.WATER);	
-				newfields.get(pos).setMoves(1);	
 			} else {
 				--i;
 			}
@@ -68,7 +67,6 @@ public class ClientMapGenerator {
 			Coordinates pos = new Coordinates(randomMountainX, randomMountainY);
 			if(newfields.get(pos).getType() == MapFieldType.GRASS) {
 				newfields.get(pos).setType(MapFieldType.MOUNTAIN);
-				newfields.get(pos).setMoves(2);
 			} else {
 				--i;
 			}

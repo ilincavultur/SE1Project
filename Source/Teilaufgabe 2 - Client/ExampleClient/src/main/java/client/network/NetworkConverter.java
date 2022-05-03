@@ -11,6 +11,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.ETerrain;
 import MessagesBase.MessagesFromClient.HalfMap;
@@ -33,10 +36,12 @@ import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
 import client.models.mapData.enums.PlayerPositionState;
 import client.models.mapData.enums.TreasureState;
+import client.movement.PathCalculator;
 import client.movement.enums.MoveCommand;
 
 public class NetworkConverter {
-	
+	private static final Logger logger = LoggerFactory.getLogger(NetworkConverter.class);
+
 	public ETerrain convertTerrainTypeTo(MapFieldType fieldType) {
 		
 		if(fieldType == MapFieldType.GRASS) {
@@ -138,11 +143,6 @@ public class NetworkConverter {
 		Coordinates pos = new Coordinates(fullMapNode.getX(), fullMapNode.getY());
 		toReturn.setPosition(pos);
 		toReturn.setTreasureState(convertTreasureStateFrom(fullMapNode.getTreasureState()));
-		if(fullMapNode.getTerrain() == ETerrain.Grass || fullMapNode.getTerrain() == ETerrain.Water) {
-			toReturn.setMoves(1);	
-		} else {
-			toReturn.setMoves(2);	
-		}
 		toReturn.setShortestPath(new ArrayList<Coordinates>());
 		
 		return toReturn;
@@ -185,18 +185,31 @@ public class NetworkConverter {
 		state.setGameStateId(gameState.getGameStateId());
 		Iterator<PlayerState> it = gameState.getPlayers().iterator();
 		
+		//state.setPlayerPosition(state.getMyCurrentPosition());
+		//state.setPlayerPosition(gameState.getMap().);
 		if(it.hasNext()) {
 			PlayerState element = it.next();
 			state.setPlayerState(convertPlayerStateFrom(element.getState()));
 			state.setPlayerId(element.getUniquePlayerID());
 			
+			
+			
 		}
 		if(gameState.getMap().isPresent()) {
 			state.setFullMap(convertFullMapFrom(gameState.getMap().get()));	
+			for( Map.Entry<Coordinates, MapField> mapEntry : state.getFullMap().getFields().entrySet() ) {
+				if (mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.MYPLAYER || mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.BOTH) {
+					//logger.info("myplayer or both players");
+					state.setPlayerPosition(mapEntry.getKey());
+					//System.out.println("acum suntem aici : in converter" + state.getPlayerPosition().getX() + state.getPlayerPosition().getY());
+					
+				}
+			}
 		} else {
 			System.out.println("Full Map not available");
 		}
 		
+		//TODO
 		state.setHasCollectedTreasure(false);
 	
 		return state;
@@ -208,7 +221,7 @@ public class NetworkConverter {
 		ETerrain terrain = convertTerrainTypeTo(mapField.getType());
 		boolean fortState = false;
 		
-		if(mapField.getFortState() == FortState.ENEMYFORT || mapField.getFortState() == FortState.MYFORT) {
+		if(mapField.getFortState() == FortState.MYFORT) {
 			fortState = true;
 		}
 		

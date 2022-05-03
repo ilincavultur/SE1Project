@@ -1,5 +1,8 @@
 package client.network;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -28,7 +31,7 @@ public class Network {
 	
 	private String playerID;
 
-	
+	private Instant gameDataRequestTimestamp;
 	
 	public String getServerBaseUrl() {
 		return serverBaseUrl;
@@ -74,6 +77,14 @@ public class Network {
 				.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_VALUE).build();
 		this.gameID = gameID;
 	}
+	
+	boolean canMakeNewRequest() {
+		if (gameDataRequestTimestamp == null) {
+			return true;
+		}
+		Duration dur = Duration.between(gameDataRequestTimestamp, Instant.now());
+		return dur.getSeconds() > 0.4;
+	}
 
 	public void registerPlayer(PlayerRegistration playerReg) {
 		
@@ -105,6 +116,12 @@ public class Network {
 	
 		
 		//System.out.println(gameId);
+			while (!canMakeNewRequest()) {
+				//wait
+			}
+			gameDataRequestTimestamp = Instant.now();
+		
+			
 
 			Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.GET)
 					.uri("/" + gameId + "/states/" + playerId).retrieve().bodyToMono(ResponseEnvelope.class); // specify the

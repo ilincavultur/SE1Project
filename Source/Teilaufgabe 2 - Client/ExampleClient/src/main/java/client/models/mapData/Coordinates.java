@@ -105,19 +105,31 @@ public class Coordinates {
 		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();
 		
 		if (myMap.getFields().containsKey(this.getUpNeighbour())) {
-			toReturn.put("up", this.getUpNeighbour());
+			if (myMap.getFields().get(this.getUpNeighbour()).getType() != MapFieldType.WATER) {
+				toReturn.put("up", this.getUpNeighbour());	
+			}
+			
 		}
 		
 		if (myMap.getFields().containsKey(this.getDownNeighbour())) {
-			toReturn.put("down", this.getDownNeighbour());
+			if (myMap.getFields().get(this.getDownNeighbour()).getType() != MapFieldType.WATER) {
+				toReturn.put("down", this.getDownNeighbour());	
+			}
+			
 		}
 		
 		if (myMap.getFields().containsKey(this.getLeftNeighbour())) {
-			toReturn.put("left", this.getLeftNeighbour());
+			if (myMap.getFields().get(this.getLeftNeighbour()).getType() != MapFieldType.WATER) {
+				toReturn.put("left", this.getLeftNeighbour());		
+			}
+		
 		}
 		
 		if (myMap.getFields().containsKey(this.getRightNeighbour())) {
-			toReturn.put("right", this.getRightNeighbour());
+			if (myMap.getFields().get(this.getRightNeighbour()).getType() != MapFieldType.WATER) {
+				toReturn.put("right", this.getRightNeighbour());	
+			}
+			
 		}
 		
 		
