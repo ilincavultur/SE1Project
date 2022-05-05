@@ -191,10 +191,16 @@ public class NetworkConverter {
 			PlayerState element = it.next();
 			state.setPlayerState(convertPlayerStateFrom(element.getState()));
 			state.setPlayerId(element.getUniquePlayerID());
-			
+			if(element.hasCollectedTreasure()) {
+				//TODO
+				state.setHasCollectedTreasure(true);
+			}
+		
 			
 			
 		}
+		
+		
 		if(gameState.getMap().isPresent()) {
 			state.setFullMap(convertFullMapFrom(gameState.getMap().get()));	
 			for( Map.Entry<Coordinates, MapField> mapEntry : state.getFullMap().getFields().entrySet() ) {
@@ -204,13 +210,20 @@ public class NetworkConverter {
 					//System.out.println("acum suntem aici : in converter" + state.getPlayerPosition().getX() + state.getPlayerPosition().getY());
 					
 				}
+				if(mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
+					
+					state.setTreasureIsPresentAt(mapEntry.getKey());
+				}
+				if (mapEntry.getValue().getFortState() == FortState.ENEMYFORT) {
+					
+					state.setEnemyFortIsPresentAt(mapEntry.getKey());
+				}
 			}
 		} else {
 			System.out.println("Full Map not available");
 		}
 		
-		//TODO
-		state.setHasCollectedTreasure(false);
+		
 	
 		return state;
 		

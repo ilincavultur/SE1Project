@@ -6,20 +6,24 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import client.models.gameData.GameStateData;
 import client.models.mapData.ClientMap;
 import client.models.mapData.Coordinates;
 import client.models.mapData.MapField;
 import client.movement.MoveValidator;
 import client.movement.PathCalculator;
+import client.movement.TargetSelector;
 import client.movement.enums.MoveCommand;
 
 public class MovementController {
 	
 	private PathCalculator pathCalc;
+	private TargetSelector targetSelector;
 	//private MapField currentField;
 	private Coordinates currentField;
 	private ClientMap fullMap;
 	List<MoveCommand> movesList;
+	GameStateData gameState;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
 
@@ -28,6 +32,7 @@ public class MovementController {
 	public MovementController() {
 		super();
 		this.pathCalc = new PathCalculator(fullMap);
+		this.targetSelector = new TargetSelector(gameState);
 	}
 
 
@@ -37,6 +42,7 @@ public class MovementController {
 		this.pathCalc = pathCalc;
 		this.currentField = currentField;
 		this.fullMap = fullMap;
+		
 	}
 
 
@@ -49,6 +55,32 @@ public class MovementController {
 
 	public void setPathCalc(PathCalculator pathCalc) {
 		this.pathCalc = pathCalc;
+	}
+
+	
+	
+
+
+	public GameStateData getGameState() {
+		return gameState;
+	}
+
+
+
+	public void setGameState(GameStateData gameState) {
+		this.gameState = gameState;
+	}
+
+
+
+	public TargetSelector getTargetSelector() {
+		return targetSelector;
+	}
+
+
+
+	public void setTargetSelector(TargetSelector targetSelector) {
+		this.targetSelector = targetSelector;
 	}
 
 
@@ -102,8 +134,46 @@ public class MovementController {
 		this.pathCalc = pathCalc;
 	}
 	
+	public void setUp() {
+		this.targetSelector.setMyMap(fullMap);
+		this.targetSelector.setHalves();
+		this.targetSelector.setGameState(gameState);
+		logger.info("setup");
+	}
+	
+	public void updatePath() {
+		logger.info("updatepath");
+		// if i haven't gotten any path yet 
+		if (this.movesList == null) {
+			calcMovesToGoal();
+		}
+				
+		// if treasure is present and I havent picked it up yet
+		if (gameState.getTreasureIsPresentAt() != null && !gameState.getHasCollectedTreasure()) {
+			calcMovesToGoal();
+		}
+		
+		// if enemyFort is present and I have the treasure
+		if (gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure()) {
+			calcMovesToGoal();
+		}
+		
+		// if i reached the previous goal
+		// aici fii atenta ca la pathcalculator nu cred ca e inclus targetul..
+		if (this.movesList.isEmpty()) {
+			calcMovesToGoal();
+		}
+		
+		
+	}
+	
 	public void calcMovesToGoal() {
-		Coordinates targetPosition = new Coordinates(fullMap.getxSize()-1,fullMap.getySize()-1);
+		//Coordinates targetPosition = new Coordinates(fullMap.getxSize()-1,fullMap.getySize()-1);
+		//MapField targetField = fullMap.getFields().get(targetPosition);
+		
+		this.targetSelector.setGameState(gameState);
+		
+		Coordinates targetPosition = this.targetSelector.nextTarget();
 		MapField targetField = fullMap.getFields().get(targetPosition);
 		
 		System.out.println("current field" + currentField.getX() + currentField.getY());
@@ -121,9 +191,12 @@ public class MovementController {
 
 	public MoveCommand getNextMove() {
 		//System.out.println("acum suntem aici : " + this.getCurrentField().getPosition().getX() + " " + this.getCurrentField().getPosition().getY());
+		
+		
+	
 
 		MoveCommand toRet = MoveCommand.DOWN;
-		if (this.movesList.size()!=0) {
+		if (this.movesList != null && this.movesList.size()!=0) {
 			
 			
 			toRet = pathCalc.getNextMove(this.movesList);	
@@ -133,7 +206,7 @@ public class MovementController {
 			System.out.println("move: " + toRet.toString());
 			this.movesList.remove(0);
 			return toRet;
-		}
+		} // else updatepath? or update path before
 
 		
 		return null;

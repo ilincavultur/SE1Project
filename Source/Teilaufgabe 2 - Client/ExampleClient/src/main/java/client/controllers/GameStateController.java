@@ -42,8 +42,9 @@ public class GameStateController {
 			this.moveController.setCurrentField(newGSD.getPlayerPosition());
 			this.moveController.getPathCalc().setMyMap(newGSD.getFullMap());
 		}
+		this.moveController.setGameState(newGSD);
 		
-		
+		logger.info("updategamestatedata");
 		
 		//this.gameStateData = gStateData;
 
@@ -62,8 +63,10 @@ public class GameStateController {
 		
 		receiveFullMap();
 		
+		
+		//moveController.setUp();
 		//test
-		moveController.calcMovesToGoal();
+		//moveController.calcMovesToGoal();
 		
 		/*for (int i=0; i<moveController.getMovesList().size(); i++) {
 			System.out.println("AICIIIII S PATH");
@@ -79,6 +82,8 @@ public class GameStateController {
 			System.out.println("acum suntem aici : " + this.gameStateData.getMyCurrentPosition(this.gameStateData.getFullMap()).getPosition().getX() + " " + this.gameStateData.getMyCurrentPosition(this.gameStateData.getFullMap()).getPosition().getY());
 		}
 		
+		ClientPlayerState sst = this.gameStateData.getPlayerState();
+		logger.info("you" + sst.toString());
 		//System.out.println("acum suntem aici : " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
 		//networkController.getGameState(networkController.getGameId(), pl1).getPlayerPosition()
 		/*if(gameStateData.getPlayerPosition() == null) {
@@ -146,6 +151,8 @@ public class GameStateController {
 		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON) {
 			while(!networkController.checkIfMyTurn(pl1)) {
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+				// update path
+				moveController.updatePath();
 		
 			}
 			
@@ -156,6 +163,15 @@ public class GameStateController {
 				networkController.sendMove(pl1, newMove);	
 				
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+				// update path
+				moveController.updatePath();
+				
+				if (this.gameStateData.getHasCollectedTreasure() !=null) {
+					//boolean letsee = this.gameStateData.getHasCollectedTreasure();	
+					logger.info("ailuat treasureu");
+				}
+				
+				
 				
 				System.out.println("acum suntem aici in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
 

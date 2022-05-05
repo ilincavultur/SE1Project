@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
 
 public class ClientMap {
@@ -98,6 +99,18 @@ public class ClientMap {
 		
 		return fieldsGrassMountain;
 		
+	}
+	
+	public Coordinates getMyFortField() {
+		Coordinates toReturn = new Coordinates();
+
+		for( Map.Entry<Coordinates, MapField> mapEntry : fields.entrySet() ) {
+			if (mapEntry.getValue().getFortState() == FortState.MYFORT) {
+				toReturn.setX(mapEntry.getKey().getX());
+				toReturn.setY(mapEntry.getKey().getY());
+			}
+		}
+		return toReturn;
 	}
 	
 	/*private Map<Coordinates, MapField> mapWithoutWaters () {

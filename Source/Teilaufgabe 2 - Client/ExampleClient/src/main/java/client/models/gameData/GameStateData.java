@@ -22,6 +22,8 @@ public class GameStateData {
 	private String gameStateId;
 	private ClientPlayerState playerState;
 	private Boolean hasCollectedTreasure;
+	private Coordinates treasureIsPresentAt;
+	private Coordinates enemyFortIsPresentAt;
 	private Coordinates playerPosition;
 	private ClientMap fullMap;
 	private final PropertyChangeSupport notifyChanges = new PropertyChangeSupport(this);
@@ -40,6 +42,8 @@ public class GameStateData {
 	public GameStateData(GameStateData obj) {
 		this.gameStateId = obj.getGameStateId();
 		this.hasCollectedTreasure = obj.hasCollectedTreasure;
+		this.treasureIsPresentAt = obj.treasureIsPresentAt;
+		this.enemyFortIsPresentAt = obj.enemyFortIsPresentAt;
 		this.playerState = obj.playerState;
 		this.playerId = obj.playerId;
 		if(obj.fullMap != null) {
@@ -96,6 +100,17 @@ public class GameStateData {
 		return hasCollectedTreasure;
 	}
 
+	
+
+
+	public Coordinates getTreasureIsPresentAt() {
+		return treasureIsPresentAt;
+	}
+
+
+	public void setTreasureIsPresentAt(Coordinates treasureIsPresentAt) {
+		this.treasureIsPresentAt = treasureIsPresentAt;
+	}
 
 
 	public void setHasCollectedTreasure(Boolean hasCollectedTreasure) {
@@ -104,6 +119,16 @@ public class GameStateData {
 
 	
 	
+
+	public Coordinates getEnemyFortIsPresentAt() {
+		return enemyFortIsPresentAt;
+	}
+
+
+	public void setEnemyFortIsPresentAt(Coordinates enemyFortIsPresentAt) {
+		this.enemyFortIsPresentAt = enemyFortIsPresentAt;
+	}
+
 
 	public Coordinates getPlayerPosition() {
 		return playerPosition;
