@@ -44,6 +44,7 @@ public class GameStateController {
 		}
 		this.moveController.setGameState(newGSD);
 		
+		
 		logger.info("updategamestatedata");
 		
 		//this.gameStateData = gStateData;
@@ -64,7 +65,8 @@ public class GameStateController {
 		receiveFullMap();
 		
 		
-		//moveController.setUp();
+		moveController.setUp();
+		moveController.updatePath();
 		//test
 		//moveController.calcMovesToGoal();
 		
@@ -176,9 +178,9 @@ public class GameStateController {
 				System.out.println("acum suntem aici in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
 
 				++moves;
-			} else {
-				return;
-			}
+			} //else {
+				//return;
+//			}
 			//ui.printMap(moveController.getFullMap());
 
 			

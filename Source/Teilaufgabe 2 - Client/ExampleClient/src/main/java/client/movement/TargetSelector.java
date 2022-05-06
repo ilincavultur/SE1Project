@@ -142,13 +142,18 @@ public class TargetSelector {
 	
 	public Coordinates nextTarget() {
 		Coordinates toRet = new Coordinates();
-		
+		System.out.println("acum suntem aici in target selector: " + this.gameState.getMyCurrentPosition(this.gameState.getFullMap()).getPosition().getX() + " " + this.gameState.getMyCurrentPosition(this.gameState.getFullMap()).getPosition().getY());
 		boolean foundTreasure = (gameState.getTreasureIsPresentAt() != null);
 		boolean foundEnemyFort = (gameState.getEnemyFortIsPresentAt() != null);
 		boolean searchingForTreasure = (gameState.getTreasureIsPresentAt() == null);
 		boolean searchingForEnemyFort = (gameState.getEnemyFortIsPresentAt() == null);
+		System.out.println("foundTreasure" + foundTreasure);
+		System.out.println("foundEnemyFort" + foundEnemyFort);
+		System.out.println("searchingForTreasure" + searchingForTreasure);
+		System.out.println("searchingForEnemyFort" + searchingForEnemyFort);
 		
 		if (myMap.getFields().get(gameState.getPlayerPosition()).getType() == MapFieldType.MOUNTAIN) {
+			logger.info("sunt pe munte");
 			Map<String, Coordinates> fieldsAround = gameState.getPlayerPosition().getFieldsAround(myMap);
 			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 				
@@ -162,28 +167,36 @@ public class TargetSelector {
 		
 		// searching for treasure
 		if (!foundTreasure && !searchingForEnemyFort && searchingForTreasure) {
+			logger.info("caut comoara");
 			//TODO
 			toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), myHalf);
+			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 			
 		}
 		
 		// treasure has been picked up => searching for enemyFort
 		if (foundTreasure && searchingForEnemyFort) {
+			logger.info("caut enemyFort");
 			//TODO
 			toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), enemyHalf);
+			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 		}
 		
 		// treasure is Present => go to treasure (foundTreasure)
 		if (foundTreasure) {
+			logger.info("am gasit comoara si merg catre ea");
 			toRet = gameState.getTreasureIsPresentAt();	
+			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 		}
 		
 		
 		// enemyFort is Present => go to enemyFort (foundEnemyFort)
 		if (foundEnemyFort) {
+			logger.info("am gasit enemyFort si merg catre el");
 			toRet = gameState.getEnemyFortIsPresentAt();
+			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 		}
-		
+		System.out.println("toRet ALES: " + toRet.getX() + " " + toRet.getY());
 		return toRet;
 	}
 	

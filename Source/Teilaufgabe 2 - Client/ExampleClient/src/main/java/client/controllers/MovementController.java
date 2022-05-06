@@ -24,6 +24,8 @@ public class MovementController {
 	private ClientMap fullMap;
 	List<MoveCommand> movesList;
 	GameStateData gameState;
+	boolean goPickUpTreasure = false;
+	boolean goBribeFort = false;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
 
@@ -69,6 +71,7 @@ public class MovementController {
 
 	public void setGameState(GameStateData gameState) {
 		this.gameState = gameState;
+		this.targetSelector.setGameState(gameState);
 	}
 
 
@@ -143,24 +146,33 @@ public class MovementController {
 	
 	public void updatePath() {
 		logger.info("updatepath");
+		this.targetSelector.setGameState(gameState);
 		// if i haven't gotten any path yet 
 		if (this.movesList == null) {
+			logger.info("updatepath: moves list == null");
 			calcMovesToGoal();
+			
 		}
 				
 		// if treasure is present and I havent picked it up yet
-		if (gameState.getTreasureIsPresentAt() != null && !gameState.getHasCollectedTreasure()) {
+		if (goPickUpTreasure == false && gameState.getTreasureIsPresentAt() != null && !gameState.getHasCollectedTreasure() && gameState.getHasCollectedTreasure() != null ) {
+			logger.info("treasure is present and I havent picked it up yet");
+			goPickUpTreasure = true;
 			calcMovesToGoal();
+			
 		}
 		
 		// if enemyFort is present and I have the treasure
-		if (gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure()) {
+		if (goBribeFort == false && gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure()) {
+			logger.info("enemyFort is present and I have the treasure");
+			goBribeFort = true;
 			calcMovesToGoal();
 		}
 		
 		// if i reached the previous goal
 		// aici fii atenta ca la pathcalculator nu cred ca e inclus targetul..
 		if (this.movesList.isEmpty()) {
+			logger.info("i reached prev goal");
 			calcMovesToGoal();
 		}
 		
@@ -174,10 +186,11 @@ public class MovementController {
 		this.targetSelector.setGameState(gameState);
 		
 		Coordinates targetPosition = this.targetSelector.nextTarget();
+		System.out.println("target field" + targetPosition.getX() + targetPosition.getY());
 		MapField targetField = fullMap.getFields().get(targetPosition);
 		
-		System.out.println("current field" + currentField.getX() + currentField.getY());
-		System.out.println("target field" + targetField.getPosition().getX() + targetField.getPosition().getY());
+		//System.out.println("current field" + currentField.getX() + currentField.getY());
+		//System.out.println("target field" + targetField.getPosition().getX() + targetField.getPosition().getY());
 		
 		pathCalc.getShortestPath(currentField, targetField);
 		this.setMovesList(pathCalc.getMovesPath(targetField));

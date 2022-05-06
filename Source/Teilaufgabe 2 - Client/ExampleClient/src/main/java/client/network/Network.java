@@ -72,7 +72,7 @@ public class Network {
 		// individual endpoint
 		// TIP: create it once in the CTOR of your network class and subsequently use it
 		// in each communication method
-		this.baseWebClient = WebClient.builder().baseUrl(serverBaseURL + "/games" + "?enableDummyCompetition=true")
+		this.baseWebClient = WebClient.builder().baseUrl(serverBaseURL + "/games")
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE) 																	
 				.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_VALUE).build();
 		this.gameID = gameID;
