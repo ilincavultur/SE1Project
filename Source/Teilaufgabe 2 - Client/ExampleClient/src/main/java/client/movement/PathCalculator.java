@@ -1,7 +1,6 @@
 package client.movement;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +19,10 @@ public class PathCalculator {
 	
 	private ClientMap myMap;
 	Coordinates startPos;
-	/*Map<Coordinates, Integer> costs = new HashMap<Coordinates, Integer>();
-	List<Coordinates> visitedFields = new ArrayList<Coordinates>();
-	// the value is the current Node, the key is the previous node
-	Map<Coordinates, Coordinates> previousNode = new HashMap<Coordinates, Coordinates>();
-	Map<Coordinates, MapField> unvisitedFields = new HashMap<Coordinates, MapField>();*/
-	
 	Map<Coordinates, Integer> costs = new HashMap<Coordinates, Integer>();
-	// the value is the current Node, the key is the previous node
 	List<Coordinates> settledNodes = new ArrayList<Coordinates>();
 	List<Coordinates> unsettledNodes = new ArrayList<Coordinates>();
+	//the value is the current Node, the key is the previous node
 	Map<Coordinates, Coordinates> previousNode = new HashMap<Coordinates, Coordinates>();
 	private static final Logger logger = LoggerFactory.getLogger(PathCalculator.class);
 	
@@ -66,8 +59,6 @@ public class PathCalculator {
 		
 	}
 	
-	
-	
 	public Map<Coordinates, Integer> getCosts() {
 		return costs;
 	}
@@ -98,10 +89,10 @@ public class PathCalculator {
 		
 		Map<Coordinates, MapField> visitableFields = myMap.getVisitableNodes();
 		this.previousNode = new HashMap<Coordinates, Coordinates>();
+		
 		// initialise costs
 		for( Map.Entry<Coordinates, MapField> mapEntry : visitableFields.entrySet() ) {
 			costs.put(mapEntry.getKey(), 99999999);	
-			//previousNode.put(mapEntry.getKey(), null);
 		}
 		costs.put(startingField, 0);
 		unsettledNodes.add(startingField);
@@ -117,29 +108,20 @@ public class PathCalculator {
 					
 					calcMinDistance(currPos, mapEntry);	
 					
-					
 					unsettledNodes.add(mapEntry.getValue());
-
-					
-					
 				}
 			}
 			settledNodes.add(currPos);
 			
 			if(currPos.equals(targetField.getPosition())) {
+				//TODO
 				//targetField.getShortestPath().add(currPos);
 				logger.info("am ajuns la target");
 				break;
 			}
 		}
 		
-		/*for( Map.Entry<Coordinates, Integer> mapEntry : costs.entrySet() ) {
-			System.out.print(mapEntry.getKey().getX() + " ");
-			System.out.print(mapEntry.getKey().getY() + " ");
-			System.out.print(mapEntry.getValue());
-			System.out.println();
-		}*/
-		
+		//------------------------- test print
 		logger.info("pathulllll");
 		for (int i=0; i<settledNodes.size(); i++) {
 			if(myMap.getFields().get(settledNodes.get(i)).getPosition().equals(targetField.getPosition())) {
@@ -163,6 +145,7 @@ public class PathCalculator {
 			System.out.print(mapEntry.getValue().getY() + " ");
 			System.out.println();
 		}
+		//------------------------- test print
 		
 	}
 	
@@ -171,19 +154,15 @@ public class PathCalculator {
 		List<MoveCommand> toReturn = new ArrayList<MoveCommand>();
 		List<Coordinates> sPath = field.getShortestPath();
 		
-		/*for (int i=0; i<sPath.size(); i++) {
-			System.out.println("AICIIIII S PATH");
-			System.out.println (sPath.get(i).getX() + " " + sPath.get(i).getY());
-	
-		}*/
 		Coordinates stPos = this.startPos;
 		for (int i=0; i<sPath.size(); i++) {
+			
 			//asta nuj daca ii bine
-			//System.out.println (sPath.get(i).getX() + " " + sPath.get(i).getY());
+			
 			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getUpNeighbour()) ) {
-				//int movesNo = myMap.getFields().get(stPos).getMoves() + myMap.getFields().get(stPos.getUpNeighbour()).getMoves();
+			
 				int movesNo = this.getPathWeight(stPos,stPos.getUpNeighbour());
-				//System.out.println(movesNo);
+				
 				stPos = myMap.getFields().get(sPath.get(i)).getPosition();
 				for (int j = 0; j < movesNo; j++) {
 					toReturn.add(MoveCommand.UP);
@@ -191,9 +170,9 @@ public class PathCalculator {
 				
 			}
 			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getDownNeighbour()) ) {
-				//int movesNo = myMap.getFields().get(stPos).getMoves() + myMap.getFields().get(stPos.getDownNeighbour()).getMoves();
+			
 				int movesNo = this.getPathWeight(stPos,stPos.getDownNeighbour());
-				//System.out.println(movesNo);
+				
 				stPos = myMap.getFields().get(sPath.get(i)).getPosition();
 				for (int j = 0; j < movesNo; j++) {
 					toReturn.add(MoveCommand.DOWN);
@@ -201,9 +180,9 @@ public class PathCalculator {
 				
 			}
 			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getLeftNeighbour()) ) {
-				//int movesNo = myMap.getFields().get(stPos).getMoves() + myMap.getFields().get(stPos.getLeftNeighbour()).getMoves();
+				
 				int movesNo = this.getPathWeight(stPos,stPos.getLeftNeighbour());
-				//System.out.println(movesNo);
+				
 				stPos = myMap.getFields().get(sPath.get(i)).getPosition();
 				for (int j = 0; j < movesNo; j++) {
 					toReturn.add(MoveCommand.LEFT);
@@ -211,9 +190,9 @@ public class PathCalculator {
 				
 			}
 			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getRightNeighbour())) {
-				//int movesNo = myMap.getFields().get(stPos).getMoves() + myMap.getFields().get(stPos.getRightNeighbour()).getMoves();
+			
 				int movesNo = this.getPathWeight(stPos,stPos.getRightNeighbour());
-				//System.out.println(movesNo);
+				
 				stPos = myMap.getFields().get(sPath.get(i)).getPosition();
 				for (int j = 0; j < movesNo; j++) {
 					toReturn.add(MoveCommand.RIGHT);
@@ -224,11 +203,7 @@ public class PathCalculator {
 			
 
 		}
-		/*for (int i=0; i<toReturn.size(); i++) {
-			System.out.println("AICIIIII");
-			System.out.println (toReturn.get(i).toString());
 	
-		}*/
 		return toReturn;
 	}
 	
@@ -238,7 +213,7 @@ public class PathCalculator {
 	
 	//https://www.baeldung.com/java-dijkstra
 	public void calcMinDistance(Coordinates startingPos, Entry<String, Coordinates> mapEntry) {
-		//System.out.println("CAUTA AICI" + startingPos.getX() + " " + startingPos.getY());
+		
 		int sourceDist = costs.get(startingPos);
 		int weight = 0;
 		
@@ -267,7 +242,6 @@ public class PathCalculator {
 			if(!startingPos.equals(this.startPos)) {
 				path.add(startingPos);
 			}
-			//path.add(startingPos);
 			previousNode.put(mapEntry.getValue(), startingPos);
 			myMap.getFields().get(mapEntry.getValue()).setShortestPath(path);
 			
@@ -276,6 +250,7 @@ public class PathCalculator {
 	
 	//https://www.baeldung.com/java-dijkstra
 	public Coordinates getLowestDistanceNode(List<Coordinates> nodes) {
+		
 		int min = 9999;
 		Coordinates toReturn = new Coordinates();
 		for (Coordinates coords : nodes) {
@@ -287,72 +262,5 @@ public class PathCalculator {
 		return toReturn;
 	}
 	
-	
-	/*
-	public void updateCosts(Coordinates startingPos, Map<String, Coordinates> neighbours) {
-		int weight = 0;
-		for( Map.Entry<String, Coordinates> mapEntry : neighbours.entrySet() ) {
-			if(mapEntry.getKey() == "up") {
-				weight = getPathWeight(startingPos, neighbours.get("up"));
-				//System.out.println(mapEntry.getValue().getX() + " " + mapEntry.getValue().getY() + " weight" + weight);
-				if (weight + costs.get(startingPos) < costs.get(neighbours.get("up"))) {
-					costs.put(neighbours.get("up"), weight + costs.get(startingPos));
-					//previousNode.put(startingPos, neighbours.get("up"));
-				}
-			}
-			
-			if(mapEntry.getKey() == "down") {
-				weight = getPathWeight(startingPos, neighbours.get("down"));
-				System.out.println(mapEntry.getValue().getX() + " " + mapEntry.getValue().getY() + " weight" + weight);
-				if (weight + costs.get(startingPos) < costs.get(neighbours.get("down"))) {
-					costs.put(neighbours.get("down"), weight + costs.get(startingPos));
-					//previousNode.put(startingPos, neighbours.get("down"));
-				}	
-			}
-			
-			if(mapEntry.getKey() == "left") {
-				weight = getPathWeight(startingPos, neighbours.get("left"));
-				System.out.println(mapEntry.getValue().getX() + " " + mapEntry.getValue().getY() + " weight" + weight);
-				if (weight + costs.get(startingPos) < costs.get(neighbours.get("left"))) {
-					costs.put(neighbours.get("left"), weight + costs.get(startingPos));
-					//previousNode.put(startingPos, neighbours.get("left"));
-				}
-			}
-			
-			if(mapEntry.getKey() == "right") {
-				weight = getPathWeight(startingPos, neighbours.get("right"));
-				System.out.println(mapEntry.getValue().getX() + " " + mapEntry.getValue().getY() + " weight" + weight);
-				if (weight + costs.get(startingPos) < costs.get(neighbours.get("right"))) {
-					costs.put(neighbours.get("right"), weight + costs.get(startingPos));
-					//previousNode.put(startingPos, neighbours.get("right"));
-				}
-			}
-		}
-	}
-		*/
-	/*private Coordinates getNextPos(Coordinates currPos, Map<String, Coordinates> neighbours, Map<Coordinates, MapField> unvisited) {
-		//List<Integer> values = new ArrayList<Integer>();
-		
-		int min = 99999;
-		
-	
-		
-		for( Map.Entry<String, Coordinates> mapEntry : neighbours.entrySet() ) {
-			if (costs.get(mapEntry.getValue()) < min && unvisited.containsKey(mapEntry.getValue())) {
-				min = costs.get(mapEntry.getValue());
-				//System.out.println("min " + min); 
-			}
-			//values.add(costs.get(mapEntry.getValue()));
-		}
-		
-		// get next minimum weight and also unvisited node
-		for( Map.Entry<String, Coordinates> mapEntry : neighbours.entrySet() ) {
-			if(costs.get(mapEntry.getValue()) == min && unvisited.containsKey(mapEntry.getValue())) {
-				return mapEntry.getValue();
-			}
-		}
-				
-		return null;
-	}*/
 }
 

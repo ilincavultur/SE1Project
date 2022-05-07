@@ -13,8 +13,6 @@ public class ClientMap {
 	
 	private Map<Coordinates, MapField> fields;
 	
-	private String gameID;
-	
 	private int xSize;
 
 	private int ySize;
@@ -53,10 +51,9 @@ public class ClientMap {
 		this.ySize = myMap.ySize;
 	}
 
-	public ClientMap(Map<Coordinates, MapField> fields, String gameID, int xSize, int ySize) {
+	public ClientMap(Map<Coordinates, MapField> fields, int xSize, int ySize) {
 		super();
 		this.fields = fields;
-		this.gameID = gameID;
 		this.xSize = xSize;
 		this.ySize = ySize;
 	}
@@ -112,21 +109,5 @@ public class ClientMap {
 		}
 		return toReturn;
 	}
-	
-	/*private Map<Coordinates, MapField> mapWithoutWaters () {
-		
-		Map<Coordinates, MapField> toReturn = new HashMap<Coordinates, MapField>();
-		
-		for( Map.Entry<Coordinates, MapField> mapEntry : fields.entrySet() ) {
-			
-			if (mapEntry.getValue().getType() != MapFieldType.WATER) {
-				toReturn.put(mapEntry.getKey(), mapEntry.getValue());
-			}
-		}
-		
-		return toReturn;
-		
-	}
-	*/
 	
 }

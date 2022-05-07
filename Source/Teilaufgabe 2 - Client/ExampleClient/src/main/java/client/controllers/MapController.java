@@ -1,8 +1,6 @@
 package client.controllers;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import client.models.mapData.ClientMap;
 import client.models.mapData.ClientMapGenerator;
@@ -10,9 +8,6 @@ import client.models.mapData.Coordinates;
 import client.models.mapData.MapField;
 import client.models.mapData.MapValidator;
 import client.models.mapData.enums.FortState;
-import client.models.mapData.enums.MapFieldType;
-import client.models.mapData.enums.PlayerPositionState;
-import client.models.mapData.enums.TreasureState;
 
 public class MapController {
 	
@@ -64,7 +59,6 @@ public class MapController {
 	public void setMyMap(ClientMap myMap) {
 		this.myMap = myMap;
 	}
-	
 	
 	public MapField getField(Coordinates pos) {
 

@@ -12,9 +12,7 @@ import client.models.gameData.enums.ClientPlayerState;
 import client.models.mapData.ClientMap;
 import client.models.mapData.Coordinates;
 import client.models.mapData.MapField;
-import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.PlayerPositionState;
-import client.movement.PathCalculator;
 
 public class GameStateData {
 	
@@ -29,12 +27,6 @@ public class GameStateData {
 	private final PropertyChangeSupport notifyChanges = new PropertyChangeSupport(this);
 	private static final Logger logger = LoggerFactory.getLogger(GameStateData.class);
 
-	
-	public void registerInterestedView(PropertyChangeListener listener) {
-		notifyChanges.addPropertyChangeListener(listener);
-	}
-	
-	
 	public GameStateData() {
 		super();
 	}
@@ -51,11 +43,11 @@ public class GameStateData {
 			this.playerPosition = obj.getPlayerPosition();
 		}
 		
-	
 	}
 
-
-
+	public void registerInterestedView(PropertyChangeListener listener) {
+		notifyChanges.addPropertyChangeListener(listener);
+	}
 
 	public String getPlayerId() {
 		return playerId;
@@ -67,41 +59,26 @@ public class GameStateData {
 		this.playerId = playerId;
 	}
 
-
-
 	public String getGameStateId() {
 		return gameStateId;
 	}
 
-
-
 	public void setGameStateId(String gameStateId) {
-		// String oldGameStateId = this.gameStateId;
 		this.gameStateId = gameStateId;
 		
-		//notifyChanges.firePropertyChange("", oldGameStateId, gameStateid);
 	}
-
-
 
 	public ClientPlayerState getPlayerState() {
 		return playerState;
 	}
 
-
-
 	public void setPlayerState(ClientPlayerState playerState) {
 		this.playerState = playerState;
 	}
 
-
-
 	public Boolean getHasCollectedTreasure() {
 		return hasCollectedTreasure;
 	}
-
-	
-
 
 	public Coordinates getTreasureIsPresentAt() {
 		return treasureIsPresentAt;
@@ -116,9 +93,6 @@ public class GameStateData {
 	public void setHasCollectedTreasure(Boolean hasCollectedTreasure) {
 		this.hasCollectedTreasure = hasCollectedTreasure;
 	}
-
-	
-	
 
 	public Coordinates getEnemyFortIsPresentAt() {
 		return enemyFortIsPresentAt;
@@ -145,7 +119,10 @@ public class GameStateData {
 	}
 
 	public void setFullMap(ClientMap fullMap) {
+		ClientMap before = this.fullMap;
 		this.fullMap = fullMap;
+		notifyChanges.firePropertyChange("myMap", before, fullMap);
+		
 	}
 	
 	public MapField getMyCurrentPosition(ClientMap myMap) {
@@ -155,7 +132,7 @@ public class GameStateData {
 			for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
 				
 				if (mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.MYPLAYER || mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.BOTH) {
-					//logger.info("gettiing my current position");
+					
 					this.setPlayerPosition(mapEntry.getKey());
 					return mapEntry.getValue();
 				}

@@ -93,6 +93,7 @@ public class NetworkConverter {
 	}
 	
 	public PlayerPositionState convertPlayerPositionStateFrom(EPlayerPositionState plPosState) {
+		
 		if(plPosState == EPlayerPositionState.NoPlayerPresent) {
 			return PlayerPositionState.NOPLAYER;
 		}
@@ -109,6 +110,7 @@ public class NetworkConverter {
 	}
 	
 	public FortState convertFortStateFrom(EFortState fortState) {
+		
 		if(fortState == EFortState.EnemyFortPresent) {
 			return FortState.ENEMYFORT;
 		}
@@ -124,6 +126,7 @@ public class NetworkConverter {
 	}
 	
 	public TreasureState convertTreasureStateFrom(ETreasureState treasureState) {
+		
 		if(treasureState == ETreasureState.MyTreasureIsPresent) {
 			return TreasureState.MYTREASURE;
 		}
@@ -168,7 +171,6 @@ public class NetworkConverter {
 				maxY = field.getPosition().getY();
 			}
 			newMp.put(field.getPosition(), field);
-			//toReturn.getFields().put(field.getPosition(), field);
 		}
 		toReturn.setFields(newMp);
 		toReturn.setxSize(maxX + 1);
@@ -179,14 +181,12 @@ public class NetworkConverter {
 	}
 	
 	public GameStateData convertGameStateFrom(GameState gameState) {
-		//get map
+		
 		GameStateData state = new GameStateData();
 		
 		state.setGameStateId(gameState.getGameStateId());
 		Iterator<PlayerState> it = gameState.getPlayers().iterator();
-		
-		//state.setPlayerPosition(state.getMyCurrentPosition());
-		//state.setPlayerPosition(gameState.getMap().);
+
 		if(it.hasNext()) {
 			PlayerState element = it.next();
 			state.setPlayerState(convertPlayerStateFrom(element.getState()));
@@ -195,36 +195,35 @@ public class NetworkConverter {
 				//TODO
 				state.setHasCollectedTreasure(true);
 			}
-		
-			
-			
 		}
 		
-		
 		if(gameState.getMap().isPresent()) {
+			
 			state.setFullMap(convertFullMapFrom(gameState.getMap().get()));	
+			
 			for( Map.Entry<Coordinates, MapField> mapEntry : state.getFullMap().getFields().entrySet() ) {
+				
 				if (mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.MYPLAYER || mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.BOTH) {
-					//logger.info("myplayer or both players");
+					
 					state.setPlayerPosition(mapEntry.getKey());
-					//System.out.println("acum suntem aici : in converter" + state.getPlayerPosition().getX() + state.getPlayerPosition().getY());
 					
 				}
+				
 				if(mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
 					
 					state.setTreasureIsPresentAt(mapEntry.getKey());
 				}
+				
 				if (mapEntry.getValue().getFortState() == FortState.ENEMYFORT) {
 					
 					state.setEnemyFortIsPresentAt(mapEntry.getKey());
 				}
 			}
+			
 		} else {
 			System.out.println("Full Map not available");
 		}
-		
-		
-	
+
 		return state;
 		
 	}

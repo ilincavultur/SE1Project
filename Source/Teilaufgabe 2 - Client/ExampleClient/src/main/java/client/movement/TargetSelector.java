@@ -15,27 +15,21 @@ import client.models.mapData.enums.PlayerPositionState;
 import client.models.mapData.enums.TreasureState;
 
 public class TargetSelector {
+	
 	private Map<Coordinates, MapField> myHalf = new HashMap<Coordinates, MapField>();
 	private Map<Coordinates, MapField> enemyHalf = new HashMap<Coordinates, MapField>();
 	private ClientMap myMap;
-	//inlocuieste cu GameStateController
 	private Map<Coordinates, MapField> unvisitedTotal = new HashMap<Coordinates, MapField>();
 	private GameStateData gameState;
 	private static final Logger logger = LoggerFactory.getLogger(TargetSelector.class);
 	
-	
-	
-	
 	public TargetSelector(GameStateData gameState) {
 		super();
-		//this.myMap = myMap;
 		if (gameState != null) {
 			this.gameState = gameState;	
 		}
 		
 	}
-
-	
 	
 	public ClientMap getMyMap() {
 		return myMap;
@@ -141,20 +135,30 @@ public class TargetSelector {
 	}
 	
 	public Coordinates nextTarget() {
+		
 		Coordinates toRet = new Coordinates();
+		//------------------------- test print
 		System.out.println("acum suntem aici in target selector: " + this.gameState.getMyCurrentPosition(this.gameState.getFullMap()).getPosition().getX() + " " + this.gameState.getMyCurrentPosition(this.gameState.getFullMap()).getPosition().getY());
+		//------------------------- test print
+		
 		boolean foundTreasure = (gameState.getTreasureIsPresentAt() != null);
 		boolean foundEnemyFort = (gameState.getEnemyFortIsPresentAt() != null);
 		boolean searchingForTreasure = (gameState.getTreasureIsPresentAt() == null);
 		boolean searchingForEnemyFort = (gameState.getEnemyFortIsPresentAt() == null);
+		
+		//------------------------- test print
 		System.out.println("foundTreasure" + foundTreasure);
 		System.out.println("foundEnemyFort" + foundEnemyFort);
 		System.out.println("searchingForTreasure" + searchingForTreasure);
 		System.out.println("searchingForEnemyFort" + searchingForEnemyFort);
+		//------------------------- test print
 		
 		if (myMap.getFields().get(gameState.getPlayerPosition()).getType() == MapFieldType.MOUNTAIN) {
-			logger.info("sunt pe munte");
+			
+			logger.info("i'm on a mountain");
+			
 			Map<String, Coordinates> fieldsAround = gameState.getPlayerPosition().getFieldsAround(myMap);
+			
 			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 				
 				// if it's not visited yet
@@ -167,7 +171,7 @@ public class TargetSelector {
 		
 		// searching for treasure
 		if (!foundTreasure && !searchingForEnemyFort && searchingForTreasure) {
-			logger.info("caut comoara");
+			logger.info("I am searching for the treasure");
 			//TODO
 			toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), myHalf);
 			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
@@ -176,7 +180,7 @@ public class TargetSelector {
 		
 		// treasure has been picked up => searching for enemyFort
 		if (foundTreasure && searchingForEnemyFort) {
-			logger.info("caut enemyFort");
+			logger.info("I have the treasure and I am searching for the enemy Fort");
 			//TODO
 			toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), enemyHalf);
 			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
@@ -184,7 +188,7 @@ public class TargetSelector {
 		
 		// treasure is Present => go to treasure (foundTreasure)
 		if (foundTreasure) {
-			logger.info("am gasit comoara si merg catre ea");
+			logger.info("The treasure is present and I am going towards it");
 			toRet = gameState.getTreasureIsPresentAt();	
 			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 		}
@@ -192,7 +196,7 @@ public class TargetSelector {
 		
 		// enemyFort is Present => go to enemyFort (foundEnemyFort)
 		if (foundEnemyFort) {
-			logger.info("am gasit enemyFort si merg catre el");
+			logger.info("The fort is present and I am going towards it");
 			toRet = gameState.getEnemyFortIsPresentAt();
 			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 		}

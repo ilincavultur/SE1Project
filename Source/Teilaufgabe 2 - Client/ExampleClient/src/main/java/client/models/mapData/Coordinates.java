@@ -132,9 +132,6 @@ public class Coordinates {
 			
 		}
 		
-		
-		
-		
 		return toReturn;	
 	}
 

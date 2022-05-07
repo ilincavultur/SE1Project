@@ -1,9 +1,7 @@
 package client.models.mapData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import client.models.mapData.enums.FortState;
@@ -28,14 +26,15 @@ public class MapField {
 	public MapField createMapField(Coordinates pos) {
 		
 		MapField newMapField = new MapField();
+		
 		newMapField.position = pos;
-		//this.position = pos;
+		
 		newMapField.fortState = FortState.UNKNOWNIFFORT;
-		//this.fortState = FortState.UNKNOWNIFFORT;
+		
 		newMapField.playerPositionState = PlayerPositionState.NOPLAYER;
-		//this.playerPositionState = PlayerPositionState.NOPLAYER;
+		
 		newMapField.treasureState = TreasureState.UNKNOWNIFTREASURE;
-		//this.treasureState = TreasureState.UNKNOWNIFTREASURE;
+		
 		newMapField.type = MapFieldType.GRASS;
 
 		newMapField.shortestPath = new ArrayList<Coordinates>();
@@ -43,58 +42,7 @@ public class MapField {
 		return newMapField;
 		
 	}
-	/*
-
-	public MapField createMapField(Coordinates pos, int fieldType) {
-		
-		MapField newMapField = new MapField();
-		newMapField.position = pos;
-		//this.position = pos;
-		newMapField.fortState = FortState.UNKNOWNIFFORT;
-		//this.fortState = FortState.UNKNOWNIFFORT;
-		newMapField.playerPositionState = PlayerPositionState.NOPLAYER;
-		//this.playerPositionState = PlayerPositionState.NOPLAYER;
-		newMapField.treasureState = TreasureState.UNKNOWNIFTREASURE;
-		//this.treasureState = TreasureState.UNKNOWNIFTREASURE;
-		if(fieldType == 0) {
-			newMapField.type = MapFieldType.GRASS;
-			newMapField.moves = 1;
-		}
-		if(fieldType == 1) {
-			newMapField.type = MapFieldType.MOUNTAIN;
-			newMapField.moves = 2;
-		}
-		if(fieldType == 2) {
-			newMapField.type = MapFieldType.WATER;
-			newMapField.moves = 1;
-		}
-		newMapField.shortestPath = new ArrayList<Coordinates>();
-		
-		
-		return newMapField;
-		
-	}*/
-/*
-	public MapField(Coordinates position, MapFieldType type, PlayerPositionState playerPositionState,
-			TreasureState treasureState, FortState fortState) {
-		super();
-		this.position = position;
-		this.type = type;
-		this.playerPositionState = playerPositionState;
-		this.treasureState = treasureState;
-		this.fortState = fortState;
-		if(type == MapFieldType.GRASS) {
-			this.moves = 1;
-		}
-		if(type == MapFieldType.MOUNTAIN) {
-			this.moves = 2;
-		}
-		if(type == MapFieldType.WATER) {
-			this.moves = 1;
-		}
-		this.shortestPath = new ArrayList<Coordinates>();
-	}*/
-
+	
 	public Coordinates getPosition() {
 		return position;
 	}

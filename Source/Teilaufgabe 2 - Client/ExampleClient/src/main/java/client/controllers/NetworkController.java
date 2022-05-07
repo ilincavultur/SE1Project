@@ -1,10 +1,6 @@
 package client.controllers;
 
-import java.time.Duration;
-import java.time.Instant;
-
 import MessagesBase.MessagesFromClient.PlayerRegistration;
-import MessagesBase.MessagesFromServer.GameState;
 import client.models.gameData.GameStateData;
 import client.models.gameData.enums.ClientPlayerState;
 import client.models.mapData.ClientMap;
@@ -13,8 +9,6 @@ import client.network.Network;
 import client.network.NetworkConverter;
 
 public class NetworkController {
-	
-	
 	
 	private Network network;
 	private NetworkConverter networkConverter;
@@ -25,31 +19,21 @@ public class NetworkController {
 		this.networkConverter = new NetworkConverter();
 	}
 	
-	
-
 	public Network getNetwork() {
 		return network;
 	}
-
-
 
 	public void setNetwork(Network network) {
 		this.network = network;
 	}
 
-
-
 	public NetworkConverter getNetworkConverter() {
 		return networkConverter;
 	}
 
-
-
 	public void setNetworkConverter(NetworkConverter networkConverter) {
 		this.networkConverter = networkConverter;
 	}
-
-
 
 	String getPlayerId() {
 		return network.getPlayerID();
@@ -63,21 +47,17 @@ public class NetworkController {
 		network.registerPlayer(playerReg);
 	}
 	
-	
-	
 	GameStateData getGameState(String gameId, String playerId) {
+		
 		GameStateData gsd = new GameStateData();
 		
 		gsd = networkConverter.convertGameStateFrom(network.getGameState(gameId, playerId));
-		//System.out.println("acum suntem aiciiiiii in networ controller : " + gsd.getPlayerPosition().getX() + " " + gsd.getPlayerPosition().getY());
 
 		return gsd;
 	}
 	
 	boolean checkIfMyTurn(String playerId) {
-		
-		//GameStateData state = networkConverter.convertGameStateFrom(network.getGameState(network.getGameID(), network.getPlayerID()));
-		
+				
 		GameStateData state = networkConverter.convertGameStateFrom(network.getGameState(network.getGameID(), playerId));
 		
 		return state.getPlayerState() == ClientPlayerState.MUSTACT;
@@ -85,7 +65,7 @@ public class NetworkController {
 	}
 	
 	void sendMap(ClientMap map, String plID) {
-		//for test
+
 		network.sendMap(networkConverter.convertMapTo(plID, map));
 		//network.sendMap(networkConverter.convertMapTo(network.getPlayerID(), map));
 	}

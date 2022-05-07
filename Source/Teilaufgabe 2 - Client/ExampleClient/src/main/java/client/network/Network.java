@@ -66,12 +66,9 @@ public class Network {
 	}
 
 	public Network(String gameID, String serverBaseURL) {
+		
 		super();
 		this.serverBaseUrl = serverBaseURL;
-		// template WebClient configuration, will be reused/customized for each
-		// individual endpoint
-		// TIP: create it once in the CTOR of your network class and subsequently use it
-		// in each communication method
 		this.baseWebClient = WebClient.builder().baseUrl(serverBaseURL + "/games")
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE) 																	
 				.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_VALUE).build();
@@ -107,15 +104,7 @@ public class Network {
 	}
 	
 	public GameState getGameState(String gameId, String playerId) {
-			// you will need to fill the variables with the appropriate information
-			//String baseUrl = "UseValueFromARGS_1 FROM main";
-			//String gameId = "UseValueFromARGS_2 FROM main";
-			//String playerId = "From the client registration";
-			//String baseUrl = "http://swe1.wst.univie.ac.at";
-	
-	
-		
-		//System.out.println(gameId);
+
 			while (!canMakeNewRequest()) {
 				//wait
 			}
@@ -124,20 +113,10 @@ public class Network {
 			
 
 			Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.GET)
-					.uri("/" + gameId + "/states/" + playerId).retrieve().bodyToMono(ResponseEnvelope.class); // specify the
-																												// object
-																												// returned
-																												// by the
-																												// server
-
-			// WebClient support asynchronous message exchange. In SE1 we use a synchronous
-			// one for the sake of simplicity. So calling block is fine.
+					.uri("/" + gameId + "/states/" + playerId).retrieve().bodyToMono(ResponseEnvelope.class); 
+				
 			ResponseEnvelope<GameState> requestResult = webAccess.block();
 
-			// always check for errors, and if some are reported, at least print them to the
-			// console (logging should always be preferred!)
-			// so that you become aware of them during debugging! The provided server gives
-			// you constructive error messages.
 			if (requestResult.getState() == ERequestState.Error) {
 				System.err.println("Client error, errormessage: " + requestResult.getExceptionMessage());
 			} 

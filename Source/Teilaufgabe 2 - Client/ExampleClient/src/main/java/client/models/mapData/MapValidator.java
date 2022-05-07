@@ -26,7 +26,6 @@ public class MapValidator {
 		return false;
 	}
 	
-
 	//reachable nodes (in theory)
 	public Map<Coordinates, MapField> getGrassMountainFields(ClientMap myMap) {
 		
@@ -65,6 +64,7 @@ public class MapValidator {
 	//floodfill
 	public void checkIfReachable(Coordinates startingPos, ClientMap mapToVerify, List<Coordinates> visitedNodes) {
 		
+		// TODO inlocuieste || || || 
 		if(!mapToVerify.getFields().containsKey(startingPos) || visitedNodes.contains(startingPos) || mapToVerify.getFields().get(startingPos).getType() == MapFieldType.WATER) {
 			return;
 		}else {
@@ -101,10 +101,12 @@ public class MapValidator {
 	
 	
 	public boolean verifyShortSides(ClientMap mapToVerify) {
+		
 		int waterNo1 = 0;
 		int waterNo2 = 0;
-		//mapToVerify.ySize
+	
 		for (int y = 0; y < 4 ; y++) {
+			
 			Coordinates pos1 = new Coordinates(0, y);
 			Coordinates pos2 = new Coordinates(mapToVerify.getxSize() - 1, y);
 			if (mapToVerify.getFields().get(pos1).getType() == MapFieldType.WATER) {
@@ -113,7 +115,9 @@ public class MapValidator {
 			if (mapToVerify.getFields().get(pos2).getType() == MapFieldType.WATER) {
 				waterNo2++;
 			}
+			
 		}
+		
 		return waterNo1 <= 1 && waterNo2 <=1 ;
 	}
 	
