@@ -23,6 +23,11 @@ public class CLI implements PropertyChangeListener {
 		if(myMapField.getPlayerPositionState() == PlayerPositionState.BOTH || myMapField.getPlayerPositionState() == PlayerPositionState.MYPLAYER) {
 			System.out.print("A");
 		}
+		
+		if(myMapField.getPlayerPositionState() == PlayerPositionState.BOTH || myMapField.getPlayerPositionState() == PlayerPositionState.ENEMYPLAYER) {
+			System.out.print("E");
+		}
+		
 		if(myMapField.getType() == MapFieldType.GRASS) {
 			System.out.print("G ");
 		}

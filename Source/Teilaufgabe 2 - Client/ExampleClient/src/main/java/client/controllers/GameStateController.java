@@ -35,6 +35,7 @@ public class GameStateController {
 		this.gameStateData.setHasCollectedTreasure(newGSD.getHasCollectedTreasure());
 		this.gameStateData.setPlayerState(newGSD.getPlayerState());
 		if(newGSD.getFullMap() != null) {
+			this.mapController.setMyMap(newGSD.getFullMap());
 			this.gameStateData.setFullMap(newGSD.getFullMap());
 			this.gameStateData.setPlayerPosition(newGSD.getPlayerPosition());
 			this.moveController.setFullMap(newGSD.getFullMap());
@@ -155,7 +156,9 @@ public class GameStateController {
 				//------------------------- test print
 				
 				++moves;
-			} 
+			} //else {
+				//moveController.updatePath();
+			//}
 			
 		}
 		

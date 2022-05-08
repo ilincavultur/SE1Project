@@ -121,8 +121,10 @@ public class PathCalculator {
 			}
 		}
 		
+		targetField.setShortestPath(settledNodes);
+		
 		//------------------------- test print
-		logger.info("pathulllll");
+		/*logger.info("pathulllll");
 		for (int i=0; i<settledNodes.size(); i++) {
 			if(myMap.getFields().get(settledNodes.get(i)).getPosition().equals(targetField.getPosition())) {
 				System.out.println("path for" + myMap.getFields().get(settledNodes.get(i)).getPosition().getX() + " " + myMap.getFields().get(settledNodes.get(i)).getPosition().getY());
@@ -134,8 +136,8 @@ public class PathCalculator {
 			}
 			
 
-		}
-		
+		}*/
+		/*logger.info("aici");
 		for( Map.Entry<Coordinates, Coordinates> mapEntry : previousNode.entrySet() ) {
 			System.out.print("prev");
 			System.out.print(mapEntry.getKey().getX() + " ");
@@ -144,7 +146,7 @@ public class PathCalculator {
 			System.out.print(mapEntry.getValue().getX() + " ");
 			System.out.print(mapEntry.getValue().getY() + " ");
 			System.out.println();
-		}
+		}*/
 		//------------------------- test print
 		
 	}
@@ -159,9 +161,9 @@ public class PathCalculator {
 			
 			//asta nuj daca ii bine
 			
-			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getUpNeighbour()) ) {
+			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getUpNeighbour(myMap)) ) {
 			
-				int movesNo = this.getPathWeight(stPos,stPos.getUpNeighbour());
+				int movesNo = this.getPathWeight(stPos,stPos.getUpNeighbour(myMap));
 				
 				stPos = myMap.getFields().get(sPath.get(i)).getPosition();
 				for (int j = 0; j < movesNo; j++) {
@@ -169,9 +171,9 @@ public class PathCalculator {
 				}
 				
 			}
-			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getDownNeighbour()) ) {
+			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getDownNeighbour(myMap)) ) {
 			
-				int movesNo = this.getPathWeight(stPos,stPos.getDownNeighbour());
+				int movesNo = this.getPathWeight(stPos,stPos.getDownNeighbour(myMap));
 				
 				stPos = myMap.getFields().get(sPath.get(i)).getPosition();
 				for (int j = 0; j < movesNo; j++) {
@@ -179,9 +181,9 @@ public class PathCalculator {
 				}
 				
 			}
-			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getLeftNeighbour()) ) {
+			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getLeftNeighbour(myMap)) ) {
 				
-				int movesNo = this.getPathWeight(stPos,stPos.getLeftNeighbour());
+				int movesNo = this.getPathWeight(stPos,stPos.getLeftNeighbour(myMap));
 				
 				stPos = myMap.getFields().get(sPath.get(i)).getPosition();
 				for (int j = 0; j < movesNo; j++) {
@@ -189,9 +191,9 @@ public class PathCalculator {
 				}
 				
 			}
-			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getRightNeighbour())) {
+			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getRightNeighbour(myMap))) {
 			
-				int movesNo = this.getPathWeight(stPos,stPos.getRightNeighbour());
+				int movesNo = this.getPathWeight(stPos,stPos.getRightNeighbour(myMap));
 				
 				stPos = myMap.getFields().get(sPath.get(i)).getPosition();
 				for (int j = 0; j < movesNo; j++) {

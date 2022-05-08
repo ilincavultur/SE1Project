@@ -10,6 +10,7 @@ import client.models.gameData.GameStateData;
 import client.models.mapData.ClientMap;
 import client.models.mapData.Coordinates;
 import client.models.mapData.MapField;
+import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
 import client.models.mapData.enums.PlayerPositionState;
 import client.models.mapData.enums.TreasureState;
@@ -132,14 +133,28 @@ public class TargetSelector {
 			}
 		}
 		
+		//------------------------- test print
+		/*System.out.println("unvisitedTotal");
+		for( Map.Entry<Coordinates, MapField> mapEntry : unvisitedTotal.entrySet() ) {
+			System.out.println(mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+		}
+		System.out.println("myHalf");
+		for( Map.Entry<Coordinates, MapField> mapEntry : myHalf.entrySet() ) {
+			System.out.println(mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+		}
+		System.out.println("enemyHalf");
+		for( Map.Entry<Coordinates, MapField> mapEntry : enemyHalf.entrySet() ) {
+			System.out.println(mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+		}*/
+		//------------------------- test print
+		
 	}
 	
 	public Coordinates nextTarget() {
 		
 		Coordinates toRet = new Coordinates();
-		//------------------------- test print
-		System.out.println("acum suntem aici in target selector: " + this.gameState.getMyCurrentPosition(this.gameState.getFullMap()).getPosition().getX() + " " + this.gameState.getMyCurrentPosition(this.gameState.getFullMap()).getPosition().getY());
-		//------------------------- test print
+		toRet.setX(-1);
+		toRet.setY(-1);
 		
 		boolean foundTreasure = (gameState.getTreasureIsPresentAt() != null);
 		boolean foundEnemyFort = (gameState.getEnemyFortIsPresentAt() != null);
@@ -153,11 +168,12 @@ public class TargetSelector {
 		System.out.println("searchingForEnemyFort" + searchingForEnemyFort);
 		//------------------------- test print
 		
+		logger.info("wtf");
 		if (myMap.getFields().get(gameState.getPlayerPosition()).getType() == MapFieldType.MOUNTAIN) {
 			
 			logger.info("i'm on a mountain");
 			
-			Map<String, Coordinates> fieldsAround = gameState.getPlayerPosition().getFieldsAround(myMap);
+			Map<String, Coordinates> fieldsAround = gameState.getPlayerPosition().getFieldsAroundMountain(myMap);
 			
 			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 				
@@ -165,56 +181,90 @@ public class TargetSelector {
 				if (unvisitedTotal.containsKey(mapEntry.getValue())) {
 					unvisitedTotal.remove(mapEntry.getValue());
 				}
+				
+				if (myMap.getFields().get(mapEntry.getValue()).getTreasureState() == TreasureState.MYTREASURE) {
+					return mapEntry.getValue();
+				}
+				
+				if (foundTreasure && myMap.getFields().get(mapEntry.getValue()).getFortState() == FortState.ENEMYFORT) {
+					return mapEntry.getValue();
+				}
 			
 			}
 		}
 		
+		// find a way to return 
 		// searching for treasure
-		if (!foundTreasure && !searchingForEnemyFort && searchingForTreasure) {
-			logger.info("I am searching for the treasure");
-			//TODO
-			toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), myHalf);
-			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
+		while (toRet.getX() < 0 || toRet.getY() < 0) {
+			if (!foundTreasure && searchingForTreasure) {
+				
+				logger.info("I am searching for the treasure");
+		
+				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), myHalf);
+				System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
+				return toRet;
+			}
 			
+			// treasure has been picked up => searching for enemyFort
+			if (foundTreasure && searchingForEnemyFort) {
+				
+				logger.info("I have the treasure and I am searching for the enemy Fort");
+		
+				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), enemyHalf);
+				System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
+				return toRet;
+			
+			}
+			
+			// treasure is Present => go to treasure (foundTreasure)
+			if (foundTreasure) {
+				
+				logger.info("The treasure is present and I am going towards it");
+				
+				toRet = gameState.getTreasureIsPresentAt();	
+				System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
+				return toRet;
+				
+			}
+			
+			
+			// enemyFort is Present => go to enemyFort (foundEnemyFort)
+			if (foundEnemyFort) {
+				
+				logger.info("The fort is present and I am going towards it");
+				
+				toRet = gameState.getEnemyFortIsPresentAt();
+				System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
+				return toRet;
+				
+				
+			}
 		}
 		
-		// treasure has been picked up => searching for enemyFort
-		if (foundTreasure && searchingForEnemyFort) {
-			logger.info("I have the treasure and I am searching for the enemy Fort");
-			//TODO
-			toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), enemyHalf);
-			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
-		}
-		
-		// treasure is Present => go to treasure (foundTreasure)
-		if (foundTreasure) {
-			logger.info("The treasure is present and I am going towards it");
-			toRet = gameState.getTreasureIsPresentAt();	
-			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
-		}
-		
-		
-		// enemyFort is Present => go to enemyFort (foundEnemyFort)
-		if (foundEnemyFort) {
-			logger.info("The fort is present and I am going towards it");
-			toRet = gameState.getEnemyFortIsPresentAt();
-			System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
-		}
 		System.out.println("toRet ALES: " + toRet.getX() + " " + toRet.getY());
 		return toRet;
 	}
 	
 	public Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf) {
 		Coordinates toRet = new Coordinates();
-		while (toRet == null) {
+		
+		toRet.setX(-1);
+		toRet.setY(-1);
+	
+		while (toRet.getX() < 0 || toRet.getY() < 0) {
 			
-			Map<String, Coordinates> fieldsAround = pos.getFieldsAround(myMap);
+			Map<String, Coordinates> fieldsAround = pos.getFieldsAround(myMap);	
 			
 			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 				
 				// if it's not visited yet
 				if (unvisitedTotal.containsKey(mapEntry.getValue())) {
+				
 					toRet = mapEntry.getValue();
+					//------------------------- test print
+					System.out.println("next unvisited neighbour: " + toRet.getX() + " " + toRet.getY());
+					//------------------------- test print
+					break;
 				}
 				
 				pos = mapEntry.getValue();

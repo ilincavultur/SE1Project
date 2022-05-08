@@ -129,7 +129,7 @@ public class MovementController {
 		}
 		
 		// if enemyFort is present and I have the treasure
-		if (goBribeFort == false && gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure()) {
+		if (goBribeFort == false && gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure() != null) {
 			logger.info("enemyFort is present and I have the treasure");
 			goBribeFort = true;
 			calcMovesToGoal();
@@ -137,7 +137,7 @@ public class MovementController {
 		
 		// if i reached the previous goal
 		// aici fii atenta ca la pathcalculator nu cred ca e inclus targetul..
-		if (this.movesList.isEmpty()) {
+		if (this.movesList.isEmpty() || this.movesList.size() == 0) {
 			logger.info("i reached prev goal");
 			calcMovesToGoal();
 		}
@@ -146,10 +146,6 @@ public class MovementController {
 	}
 	
 	public void calcMovesToGoal() {
-		//------------------------- test print
-		//Coordinates targetPosition = new Coordinates(fullMap.getxSize()-1,fullMap.getySize()-1);
-		//MapField targetField = fullMap.getFields().get(targetPosition);
-		//------------------------- test print
 		
 		this.targetSelector.setGameState(gameState);
 		
@@ -161,18 +157,12 @@ public class MovementController {
 		
 		MapField targetField = fullMap.getFields().get(targetPosition);
 		
-		//System.out.println("current field" + currentField.getX() + currentField.getY());
-		//System.out.println("target field" + targetField.getPosition().getX() + targetField.getPosition().getY());
-		
 		pathCalc.getShortestPath(currentField, targetField);
 		this.setMovesList(pathCalc.getMovesPath(targetField));
-
+		
 	}
 
 	public MoveCommand getNextMove() {
-		//------------------------- test print
-		//System.out.println("acum suntem aici : " + this.getCurrentField().getPosition().getX() + " " + this.getCurrentField().getPosition().getY());
-		//------------------------- test print
 
 		MoveCommand toRet = MoveCommand.DOWN;
 		

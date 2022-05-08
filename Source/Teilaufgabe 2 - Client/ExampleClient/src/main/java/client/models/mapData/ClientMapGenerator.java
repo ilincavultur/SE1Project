@@ -68,7 +68,6 @@ public class ClientMapGenerator {
 		
 	}
 	
-
 	public Coordinates placeFort() {
 		Random randomNo = new Random();
 		
@@ -82,6 +81,8 @@ public class ClientMapGenerator {
 			randomFortY = randomNo.nextInt(4);
 			fortPos = new Coordinates(randomFortX, randomFortY);
 		}
+		
+		
 		return fortPos;
 		
 	}

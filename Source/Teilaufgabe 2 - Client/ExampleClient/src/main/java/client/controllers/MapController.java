@@ -66,6 +66,7 @@ public class MapController {
 		
 	}
 	
+	//------------------------- test print
 	public MapField getMyFortField() {
 
 		for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
@@ -75,5 +76,6 @@ public class MapController {
 		}
 		return null;
 	}
+	//------------------------- test print
 
 }
