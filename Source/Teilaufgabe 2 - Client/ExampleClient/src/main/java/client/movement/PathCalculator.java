@@ -84,6 +84,12 @@ public class PathCalculator {
 
 	//https://www.baeldung.com/java-dijkstra
 	public void getShortestPath(Coordinates startingField, MapField targetField) {
+		// test
+		settledNodes = new ArrayList<Coordinates>();
+		unsettledNodes = new ArrayList<Coordinates>();
+		
+		// test
+		
 		Coordinates currPos = new Coordinates();
 		this.startPos = startingField;
 		
@@ -102,7 +108,8 @@ public class PathCalculator {
 			
 			unsettledNodes.remove(currPos);
 			// luam vecinii nodului curent
-			Map<String, Coordinates> neighbours = neighboursWithoutWaters(currPos.getFieldsAround(myMap));
+			Map<String, Coordinates> neighbours = currPos.getFieldsAround(myMap);
+			//Map<String, Coordinates> neighbours = neighboursWithoutWaters(currPos.getFieldsAround(myMap));
 			for( Entry<String, Coordinates> mapEntry : neighbours.entrySet() ) {
 				if (!settledNodes.contains(mapEntry.getValue())) {
 					
@@ -121,7 +128,7 @@ public class PathCalculator {
 			}
 		}
 		
-		targetField.setShortestPath(settledNodes);
+		//targetField.setShortestPath(settledNodes);
 		
 		//------------------------- test print
 		/*logger.info("pathulllll");
@@ -155,6 +162,13 @@ public class PathCalculator {
 		// get it from the target field node
 		List<MoveCommand> toReturn = new ArrayList<MoveCommand>();
 		List<Coordinates> sPath = field.getShortestPath();
+		
+		//------------------------- test print
+		for (int i=0; i<sPath.size(); i++) {
+			System.out.println("path " + sPath.get(i).getX() + sPath.get(i).getY());
+		}
+				
+		//------------------------- test print
 		
 		Coordinates stPos = this.startPos;
 		for (int i=0; i<sPath.size(); i++) {
@@ -245,7 +259,10 @@ public class PathCalculator {
 				path.add(startingPos);
 			}
 			previousNode.put(mapEntry.getValue(), startingPos);
+			
+			
 			myMap.getFields().get(mapEntry.getValue()).setShortestPath(path);
+			
 			
 		}
 	}

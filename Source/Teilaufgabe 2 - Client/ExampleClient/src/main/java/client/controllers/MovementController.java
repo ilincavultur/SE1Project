@@ -61,6 +61,22 @@ public class MovementController {
 
 
 
+	public boolean isGoPickUpTreasure() {
+		return goPickUpTreasure;
+	}
+
+	public void setGoPickUpTreasure(boolean goPickUpTreasure) {
+		this.goPickUpTreasure = goPickUpTreasure;
+	}
+
+	public boolean isGoBribeFort() {
+		return goBribeFort;
+	}
+
+	public void setGoBribeFort(boolean goBribeFort) {
+		this.goBribeFort = goBribeFort;
+	}
+
 	public TargetSelector getTargetSelector() {
 		return targetSelector;
 	}
@@ -113,6 +129,14 @@ public class MovementController {
 	public void updatePath() {
 		logger.info("updatepath");
 		this.targetSelector.setGameState(gameState);
+		
+		//test
+		this.targetSelector.setGoPickUpTreasure(goPickUpTreasure);
+		System.out.println("goPickupTreasure " + goPickUpTreasure);
+		this.targetSelector.setGoBribeFort(goBribeFort);
+		System.out.println("goBribeFort " + goBribeFort);
+		//test
+		
 		// if i haven't gotten any path yet 
 		if (this.movesList == null) {
 			logger.info("updatepath: moves list == null");
@@ -121,20 +145,20 @@ public class MovementController {
 		}
 				
 		// if treasure is present and I havent picked it up yet
-		if (goPickUpTreasure == false && gameState.getTreasureIsPresentAt() != null && !gameState.getHasCollectedTreasure() && gameState.getHasCollectedTreasure() != null ) {
+		if (goPickUpTreasure == true && gameState.getTreasureIsPresentAt() != null && !gameState.getHasCollectedTreasure() && gameState.getHasCollectedTreasure() != null ) {
 			logger.info("treasure is present and I havent picked it up yet");
-			goPickUpTreasure = true;
+			//goPickUpTreasure = true;
 			calcMovesToGoal();
 			
 		}
 		
 		// if enemyFort is present and I have the treasure
-		if (goBribeFort == false && gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure() != null) {
+		if (goBribeFort == true && gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure() != null) {
 			logger.info("enemyFort is present and I have the treasure");
-			goBribeFort = true;
+			//goBribeFort = true;
 			calcMovesToGoal();
 		}
-		
+				
 		// if i reached the previous goal
 		// aici fii atenta ca la pathcalculator nu cred ca e inclus targetul..
 		if (this.movesList.isEmpty() || this.movesList.size() == 0) {
@@ -151,6 +175,12 @@ public class MovementController {
 		
 		Coordinates targetPosition = this.targetSelector.nextTarget();
 		
+		// test
+			while (currentField == targetPosition) {
+				targetPosition = this.targetSelector.nextTarget();
+			}
+		// test
+		
 		//------------------------- test print
 		System.out.println("target field" + targetPosition.getX() + targetPosition.getY());
 		//------------------------- test print
@@ -158,7 +188,15 @@ public class MovementController {
 		MapField targetField = fullMap.getFields().get(targetPosition);
 		
 		pathCalc.getShortestPath(currentField, targetField);
+		
 		this.setMovesList(pathCalc.getMovesPath(targetField));
+		
+		//------------------------- test print
+		for (int i=0; i<this.movesList.size(); i++) {
+			System.out.println("move " + movesList.get(i));
+		}
+				
+		//------------------------- test print
 		
 	}
 

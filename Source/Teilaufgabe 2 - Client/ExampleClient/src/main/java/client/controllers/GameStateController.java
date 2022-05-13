@@ -143,13 +143,25 @@ public class GameStateController {
 				networkController.sendMove(pl1, newMove);	
 				
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+				
+				if (this.gameStateData.getTreasureIsPresentAt() !=null && this.gameStateData.getHasCollectedTreasure() == false) {
+					
+					moveController.setGoPickUpTreasure(true);
+					logger.info("treasure has been picked up");
+				} else {
+					moveController.setGoPickUpTreasure(false);
+				}
+				if (this.gameStateData.getEnemyFortIsPresentAt() !=null) {
+				
+					moveController.setGoPickUpTreasure(false);
+					moveController.setGoBribeFort(true);
+					logger.info("enemy fort is present");
+				}
+				
 				// update path
 				moveController.updatePath();
 				
-				if (this.gameStateData.getHasCollectedTreasure() !=null) {
-					//boolean letsee = this.gameStateData.getHasCollectedTreasure();	
-					logger.info("treasure has been picked up");
-				}
+				
 				
 				//------------------------- test print
 				System.out.println("acum suntem aici in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
