@@ -25,6 +25,7 @@ public class PathCalculator {
 	//the value is the current Node, the key is the previous node
 	Map<Coordinates, Coordinates> previousNode = new HashMap<Coordinates, Coordinates>();
 	private static final Logger logger = LoggerFactory.getLogger(PathCalculator.class);
+	List<Coordinates> shortestPath = new ArrayList<Coordinates>();
 	
 	public PathCalculator(ClientMap myMap) {
 		super();
@@ -59,6 +60,16 @@ public class PathCalculator {
 		
 	}
 	
+	
+	
+	public List<Coordinates> getShortestPath() {
+		return shortestPath;
+	}
+
+	public void setShortestPath(List<Coordinates> shortestPath) {
+		this.shortestPath = shortestPath;
+	}
+
 	public Map<Coordinates, Integer> getCosts() {
 		return costs;
 	}
@@ -67,26 +78,14 @@ public class PathCalculator {
 		this.costs = costs;
 	}
 
-	private Map<String, Coordinates> neighboursWithoutWaters (Map<String, Coordinates> neighbours) {
-		
-		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();
-		
-		for( Map.Entry<String, Coordinates> mapEntry : neighbours.entrySet() ) {
-			
-			if (myMap.getFields().get(mapEntry.getValue()).getType() != MapFieldType.WATER) {
-				toReturn.put(mapEntry.getKey(), mapEntry.getValue());
-			}
-		}
-		
-		return toReturn;
-		
-	}
 
 	//https://www.baeldung.com/java-dijkstra
 	public void getShortestPath(Coordinates startingField, MapField targetField) {
+		
 		// test
 		settledNodes = new ArrayList<Coordinates>();
 		unsettledNodes = new ArrayList<Coordinates>();
+		shortestPath = new ArrayList<Coordinates>();
 		
 		// test
 		
@@ -100,6 +99,7 @@ public class PathCalculator {
 		for( Map.Entry<Coordinates, MapField> mapEntry : visitableFields.entrySet() ) {
 			costs.put(mapEntry.getKey(), 99999999);	
 		}
+		
 		costs.put(startingField, 0);
 		unsettledNodes.add(startingField);
 		
@@ -107,9 +107,10 @@ public class PathCalculator {
 			currPos = getLowestDistanceNode(unsettledNodes);
 			
 			unsettledNodes.remove(currPos);
+			
 			// luam vecinii nodului curent
 			Map<String, Coordinates> neighbours = currPos.getFieldsAround(myMap);
-			//Map<String, Coordinates> neighbours = neighboursWithoutWaters(currPos.getFieldsAround(myMap));
+		
 			for( Entry<String, Coordinates> mapEntry : neighbours.entrySet() ) {
 				if (!settledNodes.contains(mapEntry.getValue())) {
 					
@@ -128,42 +129,20 @@ public class PathCalculator {
 			}
 		}
 		
-		//targetField.setShortestPath(settledNodes);
-		
-		//------------------------- test print
-		/*logger.info("pathulllll");
-		for (int i=0; i<settledNodes.size(); i++) {
-			if(myMap.getFields().get(settledNodes.get(i)).getPosition().equals(targetField.getPosition())) {
-				System.out.println("path for" + myMap.getFields().get(settledNodes.get(i)).getPosition().getX() + " " + myMap.getFields().get(settledNodes.get(i)).getPosition().getY());
-				List<Coordinates> sPath = myMap.getFields().get(settledNodes.get(i)).getShortestPath();
-				for (int j=0; j<sPath.size(); j++) {
-					
-					System.out.println (sPath.get(j).getX() + " " + sPath.get(j).getY());
-				}
-			}
-			
+		targetField.setShortestPath(shortestPath);
 
-		}*/
-		/*logger.info("aici");
-		for( Map.Entry<Coordinates, Coordinates> mapEntry : previousNode.entrySet() ) {
-			System.out.print("prev");
-			System.out.print(mapEntry.getKey().getX() + " ");
-			System.out.print(mapEntry.getKey().getY() + " ");
-			System.out.print("curr ");
-			System.out.print(mapEntry.getValue().getX() + " ");
-			System.out.print(mapEntry.getValue().getY() + " ");
-			System.out.println();
-		}*/
-		//------------------------- test print
 		
 	}
 	
 	public List<MoveCommand> getMovesPath(MapField field) {
+		
 		// get it from the target field node
 		List<MoveCommand> toReturn = new ArrayList<MoveCommand>();
 		List<Coordinates> sPath = field.getShortestPath();
+	
 		
 		//------------------------- test print
+		
 		for (int i=0; i<sPath.size(); i++) {
 			System.out.println("path " + sPath.get(i).getX() + sPath.get(i).getY());
 		}
@@ -215,8 +194,6 @@ public class PathCalculator {
 				}
 				
 			}
-			
-			
 
 		}
 	
@@ -255,14 +232,15 @@ public class PathCalculator {
 			
 			costs.put(mapEntry.getValue(), sourceDist + weight);
 			List<Coordinates> path = new ArrayList<Coordinates>(myMap.getFields().get(startingPos).getShortestPath());
+		
 			if(!startingPos.equals(this.startPos)) {
 				path.add(startingPos);
 			}
 			previousNode.put(mapEntry.getValue(), startingPos);
 			
+			this.setShortestPath(path);
 			
 			myMap.getFields().get(mapEntry.getValue()).setShortestPath(path);
-			
 			
 		}
 	}
@@ -280,6 +258,10 @@ public class PathCalculator {
 		}
 		return toReturn;
 	}
+	 
 	
 }
+
+
+
 

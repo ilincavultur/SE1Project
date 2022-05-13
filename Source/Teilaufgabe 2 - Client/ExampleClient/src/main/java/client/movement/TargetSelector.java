@@ -1,7 +1,9 @@
 package client.movement;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -189,7 +191,7 @@ public class TargetSelector {
 		System.out.println("searchingForTreasure" + searchingForTreasure);
 		System.out.println("searchingForEnemyFort" + searchingForEnemyFort);
 		//------------------------- test print
-		/*
+		
 		logger.info("wtf");
 		if (myMap.getFields().get(gameState.getPlayerPosition()).getType() == MapFieldType.MOUNTAIN) {
 			
@@ -199,25 +201,25 @@ public class TargetSelector {
 			
 			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 				
+				if (unvisitedTotal.containsKey(mapEntry.getValue())) {
+					unvisitedTotal.remove(mapEntry.getValue());
+				}
+				
 				// if it's my treasure then it means it hasn't been picked up yet
 				if (myMap.getFields().get(mapEntry.getValue()).getTreasureState() == TreasureState.MYTREASURE) {
 					// if it's not visited yet
-					if (unvisitedTotal.containsKey(mapEntry.getValue())) {
-						unvisitedTotal.remove(mapEntry.getValue());
-					}
+				
 					return mapEntry.getValue();
 				}
 				
 				if (foundTreasure && myMap.getFields().get(mapEntry.getValue()).getFortState() == FortState.ENEMYFORT) {
 					// if it's not visited yet
-					if (unvisitedTotal.containsKey(mapEntry.getValue())) {
-						unvisitedTotal.remove(mapEntry.getValue());
-					}
+					
 					return mapEntry.getValue();
 				}
 			
 			}
-		}*/
+		}
 		
 		// find a way to return 
 		// searching for treasure
@@ -272,6 +274,7 @@ public class TargetSelector {
 	}
 	
 	public Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf) {
+		
 		Coordinates toRet = new Coordinates();
 		
 		toRet.setX(-1);

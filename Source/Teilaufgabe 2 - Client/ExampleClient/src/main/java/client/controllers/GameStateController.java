@@ -144,24 +144,28 @@ public class GameStateController {
 				
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
 				
-				if (this.gameStateData.getTreasureIsPresentAt() !=null && this.gameStateData.getHasCollectedTreasure() == false) {
+				if (this.gameStateData.getTreasureIsPresentAt() !=null && this.gameStateData.getHasCollectedTreasure() != null && this.gameStateData.getHasCollectedTreasure() == false) {
 					
 					moveController.setGoPickUpTreasure(true);
 					logger.info("treasure has been picked up");
+					
 				} else {
+					
 					moveController.setGoPickUpTreasure(false);
+					
 				}
 				if (this.gameStateData.getEnemyFortIsPresentAt() !=null) {
 				
 					moveController.setGoPickUpTreasure(false);
 					moveController.setGoBribeFort(true);
 					logger.info("enemy fort is present");
+					
 				}
 				
 				// update path
 				moveController.updatePath();
 				
-				
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
 				
 				//------------------------- test print
 				System.out.println("acum suntem aici in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
@@ -179,8 +183,12 @@ public class GameStateController {
 	public void endGame() {
 		
 		if(moves >=100 || this.gameStateData.getPlayerState() == ClientPlayerState.LOST || this.gameStateData.getPlayerState() != ClientPlayerState.WON) {
+			if (moves >= 100) {
+				System.out.println("100 moves reached ");
+			}
 			
 			if(this.gameStateData.getPlayerState() ==ClientPlayerState.LOST) {
+			
 				System.out.println("You Lost :( ");	
 			}
 			if(this.gameStateData.getPlayerState() ==ClientPlayerState.WON) {

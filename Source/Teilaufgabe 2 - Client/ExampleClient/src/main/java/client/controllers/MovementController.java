@@ -130,6 +130,7 @@ public class MovementController {
 		logger.info("updatepath");
 		this.targetSelector.setGameState(gameState);
 		
+		
 		//test
 		this.targetSelector.setGoPickUpTreasure(goPickUpTreasure);
 		System.out.println("goPickupTreasure " + goPickUpTreasure);
@@ -143,11 +144,22 @@ public class MovementController {
 			calcMovesToGoal();
 			
 		}
-				
+		
 		// if treasure is present and I havent picked it up yet
-		if (goPickUpTreasure == true && gameState.getTreasureIsPresentAt() != null && !gameState.getHasCollectedTreasure() && gameState.getHasCollectedTreasure() != null ) {
+		if (goPickUpTreasure == true && gameState.getTreasureIsPresentAt() != null && gameState.getHasCollectedTreasure() != null && !gameState.getHasCollectedTreasure()) {
 			logger.info("treasure is present and I havent picked it up yet");
+			
 			//goPickUpTreasure = true;
+			calcMovesToGoal();
+			
+			
+		}
+		
+		// if I have picked up the treasure but still haven't found the enemy fort
+		if (gameState.getHasCollectedTreasure() != null && gameState.getHasCollectedTreasure() == true && goBribeFort == false) {
+			logger.info("I have picked up the treasure but still haven't found the enemy fort");
+			
+			//goBribeFort = true;
 			calcMovesToGoal();
 			
 		}
@@ -155,15 +167,19 @@ public class MovementController {
 		// if enemyFort is present and I have the treasure
 		if (goBribeFort == true && gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure() != null) {
 			logger.info("enemyFort is present and I have the treasure");
+			
 			//goBribeFort = true;
 			calcMovesToGoal();
+			
 		}
 				
 		// if i reached the previous goal
 		// aici fii atenta ca la pathcalculator nu cred ca e inclus targetul..
 		if (this.movesList.isEmpty() || this.movesList.size() == 0) {
 			logger.info("i reached prev goal");
+			
 			calcMovesToGoal();
+			
 		}
 		
 		
@@ -176,7 +192,7 @@ public class MovementController {
 		Coordinates targetPosition = this.targetSelector.nextTarget();
 		
 		// test
-			while (currentField == targetPosition) {
+			if (currentField == targetPosition) {
 				targetPosition = this.targetSelector.nextTarget();
 			}
 		// test
@@ -187,9 +203,19 @@ public class MovementController {
 		
 		MapField targetField = fullMap.getFields().get(targetPosition);
 		
-		pathCalc.getShortestPath(currentField, targetField);
+		
+		
+	
+		
+		 pathCalc.getShortestPath(currentField, targetField);
+		//targetField.setShortestPath(pathCalc.getShortestPath());
+		//test
+		//List<Coordinates> path = pathCalc.getShortestPath();
+		//
 		
 		this.setMovesList(pathCalc.getMovesPath(targetField));
+		 
+		 
 		
 		//------------------------- test print
 		for (int i=0; i<this.movesList.size(); i++) {
