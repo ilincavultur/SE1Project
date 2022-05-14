@@ -18,6 +18,7 @@ import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.GameState;
+import client.exceptions.NetworkException;
 import reactor.core.publisher.Mono;
 
 
@@ -94,6 +95,7 @@ public class Network {
 		ResponseEnvelope<UniquePlayerIdentifier> resultReg = webAccess.block();
 
 		if (resultReg.getState() == ERequestState.Error) {
+			//throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
 			System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
 		} else {
 			uniqueID = resultReg.getData().get();
@@ -118,6 +120,7 @@ public class Network {
 			ResponseEnvelope<GameState> requestResult = webAccess.block();
 
 			if (requestResult.getState() == ERequestState.Error) {
+				//throw new NetworkException("Client error, errormessage: " + requestResult.getExceptionMessage());
 				System.err.println("Client error, errormessage: " + requestResult.getExceptionMessage());
 			} 
 		return requestResult.getData().get();
@@ -134,6 +137,7 @@ public class Network {
 		ResponseEnvelope resultReg = webAccess.block();
 
 		if (resultReg.getState() == ERequestState.Error) {
+			//throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
 			System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
 		} else {
 			System.out.println("half map was correct");
@@ -151,6 +155,7 @@ public class Network {
 		ResponseEnvelope resultReg = webAccess.block();
 
 		if (resultReg.getState() == ERequestState.Error) {
+			//throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
 			System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
 		} else {
 			System.out.println("move was correct");

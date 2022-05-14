@@ -156,7 +156,7 @@ public class MovementController {
 		}
 		
 		// if I have picked up the treasure but still haven't found the enemy fort
-		if (gameState.getHasCollectedTreasure() != null && gameState.getHasCollectedTreasure() == true && goBribeFort == false) {
+		if (goBribeFort == false && gameState.getHasCollectedTreasure() != null && gameState.getHasCollectedTreasure() == true) {
 			logger.info("I have picked up the treasure but still haven't found the enemy fort");
 			
 			//goBribeFort = true;
@@ -175,7 +175,7 @@ public class MovementController {
 				
 		// if i reached the previous goal
 		// aici fii atenta ca la pathcalculator nu cred ca e inclus targetul..
-		if (this.movesList.isEmpty() || this.movesList.size() == 0) {
+		if (this.movesList.isEmpty() || this.movesList.size() == 0 || this.movesList.size() == 1) {
 			logger.info("i reached prev goal");
 			
 			calcMovesToGoal();
@@ -192,7 +192,7 @@ public class MovementController {
 		Coordinates targetPosition = this.targetSelector.nextTarget();
 		
 		// test
-			if (currentField == targetPosition) {
+			if (currentField.equals(targetPosition)) {
 				targetPosition = this.targetSelector.nextTarget();
 			}
 		// test
@@ -218,9 +218,9 @@ public class MovementController {
 		 
 		
 		//------------------------- test print
-		for (int i=0; i<this.movesList.size(); i++) {
+		/*for (int i=0; i<this.movesList.size(); i++) {
 			System.out.println("move " + movesList.get(i));
-		}
+		}*/
 				
 		//------------------------- test print
 		

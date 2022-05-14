@@ -107,7 +107,7 @@ public class PathCalculator {
 			currPos = getLowestDistanceNode(unsettledNodes);
 			
 			unsettledNodes.remove(currPos);
-			
+						
 			// luam vecinii nodului curent
 			Map<String, Coordinates> neighbours = currPos.getFieldsAround(myMap);
 		
@@ -130,8 +130,12 @@ public class PathCalculator {
 		}
 		
 		targetField.setShortestPath(shortestPath);
-
-		
+		//------------------------- test print
+		/*for( Entry<Coordinates, Coordinates> mapEntry : previousNode.entrySet() ) {
+			System.out.println("prev :" + mapEntry.getKey().getX() + mapEntry.getKey().getY() + " curr :" + mapEntry.getValue().getX() + mapEntry.getValue().getY());
+		}
+*/
+		//------------------------- test print
 	}
 	
 	public List<MoveCommand> getMovesPath(MapField field) {

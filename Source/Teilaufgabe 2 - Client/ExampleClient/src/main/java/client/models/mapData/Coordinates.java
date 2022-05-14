@@ -170,25 +170,79 @@ public class Coordinates {
 		
 		if (myMap.getFields().get(this.getUpNeighbour(myMap)) != null) {
 			if (myMap.getFields().get(this.getUpNeighbour(myMap)).getType() != MapFieldType.WATER) {
-				toReturn.put("up", this.getUpNeighbour(myMap));	
+				
+					toReturn.put("up", this.getUpNeighbour(myMap));		
+				
 			}
 		}
 		
 		if (myMap.getFields().get(this.getDownNeighbour(myMap)) != null) {
 			if (myMap.getFields().get(this.getDownNeighbour(myMap)).getType() != MapFieldType.WATER) {
-				toReturn.put("down", this.getDownNeighbour(myMap));	
+				
+					toReturn.put("down", this.getDownNeighbour(myMap));	
+				
+					
 			}
 		}
 		
 		if (myMap.getFields().get(this.getLeftNeighbour(myMap)) != null) {
 			if (myMap.getFields().get(this.getLeftNeighbour(myMap)).getType() != MapFieldType.WATER) {
-				toReturn.put("left", this.getLeftNeighbour(myMap));		
+				
+					toReturn.put("left", this.getLeftNeighbour(myMap));	
+				
+						
 			}
 		}
 	
 		if (myMap.getFields().get(this.getRightNeighbour(myMap)) != null) {
 			if (myMap.getFields().get(this.getRightNeighbour(myMap)).getType() != MapFieldType.WATER) {
-				toReturn.put("right", this.getRightNeighbour(myMap));	
+				
+					toReturn.put("right", this.getRightNeighbour(myMap));	
+					
+			}
+		}
+		
+		
+		return toReturn;	
+	}
+	
+	
+	public Map<String, Coordinates> getFieldsAround(ClientMap myMap, Map<Coordinates, MapField> unvisitedTotal) {
+		
+		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();
+		
+		if (myMap.getFields().get(this.getUpNeighbour(myMap)) != null) {
+			if (myMap.getFields().get(this.getUpNeighbour(myMap)).getType() != MapFieldType.WATER) {
+				if (unvisitedTotal.containsKey(this.getUpNeighbour(myMap))) {
+					toReturn.put("up", this.getUpNeighbour(myMap));		
+				}
+			}
+		}
+		
+		if (myMap.getFields().get(this.getDownNeighbour(myMap)) != null) {
+			if (myMap.getFields().get(this.getDownNeighbour(myMap)).getType() != MapFieldType.WATER) {
+				if (unvisitedTotal.containsKey(this.getDownNeighbour(myMap))) {
+					toReturn.put("down", this.getDownNeighbour(myMap));	
+				}
+					
+			}
+		}
+		
+		if (myMap.getFields().get(this.getLeftNeighbour(myMap)) != null) {
+			if (myMap.getFields().get(this.getLeftNeighbour(myMap)).getType() != MapFieldType.WATER) {
+				if (unvisitedTotal.containsKey(this.getLeftNeighbour(myMap)) ) {
+					toReturn.put("left", this.getLeftNeighbour(myMap));	
+				}
+						
+			}
+		}
+	
+		if (myMap.getFields().get(this.getRightNeighbour(myMap)) != null) {
+			if (myMap.getFields().get(this.getRightNeighbour(myMap)).getType() != MapFieldType.WATER) {
+				if (unvisitedTotal.containsKey(this.getRightNeighbour(myMap))) {
+					toReturn.put("right", this.getRightNeighbour(myMap));	
+				}
+					
 			}
 		}
 		
