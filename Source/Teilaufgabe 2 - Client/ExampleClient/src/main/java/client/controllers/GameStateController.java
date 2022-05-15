@@ -190,7 +190,7 @@ public class GameStateController {
 				// update path
 				moveController.updatePath();
 				
-				//updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
 				
 				//------------------------- test print
 				System.out.println("acum suntem aici in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
@@ -208,17 +208,19 @@ public class GameStateController {
 	public void endGame() {
 		
 		if(moves >=100 || this.gameStateData.getPlayerState() == ClientPlayerState.LOST || this.gameStateData.getPlayerState() != ClientPlayerState.WON) {
+			if(this.gameStateData.getPlayerState() ==ClientPlayerState.WON) {
+				System.out.println("You Won!!! ");	
+			}
+			if(this.gameStateData.getPlayerState() ==ClientPlayerState.LOST) {
+				
+				System.out.println("You Lost :( ");	
+			}
 			if (moves >= 100) {
 				System.out.println("100 moves reached ");
 			}
 			
-			if(this.gameStateData.getPlayerState() ==ClientPlayerState.LOST) {
 			
-				System.out.println("You Lost :( ");	
-			}
-			if(this.gameStateData.getPlayerState() ==ClientPlayerState.WON) {
-				System.out.println("You Won!!! ");	
-			}
+			
 
 			System.exit(0);		
 		}

@@ -117,9 +117,9 @@ public class NetworkConverter {
 		if(fortState == EFortState.MyFortPresent) {
 			return FortState.MYFORT;
 		}
-		if(fortState == EFortState.NoOrUnknownFortState) {
+		/*if(fortState == EFortState.NoOrUnknownFortState) {
 			return FortState.UNKNOWNIFFORT;
-		}
+		}*/
 		
 		return null;
 		
@@ -130,9 +130,9 @@ public class NetworkConverter {
 		if(treasureState == ETreasureState.MyTreasureIsPresent) {
 			return TreasureState.MYTREASURE;
 		}
-		if(treasureState == ETreasureState.NoOrUnknownTreasureState) {
+		/*if(treasureState == ETreasureState.NoOrUnknownTreasureState) {
 			return TreasureState.UNKNOWNIFTREASURE;
-		}
+		}*/
 		return null;
 	}
 	

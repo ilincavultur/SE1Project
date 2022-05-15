@@ -26,6 +26,8 @@ public class PathCalculator {
 	Map<Coordinates, Coordinates> previousNode = new HashMap<Coordinates, Coordinates>();
 	private static final Logger logger = LoggerFactory.getLogger(PathCalculator.class);
 	List<Coordinates> shortestPath = new ArrayList<Coordinates>();
+	//private Map<Coordinates, MapField> unvisitedTotal = new HashMap<Coordinates, MapField>();
+	private List<Coordinates> unvisitedTotal = new ArrayList<Coordinates>();
 	
 	public PathCalculator(ClientMap myMap) {
 		super();
@@ -62,6 +64,22 @@ public class PathCalculator {
 	
 	
 	
+	/*public Map<Coordinates, MapField> getUnvisitedTotal() {
+		return unvisitedTotal;
+	}
+
+	public void setUnvisitedTotal(Map<Coordinates, MapField> unvisitedTotal) {
+		this.unvisitedTotal = unvisitedTotal;
+	}*/
+
+	public List<Coordinates> getUnvisitedTotal() {
+		return unvisitedTotal;
+	}
+
+	public void setUnvisitedTotal(List<Coordinates> unvisitedTotal) {
+		this.unvisitedTotal = unvisitedTotal;
+	}
+
 	public List<Coordinates> getShortestPath() {
 		return shortestPath;
 	}
@@ -130,6 +148,7 @@ public class PathCalculator {
 		}
 		
 		targetField.setShortestPath(shortestPath);
+		this.setShortestPath(shortestPath);
 		//------------------------- test print
 		/*for( Entry<Coordinates, Coordinates> mapEntry : previousNode.entrySet() ) {
 			System.out.println("prev :" + mapEntry.getKey().getX() + mapEntry.getKey().getY() + " curr :" + mapEntry.getValue().getX() + mapEntry.getValue().getY());
@@ -142,8 +161,8 @@ public class PathCalculator {
 		
 		// get it from the target field node
 		List<MoveCommand> toReturn = new ArrayList<MoveCommand>();
-		List<Coordinates> sPath = field.getShortestPath();
-	
+		//List<Coordinates> sPath = field.getShortestPath();
+		List<Coordinates> sPath = this.getShortestPath();
 		
 		//------------------------- test print
 		

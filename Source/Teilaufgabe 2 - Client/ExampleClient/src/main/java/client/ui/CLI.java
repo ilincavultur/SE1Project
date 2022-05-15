@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import client.models.mapData.ClientMap;
 import client.models.mapData.Coordinates;
 import client.models.mapData.MapField;
+import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
 import client.models.mapData.enums.PlayerPositionState;
 import client.models.mapData.enums.TreasureState;
@@ -18,6 +19,10 @@ public class CLI implements PropertyChangeListener {
 		
 		if (myMapField.getTreasureState() == TreasureState.MYTREASURE) {
 			System.out.print("!!!T!!!");
+		}
+		
+		if (myMapField.getFortState() == FortState.ENEMYFORT) {
+			System.out.print("!!!EF!!!");
 		}
 		
 		if(myMapField.getPlayerPositionState() == PlayerPositionState.BOTH || myMapField.getPlayerPositionState() == PlayerPositionState.MYPLAYER) {

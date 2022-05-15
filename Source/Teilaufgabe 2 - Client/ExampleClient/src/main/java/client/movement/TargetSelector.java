@@ -27,7 +27,8 @@ public class TargetSelector {
 	private Map<Coordinates, MapField> enemyHalf = new HashMap<Coordinates, MapField>();
 	private Map<Coordinates, MapField> enemyHalfCopy = new HashMap<Coordinates, MapField>();
 	private ClientMap myMap;
-	private Map<Coordinates, MapField> unvisitedTotal = new HashMap<Coordinates, MapField>();
+	//private Map<Coordinates, MapField> unvisitedTotal = new HashMap<Coordinates, MapField>();
+	private List<Coordinates> unvisitedTotal = new ArrayList<Coordinates>();
 	private GameStateData gameState;
 	private static final Logger logger = LoggerFactory.getLogger(TargetSelector.class);
 	// test 
@@ -65,11 +66,19 @@ public class TargetSelector {
 
 
 
-	public Map<Coordinates, MapField> getUnvisitedTotal() {
+	/*public Map<Coordinates, MapField> getUnvisitedTotal() {
 		return unvisitedTotal;
 	}
 
 	public void setUnvisitedTotal(Map<Coordinates, MapField> unvisitedTotal) {
+		this.unvisitedTotal = unvisitedTotal;
+	}*/
+
+	public List<Coordinates> getUnvisitedTotal() {
+		return unvisitedTotal;
+	}
+
+	public void setUnvisitedTotal(List<Coordinates> unvisitedTotal) {
 		this.unvisitedTotal = unvisitedTotal;
 	}
 
@@ -99,7 +108,8 @@ public class TargetSelector {
 		for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
 			if (mapEntry.getValue().getType() != MapFieldType.WATER) {
 			
-				unvisitedTotal.put(mapEntry.getKey(), mapEntry.getValue());
+				//unvisitedTotal.put(mapEntry.getKey(), mapEntry.getValue());
+				unvisitedTotal.add(mapEntry.getKey());
 			}
 		}
 		logger.info("setHalves");
@@ -189,6 +199,9 @@ public class TargetSelector {
 	
 	public Coordinates nextTarget() {
 		
+		unvisitedTotal.remove(gameState.getPlayerPosition());
+		updateMapHalf();
+		
 		Coordinates toRet = new Coordinates();
 		toRet.setX(-1);
 		toRet.setY(-1);
@@ -201,6 +214,10 @@ public class TargetSelector {
 		if (pickedUpTreasure && gameState.getEnemyFortIsPresentAt() == null) {
 			searchingForTreasure = false;
 			searchingForEnemyFort = true;
+		}
+		if (gameState.getEnemyFortIsPresentAt() != null) {
+			//searchingForTreasure = false;
+			searchingForEnemyFort = false;
 		}
 		if (foundTreasure) {
 			searchingForTreasure = false;
@@ -223,7 +240,7 @@ public class TargetSelector {
 			
 			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 				
-				if (unvisitedTotal.containsKey(mapEntry.getValue())) {
+				if (unvisitedTotal.contains(mapEntry.getValue())) {
 					unvisitedTotal.remove(mapEntry.getValue());
 					updateMapHalf();
 				}
@@ -257,8 +274,8 @@ public class TargetSelector {
 			}
 			
 			// treasure is Present => go to treasure (foundTreasure)
-			// 
-			if (!pickedUpTreasure && foundTreasure && this.goPickUpTreasure == true) {
+			// && this.goPickUpTreasure == true
+			if (!pickedUpTreasure && foundTreasure ) {
 				
 				logger.info("The treasure is present and I am going towards it");
 				searchingForTreasure = false;
@@ -280,10 +297,11 @@ public class TargetSelector {
 			}
 			
 			// enemyFort is Present => go to enemyFort (foundEnemyFort)
-			if (pickedUpTreasure && foundEnemyFort && this.goBribeFort == true) {
+			//&& this.goBribeFort == true
+			if (pickedUpTreasure && foundEnemyFort ) {
 				searchingForTreasure = false;
 				logger.info("The fort is present and I am going towards it");
-				searchingForEnemyFort = true;
+				searchingForEnemyFort = false;
 				toRet = gameState.getEnemyFortIsPresentAt();
 				//System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 				return toRet;
@@ -314,7 +332,7 @@ public class TargetSelector {
 					
 					// if it's not visited yet
 					
-					if (mapHalf.containsKey(mapEntry.getValue()) && unvisitedTotal.containsKey(mapEntry.getValue())) {
+					if (mapHalf.containsKey(mapEntry.getValue()) && unvisitedTotal.contains(mapEntry.getValue())) {
 						toRet = mapEntry.getValue();
 						//------------------------- test print
 						System.out.println("next unvisited neighbour: " + toRet.getX() + " " + toRet.getY());
@@ -337,10 +355,9 @@ public class TargetSelector {
 				
 			}
 			
-			// remove from unvisited;
-			//mapHalf.remove(toRet);
-			unvisitedTotal.remove(toRet);
-			updateMapHalf();
+		
+			/*unvisitedTotal.remove(toRet);
+			updateMapHalf();*/
 			return toRet;
 			
 		}
@@ -403,7 +420,7 @@ public class TargetSelector {
 		
 		while (itr.hasNext()) {
 			Entry<Coordinates, MapField> entry = itr.next();
-			if (!unvisitedTotal.containsKey(entry.getKey())) {
+			if (!unvisitedTotal.contains(entry.getKey())) {
 				itr.remove();
 				System.out.println("i removed: " + entry.getKey().getX() + " " + entry.getKey().getY());
 			}
@@ -415,7 +432,7 @@ public class TargetSelector {
 		
 		while (itr.hasNext()) {
 			Entry<Coordinates, MapField> entry = itr.next();
-			if (!unvisitedTotal.containsKey(entry.getKey())) {
+			if (!unvisitedTotal.contains(entry.getKey())) {
 				itr.remove();
 				System.out.println("i removed: " + entry.getKey().getX() + " " + entry.getKey().getY());
 			}
