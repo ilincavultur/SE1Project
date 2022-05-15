@@ -315,46 +315,46 @@ public class TargetSelector {
 	}
 	
 	//TODO
-		public Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf, Map<Coordinates, MapField> copyHalf ) {
-			logger.info("calculating next available neighbour");
-			Coordinates toRet = new Coordinates();
-			
-			toRet.setX(-1);
-			toRet.setY(-1);
-	
-			while ((toRet.getX() < 0 || toRet.getY() < 0)) {
-			
-				Map<String, Coordinates> fieldsAround = pos.getFieldsAround(myMap);	
+	public Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf, Map<Coordinates, MapField> copyHalf ) {
+		logger.info("calculating next available neighbour");
+		Coordinates toRet = new Coordinates();
+		
+		toRet.setX(-1);
+		toRet.setY(-1);
 
-				for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
-					
-					// if it's not visited yet
-					
-					if (mapHalf.containsKey(mapEntry.getValue()) && unvisitedTotal.contains(mapEntry.getValue())) {
-						toRet = mapEntry.getValue();
-						//------------------------- test print
-						System.out.println("next unvisited neighbour: " + toRet.getX() + " " + toRet.getY());
-						//------------------------- test print
-						break;
-					} 
+		while ((toRet.getX() < 0 || toRet.getY() < 0)) {
+		
+			Map<String, Coordinates> fieldsAround = pos.getFieldsAround(myMap);	
 
-				}
+			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 				
+				// if it's not visited yet
+				
+				if (mapHalf.containsKey(mapEntry.getValue()) && unvisitedTotal.contains(mapEntry.getValue())) {
+					toRet = mapEntry.getValue();
+					//------------------------- test print
+					System.out.println("next unvisited neighbour: " + toRet.getX() + " " + toRet.getY());
+					//------------------------- test print
+					break;
+				} 
+
+			}
+			
+			break;
+		}
+		while (toRet.getX() < 0 || toRet.getY() < 0) {
+			for( Entry<Coordinates, MapField> mapEntry : mapHalf.entrySet() ) {
+				
+				toRet = mapEntry.getKey();
 				break;
 			}
-			while (toRet.getX() < 0 || toRet.getY() < 0) {
-				for( Entry<Coordinates, MapField> mapEntry : mapHalf.entrySet() ) {
-					
-					toRet = mapEntry.getKey();
-					break;
-				}
-				
-				
-			}
-	
-			return toRet;
+			
 			
 		}
+
+		return toRet;
+		
+	}
 		/*
 	
 	//TODO
@@ -416,7 +416,7 @@ public class TargetSelector {
 			Entry<Coordinates, MapField> entry = itr.next();
 			if (!unvisitedTotal.contains(entry.getKey())) {
 				itr.remove();
-				System.out.println("i removed: " + entry.getKey().getX() + " " + entry.getKey().getY());
+				//System.out.println("i removed: " + entry.getKey().getX() + " " + entry.getKey().getY());
 			}
 		}
 		
@@ -428,7 +428,7 @@ public class TargetSelector {
 			Entry<Coordinates, MapField> entry = itr.next();
 			if (!unvisitedTotal.contains(entry.getKey())) {
 				itr.remove();
-				System.out.println("i removed: " + entry.getKey().getX() + " " + entry.getKey().getY());
+				//System.out.println("i removed: " + entry.getKey().getX() + " " + entry.getKey().getY());
 			}
 		}
 		

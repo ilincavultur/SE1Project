@@ -184,6 +184,7 @@ public class NetworkConverter {
 		
 		GameStateData state = new GameStateData();
 		
+		
 		state.setGameStateId(gameState.getGameStateId());
 		Iterator<PlayerState> it = gameState.getPlayers().iterator();
 

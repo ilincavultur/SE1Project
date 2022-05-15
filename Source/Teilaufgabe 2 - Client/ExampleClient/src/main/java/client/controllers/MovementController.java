@@ -1,5 +1,6 @@
 package client.controllers;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class MovementController {
 	GameStateData gameState;
 	boolean goPickUpTreasure = false;
 	boolean goBribeFort = false;
-
+	List<Coordinates> shortestPath = new ArrayList<Coordinates>();
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
@@ -41,6 +42,15 @@ public class MovementController {
 		this.currentField = currentField;
 		this.fullMap = fullMap;
 		
+	}
+
+	
+	public List<Coordinates> getShortestPath() {
+		return shortestPath;
+	}
+
+	public void setShortestPath(List<Coordinates> shortestPath) {
+		this.shortestPath = shortestPath;
 	}
 
 	public PathCalculator getPathCalc() {
@@ -135,7 +145,7 @@ public class MovementController {
 
 		logger.info("updatepath");
 		this.targetSelector.setGameState(gameState);
-		
+		//this.setShortestPath(pathCalc.getShortestPath());
 		this.pathCalc.setUnvisitedTotal(this.targetSelector.getUnvisitedTotal());
 		//test
 		/*this.targetSelector.setGoPickUpTreasure(goPickUpTreasure);
@@ -149,6 +159,13 @@ public class MovementController {
 			logger.info("updatepath: moves list == null");
 			calcMovesToGoal();
 			
+		}
+		
+		// if current path that i am following is only made of already visited nodes
+		//pathCalc.getUnvisitedTotal()
+		if (Collections.disjoint(this.targetSelector.getUnvisitedTotal(), pathCalc.getShortestPath())) {
+			logger.info("my path is only made of already visited nodes");
+			calcMovesToGoal();
 		}
 		
 		// if treasure is present and I havent picked it up yet
@@ -204,7 +221,7 @@ public class MovementController {
 		// test
 		
 		//------------------------- test print
-		System.out.println("target field" + targetPosition.getX() + targetPosition.getY());
+		System.out.println("target field " + targetPosition.getX() + " " + targetPosition.getY());
 		//------------------------- test print
 		
 		MapField targetField = fullMap.getFields().get(targetPosition);
@@ -219,11 +236,12 @@ public class MovementController {
 
 		this.setMovesList(pathCalc.getMovesPath(targetField));
 		 
-		logger.info("moves path:");
+		
 		//------------------------- test print
+		/*logger.info("moves path:");
 		for (int i=0; i<this.movesList.size(); i++) {
 			System.out.println("move " + movesList.get(i));
-		}
+		}*/
 				
 		//------------------------- test print
 		

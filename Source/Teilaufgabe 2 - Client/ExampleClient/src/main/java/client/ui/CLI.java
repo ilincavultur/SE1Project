@@ -47,8 +47,6 @@ public class CLI implements PropertyChangeListener {
  	
 	public void printMap(ClientMap myMap) {
 		
-		System.out.println("ysize" + myMap.getySize());
-		System.out.println("xsize" + myMap.getxSize());
 
 		for (int y = 0; y < myMap.getySize(); y++) {
 		

@@ -35,6 +35,7 @@ public class GameStateController {
 		this.gameStateData.setGameStateId(newGSD.getGameStateId());
 		this.gameStateData.setHasCollectedTreasure(newGSD.getHasCollectedTreasure());
 		this.gameStateData.setPlayerState(newGSD.getPlayerState());
+		this.gameStateData.setGameStateId(newGSD.getGameStateId());
 		if(newGSD.getFullMap() != null) {
 			this.mapController.setMyMap(newGSD.getFullMap());
 			this.gameStateData.setFullMap(newGSD.getFullMap());
@@ -44,6 +45,7 @@ public class GameStateController {
 			this.moveController.getPathCalc().setMyMap(newGSD.getFullMap());
 		}
 		this.moveController.setGameState(newGSD);
+	
 	
 	}
 	
@@ -62,13 +64,6 @@ public class GameStateController {
 		moveController.updatePath();
 
 		play(pl1);
-		if(this.gameStateData.getPlayerState() ==ClientPlayerState.WON) {
-			System.out.println("You Won!!! ");	
-		}
-		if(this.gameStateData.getPlayerState() ==ClientPlayerState.LOST) {
-			
-			System.out.println("You Lost :( ");	
-		}
 		
 		logger.info("play function has ended");
 		
@@ -167,7 +162,6 @@ public class GameStateController {
 	
 	public void endGame() {
 		
-		if(moves >=100 || this.gameStateData.getPlayerState() == ClientPlayerState.LOST || this.gameStateData.getPlayerState() != ClientPlayerState.WON) {
 			if(this.gameStateData.getPlayerState() ==ClientPlayerState.WON) {
 				System.out.println("You Won!!! ");	
 			}
@@ -181,7 +175,6 @@ public class GameStateController {
 
 
 			System.exit(0);		
-		}
 	
 	}
 	

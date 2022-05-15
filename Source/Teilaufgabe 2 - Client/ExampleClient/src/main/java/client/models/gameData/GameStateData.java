@@ -43,6 +43,7 @@ public class GameStateData {
 			this.playerPosition = obj.getPlayerPosition();
 		}
 		
+		
 	}
 
 	public void registerInterestedView(PropertyChangeListener listener) {
@@ -53,6 +54,7 @@ public class GameStateData {
 		return playerId;
 	}
 
+	
 
 
 	public void setPlayerId(String playerId) {
@@ -110,7 +112,9 @@ public class GameStateData {
 
 
 	public void setPlayerPosition(Coordinates playerPosition) {
+		
 		this.playerPosition = playerPosition;
+		
 	}
 
 
@@ -118,12 +122,14 @@ public class GameStateData {
 		return fullMap;
 	}
 
-	public void setFullMap(ClientMap fullMap) {
+	 public void setFullMap(ClientMap fullMap) {
 		ClientMap before = this.fullMap;
 		this.fullMap = fullMap;
+		
 		notifyChanges.firePropertyChange("myMap", before, fullMap);
 		
 	}
+	
 	
 	public MapField getMyCurrentPosition(ClientMap myMap) {
 
