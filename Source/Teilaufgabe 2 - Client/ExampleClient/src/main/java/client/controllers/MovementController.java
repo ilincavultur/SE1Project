@@ -179,7 +179,8 @@ public class MovementController {
 		
 		// if I have picked up the treasure but still haven't found the enemy fort
 		//goBribeFort == false && 
-		if (gameState.getHasCollectedTreasure() != null && gameState.getHasCollectedTreasure() == true && (this.movesList.isEmpty() || this.movesList.size() == 0 || this.movesList.size() == 1)) {
+		// || this.movesList.size() == 1
+		if (gameState.getHasCollectedTreasure() != null && gameState.getHasCollectedTreasure() == true && (this.movesList.isEmpty() || this.movesList.size() == 0)) {
 			
 			logger.info("I have picked up the treasure but still haven't found the enemy fort");
 			calcMovesToGoal();
