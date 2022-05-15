@@ -65,16 +65,7 @@ public class GameStateController {
 		
 		logger.info("play function has ended");
 		
-		//------------------------- test print
-		if (this.gameStateData.getPlayerPosition() != null) {
-			
-			logger.info("blanalnalala");	
-			System.out.println("acum suntem aici : " + this.gameStateData.getMyCurrentPosition(this.gameStateData.getFullMap()).getPosition().getX() + " " + this.gameStateData.getMyCurrentPosition(this.gameStateData.getFullMap()).getPosition().getY());
-		}
-		//------------------------- test print
-		
-		
-		// aici trebuie endgame
+
 		endGame();
 
 	}
@@ -117,7 +108,7 @@ public class GameStateController {
 		updateGameStateData(networkController.getGameState(networkController.getGameId(), networkController.getPlayerId()));
 
 		//------------------------- test print
-		System.out.println("my fort:" + mapController.getMyFortField().getPosition().getX() + " "+ mapController.getMyFortField().getPosition().getY());
+		//System.out.println("my fort:" + mapController.getMyFortField().getPosition().getX() + " "+ mapController.getMyFortField().getPosition().getY());
 		System.out.println("my fort based on the data:" +this.gameStateData.getPlayerPosition().getX() + " "+ this.gameStateData.getPlayerPosition().getY());
 		//------------------------- test print
 
@@ -132,73 +123,35 @@ public class GameStateController {
 			while(!networkController.checkIfMyTurn(pl1)) {
 				
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-			
-				
-				// update path
-				moveController.updatePath();
 		
-			}
-			
-			/*if (this.gameStateData.getTreasureIsPresentAt() !=null && (this.gameStateData.getHasCollectedTreasure() == null || this.gameStateData.getHasCollectedTreasure() == false)) {
-				
-				moveController.setGoPickUpTreasure(true);
-				logger.info("going to pick up treasure");
-				
-			} else {
-				
-				moveController.setGoPickUpTreasure(false);
-				
-			}
-			if (this.gameStateData.getEnemyFortIsPresentAt() !=null) {
-			
-				moveController.setGoPickUpTreasure(false);
-				moveController.setGoBribeFort(true);
-				logger.info("enemy fort is present");
-				
-			}
-			
-			// update path
-			moveController.updatePath();*/
-			
-			MoveCommand newMove = moveController.getNextMove();
-			
-			if (newMove != null) {
-				
-				networkController.sendMove(pl1, newMove);	
-				
-				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-				
-				// && (this.gameStateData.getHasCollectedTreasure() == null || this.gameStateData.getHasCollectedTreasure() == false)
-				if (this.gameStateData.getTreasureIsPresentAt() !=null) {
-					
-					moveController.setGoPickUpTreasure(true);
-					logger.info("going to pick up treasure");
-					
-				} else {
-					
-					moveController.setGoPickUpTreasure(false);
-					
-				}
-				if (this.gameStateData.getEnemyFortIsPresentAt() !=null) {
-				
-					moveController.setGoPickUpTreasure(false);
-					moveController.setGoBribeFort(true);
-					logger.info("enemy fort is present");
-					
-				}
-				
-				// update path
 				moveController.updatePath();
-				
-				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-				
-				//------------------------- test print
-				System.out.println("acum suntem aici in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
-				//------------------------- test print
-				
-				++moves;
-			} //else {
+			}
+			//if (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON) {
+
+				// update path
 				//moveController.updatePath();
+				
+				MoveCommand newMove = moveController.getNextMove();
+				
+				if (newMove != null) {
+					
+					networkController.sendMove(pl1, newMove);	
+					
+					updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+									
+					// update path
+					moveController.updatePath();
+					
+					updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+					
+					
+					
+					//------------------------- test print
+					System.out.println("acum suntem aici in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
+					//------------------------- test print
+					
+					++moves;
+				} 
 			//}
 			
 		}
@@ -218,9 +171,7 @@ public class GameStateController {
 			if (moves >= 100) {
 				System.out.println("100 moves reached ");
 			}
-			
-			
-			
+
 
 			System.exit(0);		
 		}

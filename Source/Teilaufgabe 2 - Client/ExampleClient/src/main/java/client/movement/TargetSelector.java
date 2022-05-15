@@ -225,10 +225,10 @@ public class TargetSelector {
 		
 		
 		//------------------------- test print
-		System.out.println("foundTreasure" + foundTreasure);
+		/*System.out.println("foundTreasure" + foundTreasure);
 		System.out.println("foundEnemyFort" + foundEnemyFort);
 		System.out.println("searchingForTreasure" + searchingForTreasure);
-		System.out.println("searchingForEnemyFort" + searchingForEnemyFort);
+		System.out.println("searchingForEnemyFort" + searchingForEnemyFort);*/
 		//------------------------- test print
 		
 	
@@ -321,9 +321,7 @@ public class TargetSelector {
 			
 			toRet.setX(-1);
 			toRet.setY(-1);
-		
-			
-		
+	
 			while ((toRet.getX() < 0 || toRet.getY() < 0)) {
 			
 				Map<String, Coordinates> fieldsAround = pos.getFieldsAround(myMap);	
@@ -343,7 +341,6 @@ public class TargetSelector {
 				}
 				
 				break;
-				//System.out.println("nextAvailableNeighbour: " + pos.getX() + " " + pos.getY());
 			}
 			while (toRet.getX() < 0 || toRet.getY() < 0) {
 				for( Entry<Coordinates, MapField> mapEntry : mapHalf.entrySet() ) {
@@ -354,10 +351,7 @@ public class TargetSelector {
 				
 				
 			}
-			
-		
-			/*unvisitedTotal.remove(toRet);
-			updateMapHalf();*/
+	
 			return toRet;
 			
 		}
@@ -457,9 +451,5 @@ public class TargetSelector {
 		
 	}
 	
-	
-	
-	
-
 	
 }

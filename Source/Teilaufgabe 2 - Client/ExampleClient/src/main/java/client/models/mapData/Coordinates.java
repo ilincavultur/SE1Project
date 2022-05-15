@@ -206,7 +206,7 @@ public class Coordinates {
 		return toReturn;	
 	}
 	
-	
+	/*
 	public Map<String, Coordinates> getFieldsAround(ClientMap myMap, Map<Coordinates, MapField> unvisitedTotal) {
 		
 		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();
@@ -249,7 +249,7 @@ public class Coordinates {
 		
 		return toReturn;	
 	}
-	
+	*/
 	public Map<String, Coordinates> getFieldsAroundMountain(ClientMap myMap) {
 		
 		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();

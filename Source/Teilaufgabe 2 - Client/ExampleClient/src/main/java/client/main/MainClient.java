@@ -1,20 +1,8 @@
 package client.main;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import MessagesBase.ResponseEnvelope;
-import MessagesBase.UniquePlayerIdentifier;
-import MessagesBase.MessagesFromClient.ERequestState;
-import MessagesBase.MessagesFromClient.PlayerRegistration;
-import MessagesBase.MessagesFromServer.GameState;
 import client.controllers.GameStateController;
-import client.controllers.NetworkController;
-import client.network.Network;
-import reactor.core.publisher.Mono;
+
 
 public class MainClient {
 
@@ -57,7 +45,7 @@ public class MainClient {
 		//String serverBaseUrl = args[1];
 		//String gameId = args[2];
 		String serverBaseUrl = "http://swe1.wst.univie.ac.at";
-		String gameId = "gZhti";
+		String gameId = "04w4H";
 		
 		
 		GameStateController gameController = new GameStateController(gameId, serverBaseUrl);

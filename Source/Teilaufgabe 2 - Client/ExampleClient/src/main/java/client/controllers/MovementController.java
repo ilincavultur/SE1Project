@@ -23,12 +23,9 @@ public class MovementController {
 	List<MoveCommand> movesList;
 	GameStateData gameState;
 	boolean goPickUpTreasure = false;
-	//boolean goPickUpTreasureBefore = goPickUpTreasure;
 	boolean goBribeFort = false;
-	//boolean goBribeFortBefore = goBribeFort;
-	/*Coordinates treasureIsPresentBefore = new Coordinates();
-	Coordinates enemyFortIsPresentBefore = new Coordinates();
-	boolean hasCollectedTreasureBefore = false;*/
+
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
 
@@ -131,45 +128,24 @@ public class MovementController {
 		this.targetSelector.setGameState(gameState);
 		this.pathCalc.setUnvisitedTotal(this.targetSelector.getUnvisitedTotal());
 		
-		//test
-		/*
-		treasureIsPresentBefore = gameState.getTreasureIsPresentAt();
-		enemyFortIsPresentBefore = gameState.getEnemyFortIsPresentAt();
-		hasCollectedTreasureBefore = gameState.getHasCollectedTreasure();*/
 		logger.info("setup");
 	}
 	
 	public void updatePath() {
-		
-		
-		
+
 		logger.info("updatepath");
 		this.targetSelector.setGameState(gameState);
 		
 		this.pathCalc.setUnvisitedTotal(this.targetSelector.getUnvisitedTotal());
 		//test
-		this.targetSelector.setGoPickUpTreasure(goPickUpTreasure);
+		/*this.targetSelector.setGoPickUpTreasure(goPickUpTreasure);
 		System.out.println("goPickupTreasure " + goPickUpTreasure);
 		this.targetSelector.setGoBribeFort(goBribeFort);
-		System.out.println("goBribeFort " + goBribeFort);
-		
-		
-		/*boolean changeHasOccured = false;
-		if (goPickUpTreasure != goPickUpTreasureBefore || goBribeFort != goBribeFortBefore || treasureIsPresentBefore != gameState.getTreasureIsPresentAt() || enemyFortIsPresentBefore != gameState.getEnemyFortIsPresentAt() || hasCollectedTreasureBefore != gameState.getHasCollectedTreasure()) {
-			changeHasOccured = true;
-		}
-		
-		if (changeHasOccured) {
-			goPickUpTreasureBefore = goPickUpTreasure;
-			goBribeFortBefore = goBribeFort;
-			treasureIsPresentBefore = gameState.getTreasureIsPresentAt();
-			enemyFortIsPresentBefore = gameState.getEnemyFortIsPresentAt();
-			hasCollectedTreasureBefore = gameState.getHasCollectedTreasure();
-		}*/
-		//test
+		System.out.println("goBribeFort " + goBribeFort);*/
 		
 		// if i haven't gotten any path yet 
 		if (this.movesList == null) {
+			
 			logger.info("updatepath: moves list == null");
 			calcMovesToGoal();
 			
@@ -177,48 +153,37 @@ public class MovementController {
 		
 		// if treasure is present and I havent picked it up yet
 		//goPickUpTreasure == true && 
-		if (gameState.getTreasureIsPresentAt() != null && gameState.getHasCollectedTreasure() != null && !gameState.getHasCollectedTreasure()) {
+		if (gameState.getTreasureIsPresentAt() != null && gameState.getHasCollectedTreasure() != null && !gameState.getHasCollectedTreasure() && goPickUpTreasure == false) {
+			goPickUpTreasure = true;
 			logger.info("treasure is present and I havent picked it up yet");
-			
-			//goPickUpTreasure = true;
-			
 			calcMovesToGoal();	
-			
-			
-			
-			
+	
 		}
 		
 		// if I have picked up the treasure but still haven't found the enemy fort
 		//goBribeFort == false && 
 		if (gameState.getHasCollectedTreasure() != null && gameState.getHasCollectedTreasure() == true && (this.movesList.isEmpty() || this.movesList.size() == 0 || this.movesList.size() == 1)) {
+			
 			logger.info("I have picked up the treasure but still haven't found the enemy fort");
-			
-			//goBribeFort = true;
-			
 			calcMovesToGoal();
-			
 			
 		}
 		
 		// if enemyFort is present and I have the treasure
 		//goBribeFort == true && 
-		if (gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure() != null) {
+		if (gameState.getEnemyFortIsPresentAt() != null && gameState.getHasCollectedTreasure() != null && goBribeFort == false) {
+			goBribeFort = true;
 			logger.info("enemyFort is present and I have the treasure");
-			
-			//goBribeFort = true;
-			
 			calcMovesToGoal();
 		
-			
 		}
 				
 		// if i reached the previous goal
 		// aici fii atenta ca la pathcalculator nu cred ca e inclus targetul..
-		if (this.movesList.isEmpty() || this.movesList.size() == 0 || this.movesList.size() == 1) {
+		//|| this.movesList.size() == 1
+		if (this.movesList.isEmpty() || this.movesList.size() == 0) {
+			
 			logger.info("i reached prev goal");
-			
-			
 			calcMovesToGoal();
 			
 		}
@@ -233,9 +198,9 @@ public class MovementController {
 		Coordinates targetPosition = this.targetSelector.nextTarget();
 		
 		// test
-			if (currentField.equals(targetPosition)) {
-				targetPosition = this.targetSelector.nextTarget();
-			}
+		if (currentField.equals(targetPosition)) {
+			targetPosition = this.targetSelector.nextTarget();
+		}
 		// test
 		
 		//------------------------- test print
@@ -251,25 +216,14 @@ public class MovementController {
 			logger.info("my path is only made of already visited nodes");
 			pathCalc.getShortestPath(currentField, targetField);	
 		}*/
-	
-		
-		 
-		 
-		 
-		 //TODO also update path if path is only made of already visited nodes!!!!!!
-		//targetField.setShortestPath(pathCalc.getShortestPath());
-		//test
-		//List<Coordinates> path = pathCalc.getShortestPath();
-		//
-		
+
 		this.setMovesList(pathCalc.getMovesPath(targetField));
 		 
-		 
-		
+		logger.info("moves path:");
 		//------------------------- test print
-		/*for (int i=0; i<this.movesList.size(); i++) {
+		for (int i=0; i<this.movesList.size(); i++) {
 			System.out.println("move " + movesList.get(i));
-		}*/
+		}
 				
 		//------------------------- test print
 		
@@ -281,7 +235,6 @@ public class MovementController {
 		
 		if (this.movesList != null && this.movesList.size()!=0) {
 			
-			
 			toRet = pathCalc.getNextMove(this.movesList);	
 			
 			//------------------------- test print
@@ -292,9 +245,8 @@ public class MovementController {
 			
 			return toRet;
 			
-		} // else updatepath? or update path before
+		} 
 
-		
 		return null;
 		
 	}

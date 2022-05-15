@@ -61,16 +61,6 @@ public class PathCalculator {
 		return firstFieldMoves + secondFieldMoves;
 		
 	}
-	
-	
-	
-	/*public Map<Coordinates, MapField> getUnvisitedTotal() {
-		return unvisitedTotal;
-	}
-
-	public void setUnvisitedTotal(Map<Coordinates, MapField> unvisitedTotal) {
-		this.unvisitedTotal = unvisitedTotal;
-	}*/
 
 	public List<Coordinates> getUnvisitedTotal() {
 		return unvisitedTotal;
@@ -163,14 +153,6 @@ public class PathCalculator {
 		List<MoveCommand> toReturn = new ArrayList<MoveCommand>();
 		//List<Coordinates> sPath = field.getShortestPath();
 		List<Coordinates> sPath = this.getShortestPath();
-		
-		//------------------------- test print
-		
-		for (int i=0; i<sPath.size(); i++) {
-			System.out.println("path " + sPath.get(i).getX() + sPath.get(i).getY());
-		}
-				
-		//------------------------- test print
 		
 		Coordinates stPos = this.startPos;
 		for (int i=0; i<sPath.size(); i++) {
