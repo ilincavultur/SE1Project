@@ -62,6 +62,13 @@ public class GameStateController {
 		moveController.updatePath();
 
 		play(pl1);
+		if(this.gameStateData.getPlayerState() ==ClientPlayerState.WON) {
+			System.out.println("You Won!!! ");	
+		}
+		if(this.gameStateData.getPlayerState() ==ClientPlayerState.LOST) {
+			
+			System.out.println("You Lost :( ");	
+		}
 		
 		logger.info("play function has ended");
 		

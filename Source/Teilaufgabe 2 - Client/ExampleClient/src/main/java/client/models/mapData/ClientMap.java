@@ -87,7 +87,7 @@ public class ClientMap {
 		
 		Map<Coordinates, MapField> fieldsGrassMountain = new HashMap<Coordinates, MapField>();
 		
-		logger.info("Client Map getVisitableNodes");
+		//logger.info("Client Map getVisitableNodes");
 		for( Map.Entry<Coordinates, MapField> mapEntry : this.getFields().entrySet() ) {
 			if (mapEntry.getValue().getType() == MapFieldType.GRASS || mapEntry.getValue().getType() == MapFieldType.MOUNTAIN) {
 				fieldsGrassMountain.put(mapEntry.getKey(), mapEntry.getValue());

@@ -132,7 +132,7 @@ public class PathCalculator {
 			if(currPos.equals(targetField.getPosition())) {
 				//TODO
 				//targetField.getShortestPath().add(currPos);
-				logger.info("am ajuns la target");
+				//logger.info("am ajuns la target");
 				break;
 			}
 		}
