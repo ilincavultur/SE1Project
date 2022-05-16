@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.ETerrain;
@@ -36,13 +34,12 @@ import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
 import client.models.mapData.enums.PlayerPositionState;
 import client.models.mapData.enums.TreasureState;
-import client.movement.PathCalculator;
 import client.movement.enums.MoveCommand;
 
 public class NetworkConverter {
-	private static final Logger logger = LoggerFactory.getLogger(NetworkConverter.class);
+	//private static final Logger logger = LoggerFactory.getLogger(NetworkConverter.class);
 
-	public ETerrain convertTerrainTypeTo(MapFieldType fieldType) {
+	private ETerrain convertTerrainTypeTo(MapFieldType fieldType) {
 		
 		if(fieldType == MapFieldType.GRASS) {
 			return ETerrain.Grass;
@@ -58,7 +55,7 @@ public class NetworkConverter {
 		return null;
 	}
 	
-	public MapFieldType convertTerrainTypeFrom(ETerrain fieldType) {
+	private MapFieldType convertTerrainTypeFrom(ETerrain fieldType) {
 		
 		if(fieldType == ETerrain.Grass) {
 			return MapFieldType.GRASS;
@@ -74,7 +71,7 @@ public class NetworkConverter {
 		return null;
 	}
 	
-	public ClientPlayerState convertPlayerStateFrom(EPlayerGameState plState) {
+	private ClientPlayerState convertPlayerStateFrom(EPlayerGameState plState) {
 		
 		if(plState == EPlayerGameState.MustAct) {
 			return ClientPlayerState.MUSTACT;
@@ -92,7 +89,7 @@ public class NetworkConverter {
 		
 	}
 	
-	public PlayerPositionState convertPlayerPositionStateFrom(EPlayerPositionState plPosState) {
+	private PlayerPositionState convertPlayerPositionStateFrom(EPlayerPositionState plPosState) {
 		
 		if(plPosState == EPlayerPositionState.NoPlayerPresent) {
 			return PlayerPositionState.NOPLAYER;
@@ -109,7 +106,7 @@ public class NetworkConverter {
 		return null;
 	}
 	
-	public FortState convertFortStateFrom(EFortState fortState) {
+	private FortState convertFortStateFrom(EFortState fortState) {
 		
 		if(fortState == EFortState.EnemyFortPresent) {
 			return FortState.ENEMYFORT;
@@ -125,7 +122,7 @@ public class NetworkConverter {
 		
 	}
 	
-	public TreasureState convertTreasureStateFrom(ETreasureState treasureState) {
+	private TreasureState convertTreasureStateFrom(ETreasureState treasureState) {
 		
 		if(treasureState == ETreasureState.MyTreasureIsPresent) {
 			return TreasureState.MYTREASURE;
@@ -136,7 +133,7 @@ public class NetworkConverter {
 		return null;
 	}
 	
-	public MapField convertFullMapNodeFrom(FullMapNode fullMapNode) {
+	private MapField convertFullMapNodeFrom(FullMapNode fullMapNode) {
 		
 		MapField toReturn = new MapField();
 		
@@ -198,6 +195,8 @@ public class NetworkConverter {
 			}
 		}
 		
+		ClientMap fullMap = new ClientMap();
+		
 		if(gameState.getMap().isPresent()) {
 			
 			state.setFullMap(convertFullMapFrom(gameState.getMap().get()));	
@@ -223,13 +222,14 @@ public class NetworkConverter {
 			
 		} else {
 			System.out.println("Full Map not available");
+			state.setFullMap(fullMap);
 		}
 
 		return state;
 		
 	}
 	
-	public HalfMapNode convertMapNodeTo(MapField mapField) {
+	private HalfMapNode convertMapNodeTo(MapField mapField) {
 		
 		ETerrain terrain = convertTerrainTypeTo(mapField.getType());
 		boolean fortState = false;

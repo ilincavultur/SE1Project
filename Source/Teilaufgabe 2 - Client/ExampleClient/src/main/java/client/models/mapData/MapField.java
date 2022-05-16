@@ -18,7 +18,6 @@ public class MapField {
 	private FortState fortState;
 	private List<Coordinates> shortestPath;
 	
-	
 	public MapField() {
 		super();
 	}
@@ -28,15 +27,10 @@ public class MapField {
 		MapField newMapField = new MapField();
 		
 		newMapField.position = pos;
-		
 		newMapField.fortState = FortState.UNKNOWNIFFORT;
-		
 		newMapField.playerPositionState = PlayerPositionState.NOPLAYER;
-		
 		newMapField.treasureState = TreasureState.UNKNOWNIFTREASURE;
-		
 		newMapField.type = MapFieldType.GRASS;
-
 		newMapField.shortestPath = new ArrayList<Coordinates>();
 		
 		return newMapField;
@@ -109,10 +103,5 @@ public class MapField {
 				&& Objects.equals(position, other.position) && treasureState == other.treasureState
 				&& type == other.type;
 	}
-	
-
-	
-	
-	
 	
 }

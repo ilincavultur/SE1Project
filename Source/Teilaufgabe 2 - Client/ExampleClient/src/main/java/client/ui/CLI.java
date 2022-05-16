@@ -12,7 +12,7 @@ import client.models.mapData.enums.TreasureState;
 
 public class CLI implements PropertyChangeListener {
 	
-	public void printMapField(MapField myMapField) {
+	private void printMapField(MapField myMapField) {
 		
 		System.out.print(myMapField.getPosition().getX());
 		System.out.print(myMapField.getPosition().getY());
@@ -26,7 +26,7 @@ public class CLI implements PropertyChangeListener {
 		}
 		
 		if(myMapField.getPlayerPositionState() == PlayerPositionState.BOTH || myMapField.getPlayerPositionState() == PlayerPositionState.MYPLAYER) {
-			System.out.print("A");
+			System.out.print("|A|");
 		}
 		
 		if(myMapField.getPlayerPositionState() == PlayerPositionState.BOTH || myMapField.getPlayerPositionState() == PlayerPositionState.ENEMYPLAYER) {
@@ -34,13 +34,13 @@ public class CLI implements PropertyChangeListener {
 		}
 		
 		if(myMapField.getType() == MapFieldType.GRASS) {
-			System.out.print("G ");
+			System.out.print("G    ");
 		}
 		if(myMapField.getType() == MapFieldType.MOUNTAIN) {
-			System.out.print("M ");			
+			System.out.print("M    ");			
 		}
 		if(myMapField.getType() == MapFieldType.WATER) {
-			System.out.print("W ");
+			System.out.print("W    ");
 		}
 		
 	}
@@ -53,8 +53,31 @@ public class CLI implements PropertyChangeListener {
 			for(int x =0; x < myMap.getxSize(); x++) {
 				Coordinates pos = new Coordinates(x, y);
 				printMapField(myMap.getFields().get(pos));
+
+				/*if (myMap.getxSize() != 8) {
+					
+					if (x == 7) {
+						System.out.print("||    ");
+						
+					}
+				
+				}*/
+				
 			}
-			System.out.println("\n");
+			/*if (myMap.getxSize() == 8) {
+				
+				if (y == 3) {
+					System.out.println("\n");
+					System.out.println("------------------------------------------------------");
+					System.out.println("\n");	
+				} else {
+					System.out.println("\n");	
+				}
+				
+			} else {*/
+				System.out.println("\n");
+			//}
+			
 		}
 	}
 

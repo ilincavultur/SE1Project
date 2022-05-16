@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import MessagesBase.MessagesFromClient.PlayerRegistration;
-import client.exceptions.MapException;
 import client.models.gameData.GameStateData;
 import client.models.gameData.enums.ClientPlayerState;
 import client.movement.enums.MoveCommand;
@@ -72,7 +71,7 @@ public class GameStateController {
 
 	}
 	
-	public void registerPlayer() {
+	private void registerPlayer() {
 		
 		PlayerRegistration playerReg = new PlayerRegistration("Ilinca", "Vultur",
 				"ilincav00");
@@ -81,7 +80,7 @@ public class GameStateController {
 		
 	}
 	
-	public void createAndSendMap(String pl1) {
+	private void createAndSendMap(String pl1) {
 		
 		mapController.generateMap();
 		
@@ -105,12 +104,16 @@ public class GameStateController {
 		
 	}
 	
-	public void receiveFullMap() {
+	private void receiveFullMap() {
 		
 		updateGameStateData(networkController.getGameState(networkController.getGameId(), networkController.getPlayerId()));
-
+		
+		while (this.gameStateData.getFullMap() == null) {
+			updateGameStateData(networkController.getGameState(networkController.getGameId(), networkController.getPlayerId()));	
+		}
+	
 		//------------------------- test print
-		//System.out.println("my fort:" + mapController.getMyFortField().getPosition().getX() + " "+ mapController.getMyFortField().getPosition().getY());
+		System.out.println("my fort:" + mapController.getMyFortField().getPosition().getX() + " "+ mapController.getMyFortField().getPosition().getY());
 		System.out.println("my fort based on the data:" +this.gameStateData.getPlayerPosition().getX() + " "+ this.gameStateData.getPlayerPosition().getY());
 		//------------------------- test print
 
@@ -118,7 +121,7 @@ public class GameStateController {
 		
 	}
 	
-	public void play(String pl1) {
+	private void play(String pl1) {
 		
 		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
 			
@@ -128,47 +131,43 @@ public class GameStateController {
 		
 				moveController.updatePath();
 			}
-			//if (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON) {
-
+		
+			MoveCommand newMove = moveController.getNextMove();
+			
+			if (newMove != null) {
+				
+				networkController.sendMove(pl1, newMove);	
+				
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+								
 				// update path
-				//moveController.updatePath();
+				moveController.updatePath();
 				
-				MoveCommand newMove = moveController.getNextMove();
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+
+				//------------------------- test print
+				System.out.println("acum suntem aici in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
+				//------------------------- test print
 				
-				if (newMove != null) {
-					
-					networkController.sendMove(pl1, newMove);	
-					
-					updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-									
-					// update path
-					moveController.updatePath();
-					
-					updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-					
-					
-					
-					//------------------------- test print
-					System.out.println("acum suntem aici in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
-					//------------------------- test print
-					
-					++moves;
-				} 
-			//}
+				++moves;
+			} 
+	
 			
 		}
 		
 	}
 	
-	public void endGame() {
+	private void endGame() {
 		
-			if(this.gameStateData.getPlayerState() ==ClientPlayerState.WON) {
+			if(this.gameStateData.getPlayerState() == ClientPlayerState.WON) {
 				System.out.println("You Won!!! ");	
 			}
-			if(this.gameStateData.getPlayerState() ==ClientPlayerState.LOST) {
+			
+			if(this.gameStateData.getPlayerState() == ClientPlayerState.LOST) {
 				
 				System.out.println("You Lost :( ");	
 			}
+			
 			if (moves >= 100) {
 				System.out.println("100 moves reached ");
 			}

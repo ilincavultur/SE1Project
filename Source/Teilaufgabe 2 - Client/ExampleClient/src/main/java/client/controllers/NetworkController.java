@@ -28,18 +28,6 @@ public class NetworkController {
 		return network;
 	}
 
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
-
-	public NetworkConverter getNetworkConverter() {
-		return networkConverter;
-	}
-
-	public void setNetworkConverter(NetworkConverter networkConverter) {
-		this.networkConverter = networkConverter;
-	}
-
 	String getPlayerId() {
 		return network.getPlayerID();
 	}
@@ -48,7 +36,7 @@ public class NetworkController {
 		return network.getGameID();
 	}
 
-	void registerPlayer(PlayerRegistration playerReg) {
+	public void registerPlayer(PlayerRegistration playerReg) {
 		try {
 			network.registerPlayer(playerReg);
 		} catch (NetworkException e) {
@@ -57,28 +45,28 @@ public class NetworkController {
 		}
 	}
 	
-	GameStateData getGameState(String gameId, String playerId) {
+	public GameStateData getGameState(String gameId, String playerId) {
 		
 		GameStateData gsd = new GameStateData();
 		
 		try {
 			gsd = networkConverter.convertGameStateFrom(network.getGameState(gameId, playerId));
 		} catch (NetworkException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		}
 
 		return gsd;
 	}
 	
-	boolean checkIfMyTurn(String playerId) {
+	public boolean checkIfMyTurn(String playerId) {
 				
 		GameStateData state = new GameStateData();
 		try {
 			
 			state = networkConverter.convertGameStateFrom(network.getGameState(network.getGameID(), playerId));
 		} catch (NetworkException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		}
 		
@@ -86,26 +74,24 @@ public class NetworkController {
 	
 	}
 	
-	void sendMap(ClientMap map, String plID) {
+	public void sendMap(ClientMap map, String plID) {
 
 		try {
 			network.sendMap(networkConverter.convertMapTo(plID, map));
 		} catch (NetworkException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		}
-		//network.sendMap(networkConverter.convertMapTo(network.getPlayerID(), map));
+		
 	}
 	
-	void sendMove(String playerId, MoveCommand move) {
+	public void sendMove(String playerId, MoveCommand move) {
 		try {
 			network.sendMove(networkConverter.convertMoveTo(playerId, move));
 		} catch (NetworkException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+		
 }

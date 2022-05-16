@@ -64,7 +64,7 @@ public class ClientMapGenerator {
 		}
 		
 		this.fields = newfields;
-	
+		
 		
 	}
 	

@@ -10,9 +10,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import MessagesBase.ResponseEnvelope;
-import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
-import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.ERequestState;
 import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.PlayerMove;
@@ -25,50 +23,22 @@ import reactor.core.publisher.Mono;
 public class Network {
 	
 	private String serverBaseUrl;
-	
 	private WebClient baseWebClient;
-	
 	private String gameID;
-	
 	private String playerID;
-
 	private Instant gameDataRequestTimestamp;
-	
-	public String getServerBaseUrl() {
-		return serverBaseUrl;
-	}
-
-	public void setServerBaseUrl(String serverBaseUrl) {
-		this.serverBaseUrl = serverBaseUrl;
-	}
-
-	public WebClient getBaseWebClient() {
-		return baseWebClient;
-	}
-
-	public void setBaseWebClient(WebClient baseWebClient) {
-		this.baseWebClient = baseWebClient;
-	}
 
 	public String getGameID() {
 		return gameID;
-	}
-
-	public void setGameID(String gameID) {
-		this.gameID = gameID;
 	}
 
 	public String getPlayerID() {
 		return playerID;
 	}
 
-	public void setPlayerID(String playerID) {
-		this.playerID = playerID;
-	}
-
 	public Network(String gameID, String serverBaseURL) {
-		
 		super();
+		
 		this.serverBaseUrl = serverBaseURL;
 		this.baseWebClient = WebClient.builder().baseUrl(serverBaseURL + "/games")
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE) 																	
@@ -85,6 +55,10 @@ public class Network {
 	}
 
 	public void registerPlayer(PlayerRegistration playerReg) throws NetworkException {
+		
+		if (playerReg == null || this.gameID == null) {
+			throw new NetworkException("Client error, errormessage:");
+		}
 		
 		UniquePlayerIdentifier uniqueID = new UniquePlayerIdentifier();
 		
@@ -106,35 +80,42 @@ public class Network {
 	}
 	
 	public GameState getGameState(String gameId, String playerId) throws NetworkException {
-
-			while (!canMakeNewRequest()) {
-				//wait
-			}
-			gameDataRequestTimestamp = Instant.now();
 		
+		if (gameId == null || playerId == null) {
+			throw new NetworkException("Client error, errormessage:");
+		}
+
+		while (!canMakeNewRequest()) {
+			//wait
+		}
+		gameDataRequestTimestamp = Instant.now();
+	
+		
+
+		Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.GET)
+				.uri("/" + gameId + "/states/" + playerId).retrieve().bodyToMono(ResponseEnvelope.class); 
 			
+		ResponseEnvelope<GameState> requestResult = webAccess.block();
 
-			Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.GET)
-					.uri("/" + gameId + "/states/" + playerId).retrieve().bodyToMono(ResponseEnvelope.class); 
-				
-			ResponseEnvelope<GameState> requestResult = webAccess.block();
-
-			if (requestResult.getState() == ERequestState.Error) {
-				throw new NetworkException("Client error, errormessage: " + requestResult.getExceptionMessage());
-				//System.err.println("Client error, errormessage: " + requestResult.getExceptionMessage());
-			} 
+		if (requestResult.getState() == ERequestState.Error) {
+			throw new NetworkException("Client error, errormessage: " + requestResult.getExceptionMessage());
+			//System.err.println("Client error, errormessage: " + requestResult.getExceptionMessage());
+		} 
 		return requestResult.getData().get();
 			
 		
 	}
 	
 	public void sendMap(HalfMap networkHalfMap) throws NetworkException {
+		if (networkHalfMap == null) {
+			throw new NetworkException("Client error, errormessage:");
+		}
 		
 		Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.POST).uri("/" + this.gameID + "/halfmaps")
 				.body(BodyInserters.fromValue(networkHalfMap)) 
 				.retrieve().bodyToMono(ResponseEnvelope.class); 
 
-		ResponseEnvelope resultReg = webAccess.block();
+		ResponseEnvelope<UniquePlayerIdentifier> resultReg = webAccess.block();
 
 		if (resultReg.getState() == ERequestState.Error) {
 			throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
@@ -147,12 +128,15 @@ public class Network {
 	}
 	
 	public void sendMove(PlayerMove networkMove) throws NetworkException {
+		if (networkMove == null) {
+			throw new NetworkException("Client error, errormessage:");
+		}
 		
 		Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.POST).uri("/" + this.gameID + "/moves")
 				.body(BodyInserters.fromValue(networkMove)) 
 				.retrieve().bodyToMono(ResponseEnvelope.class); 
 
-		ResponseEnvelope resultReg = webAccess.block();
+		ResponseEnvelope<UniquePlayerIdentifier> resultReg = webAccess.block();
 
 		if (resultReg.getState() == ERequestState.Error) {
 			throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());

@@ -6,31 +6,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
 
 public class MapValidator {
 
 	private List<Coordinates> alreadyVisited = new ArrayList<Coordinates>();
-	private static final Logger logger = LoggerFactory.getLogger(MapValidator.class);
 
 	public boolean hasFort(ClientMap mapToVerify) {
+		for( Map.Entry<Coordinates, MapField> mapEntry : mapToVerify.getFields().entrySet() ) {
+			if (mapEntry.getValue().getFortState() == FortState.MYFORT && mapEntry.getValue().getType() == MapFieldType.GRASS) {
+				return true;
+			}
+		}
 		//TODO my fort was once on a mountain
-		for(int y =0; y < 4; y++) {
+		/*for(int y =0; y < 4; y++) {
 			for (int x = 0; x < 8; x++) {
 				Coordinates pos = new Coordinates(x, y);
-				
 				if(mapToVerify.getFields().get(pos).getFortState()==FortState.MYFORT && mapToVerify.getFields().get(pos).getType() == MapFieldType.GRASS) {
 					return true;
 				}
-				
-				
 			}
-		}
-		logger.info("hasFort returned false");
+		}*/
 		return false;
 	}
 	
@@ -52,7 +49,6 @@ public class MapValidator {
 	public boolean hasNoIsland(ClientMap mapToVerify) {
 		
 		this.alreadyVisited = new ArrayList<Coordinates>();
-		boolean toRet = false;
 		
 		Random randomNo = new Random();
 		int randomX = randomNo.nextInt(8);
@@ -67,16 +63,10 @@ public class MapValidator {
 		}
 		checkIfReachable(startingPos, mapToVerify, alreadyVisited);
 		
-		toRet = alreadyVisited.size() == this.getGrassMountainFields(mapToVerify).size();
-		if (toRet == false) {
-			logger.info("hasNoIsland returned false");
-		}
-		
-		return toRet;
+		return (alreadyVisited.size() == this.getGrassMountainFields(mapToVerify).size());
 	}
 	
 	//floodfill
-	// source https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
 	public void checkIfReachable(Coordinates startingPos, ClientMap mapToVerify, List<Coordinates> visitedNodes) {
 		
 		// TODO inlocuieste || || || 
@@ -92,22 +82,18 @@ public class MapValidator {
 	}
 	
 	public boolean verifyNoOfFields(ClientMap mapToVerify) {
-		boolean toRet = false;
 		
-		toRet = mapToVerify.getxSize() * mapToVerify.getySize() == 32 && mapToVerify.getxSize() == 8 && mapToVerify.getySize() == 4;
-		
-		if (toRet == false) {
-			logger.info("verifyNoOfFields returned false");
-		}
-		
-		return toRet;
+		int xSize = mapToVerify.getxSize();
+		int ySize = mapToVerify.getySize();
+		int xTimesy = xSize * ySize;
+
+		return (xTimesy == 32 && xSize == 8 && ySize == 4);
 		
 	}
 	
 	public boolean verifyLongSides(ClientMap mapToVerify) {
 		int waterNo1 = 0;
 		int waterNo2 = 0;
-		boolean toRet = false;
 		//mapToVerify.xSize
 		for (int x = 0; x < 8 ; x++) {
 			Coordinates pos1 = new Coordinates(x, 0);
@@ -119,12 +105,7 @@ public class MapValidator {
 				waterNo2++;
 			}
 		}
-		toRet = waterNo1 <= 3 && waterNo2 <=3;
-		
-		if (toRet == false) {
-			logger.info("verifyLongSides returned false");
-		}
-		return toRet;
+		return (waterNo1 <= 3 && waterNo2 <=3) ;
 	}
 	
 	
@@ -132,7 +113,6 @@ public class MapValidator {
 		
 		int waterNo1 = 0;
 		int waterNo2 = 0;
-		boolean toRet = false;
 	
 		for (int y = 0; y < 4 ; y++) {
 			
@@ -147,22 +127,31 @@ public class MapValidator {
 			
 		}
 		
-		toRet = waterNo1 <= 1 && waterNo2 <=1;
-		
-		if (toRet == false) {
-			logger.info("verifyShortSides returned false");
-		}
-		
-		return toRet ;
+		return (waterNo1 <= 1 && waterNo2 <=1) ;
 	}
 	
 	public boolean verifyFieldTypesNo(ClientMap mapToVerify) {
 		
-		int waterFields = 4;
-		int grassFields = 15;
-		int mountainFields = 3;
-		boolean toRet = false;
+		int waterFields = 0;
+		int grassFields = 0;
+		int mountainFields = 0;
 		
+		/*int waterFields = 4;
+		int grassFields = 15;
+		int mountainFields = 3;*/
+		
+		for( Map.Entry<Coordinates, MapField> mapEntry : mapToVerify.getFields().entrySet() ) {
+			if (mapEntry.getValue().getType() == MapFieldType.GRASS) {
+				grassFields+=1;
+			}
+			if (mapEntry.getValue().getType() == MapFieldType.MOUNTAIN) {
+				mountainFields+=1;
+			}
+			if (mapEntry.getValue().getType() == MapFieldType.WATER) {
+				waterFields+=1;
+			}
+		}
+		/*
 		for (int y=0 ; y<4; y++) {
 			for(int x=0; x<8; x++) {
 				Coordinates pos = new Coordinates(x, y);
@@ -176,15 +165,10 @@ public class MapValidator {
 					waterFields--;
 				}
 			}
-		}
-		
-		toRet = waterFields <= 0 && grassFields <= 0 && mountainFields <= 0;
+		}*/
 
-		if (toRet == false) {
-			logger.info("verifyFieldTypesNo returned false");
-		}
-		
-		return toRet;
+		return (waterFields >=4 && grassFields >= 15 && mountainFields >= 3);
+		//return (waterFields <= 0 && grassFields <= 0 && mountainFields <= 0);
 	}
 	
 	public boolean validateMap(ClientMap myMap) {
@@ -192,8 +176,6 @@ public class MapValidator {
 		if ( hasFort(myMap) && hasNoIsland(myMap) && verifyNoOfFields(myMap) && verifyLongSides(myMap) && verifyShortSides(myMap) && verifyFieldTypesNo(myMap) ) {
 			return true;
 		}
-		
-		logger.info("validateMap returned false");
 		
 		return false;
 		

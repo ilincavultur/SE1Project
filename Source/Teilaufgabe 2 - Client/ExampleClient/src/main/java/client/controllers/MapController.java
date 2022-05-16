@@ -1,6 +1,7 @@
 package client.controllers;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import client.models.mapData.ClientMap;
 import client.models.mapData.ClientMapGenerator;
@@ -27,6 +28,14 @@ public class MapController {
 		this.myMap = myMap;
 		this.validator = validator;
 	}
+	
+	public MapController(ClientMap myMap, MapValidator validator, ClientMapGenerator mapGenerator) {
+		super();
+		this.myMap = myMap;
+		this.validator = validator;
+		this.myMapGenerator = mapGenerator;
+	}
+
 
 	public void generateMap() {
 
@@ -34,7 +43,14 @@ public class MapController {
 		
 		ClientMap myNewMap = new ClientMap(myMapGenerator.getFields());	
 		
-		myNewMap.getFields().get(myMapGenerator.placeFort()).setFortState(FortState.MYFORT);
+		//placeFort(myNewMap);
+		Coordinates fortPos = myMapGenerator.placeFort();
+		for( Entry<Coordinates, MapField> mapEntry : myNewMap.getFields().entrySet() ) {
+			if (mapEntry.getKey().equals(fortPos)) {
+				mapEntry.getValue().setFortState(FortState.MYFORT);
+			}
+		}
+		//myNewMap.getFields().get(myMapGenerator.placeFort()).setFortState(FortState.MYFORT);
 		myNewMap.setxSize(8);
 		myNewMap.setySize(4);
 		
@@ -44,7 +60,7 @@ public class MapController {
 			return;
 		
 		} else {
-			// generate map again?
+		
 			generateMap();
 
 		}
@@ -66,6 +82,16 @@ public class MapController {
 		
 	}
 	
+
+	public void placeFort(ClientMap myMap) {
+		for( Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
+			if (mapEntry.getKey().equals(myMapGenerator.placeFort())) {
+				mapEntry.getValue().setFortState(FortState.MYFORT);
+			}
+		}
+		
+	}
+	
 	//------------------------- test print
 	public MapField getMyFortField() {
 
@@ -77,5 +103,7 @@ public class MapController {
 		return null;
 	}
 	//------------------------- test print
+
+	
 
 }

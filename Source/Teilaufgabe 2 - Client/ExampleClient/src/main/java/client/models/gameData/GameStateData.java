@@ -2,17 +2,14 @@ package client.models.gameData;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Map;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import client.models.gameData.enums.ClientPlayerState;
 import client.models.mapData.ClientMap;
 import client.models.mapData.Coordinates;
-import client.models.mapData.MapField;
-import client.models.mapData.enums.PlayerPositionState;
 
 public class GameStateData {
 	
@@ -25,7 +22,7 @@ public class GameStateData {
 	private Coordinates playerPosition;
 	private ClientMap fullMap;
 	private final PropertyChangeSupport notifyChanges = new PropertyChangeSupport(this);
-	private static final Logger logger = LoggerFactory.getLogger(GameStateData.class);
+	//private static final Logger logger = LoggerFactory.getLogger(GameStateData.class);
 
 	public GameStateData() {
 		super();
@@ -122,14 +119,14 @@ public class GameStateData {
 		return fullMap;
 	}
 
-	 public void setFullMap(ClientMap fullMap) {
+	public void setFullMap(ClientMap fullMap) {
 		ClientMap before = this.fullMap;
 		this.fullMap = fullMap;
 		
 		notifyChanges.firePropertyChange("myMap", before, fullMap);
 		
 	}
-	
+	/*
 	
 	public MapField getMyCurrentPosition(ClientMap myMap) {
 
@@ -146,7 +143,7 @@ public class GameStateData {
 		}
 		
 		return null;
-	}
+	}*/
 
 	@Override
 	public int hashCode() {

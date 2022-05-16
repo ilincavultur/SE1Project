@@ -15,10 +15,7 @@ import client.models.gameData.GameStateData;
 import client.models.mapData.ClientMap;
 import client.models.mapData.Coordinates;
 import client.models.mapData.MapField;
-import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
-import client.models.mapData.enums.PlayerPositionState;
-import client.models.mapData.enums.TreasureState;
 
 public class TargetSelector {
 	
@@ -27,17 +24,14 @@ public class TargetSelector {
 	private Map<Coordinates, MapField> enemyHalf = new HashMap<Coordinates, MapField>();
 	private Map<Coordinates, MapField> enemyHalfCopy = new HashMap<Coordinates, MapField>();
 	private ClientMap myMap;
-	//private Map<Coordinates, MapField> unvisitedTotal = new HashMap<Coordinates, MapField>();
 	private List<Coordinates> unvisitedTotal = new ArrayList<Coordinates>();
 	private GameStateData gameState;
 	private static final Logger logger = LoggerFactory.getLogger(TargetSelector.class);
-	// test 
-	boolean goPickUpTreasure = false;
-	boolean goBribeFort = false;
-	boolean searchingForEnemyFort = false;
-	boolean searchingForTreasure = true;
-	Coordinates nextTarget = new Coordinates();
-	// test
+	//private boolean goPickUpTreasure = false;
+	//private boolean goBribeFort = false;
+	private boolean searchingForEnemyFort = false;
+	private boolean searchingForTreasure = true;
+	private Coordinates nextTarget = new Coordinates();
 	
 	
 	public TargetSelector(GameStateData gameState) {
@@ -47,69 +41,21 @@ public class TargetSelector {
 		}
 		
 	}
-	
-	public ClientMap getMyMap() {
-		return myMap;
-	}
-
-
 
 	public void setMyMap(ClientMap myMap) {
 		this.myMap = myMap;
 	}
 
-
-
-	
-	public GameStateData getGameState() {
-		return gameState;
-	}
-
-
-
-	/*public Map<Coordinates, MapField> getUnvisitedTotal() {
-		return unvisitedTotal;
-	}
-
-	public void setUnvisitedTotal(Map<Coordinates, MapField> unvisitedTotal) {
-		this.unvisitedTotal = unvisitedTotal;
-	}*/
-
 	public List<Coordinates> getUnvisitedTotal() {
 		return unvisitedTotal;
-	}
-
-	public void setUnvisitedTotal(List<Coordinates> unvisitedTotal) {
-		this.unvisitedTotal = unvisitedTotal;
 	}
 
 	public void setGameState(GameStateData gameState) {
 		this.gameState = gameState;
 	}
 	
-	public boolean isGoPickUpTreasure() {
-		return goPickUpTreasure;
-	}
-
-	public void setGoPickUpTreasure(boolean goPickUpTreasure) {
-		this.goPickUpTreasure = goPickUpTreasure;
-	}
-
-	public boolean isGoBribeFort() {
-		return goBribeFort;
-	}
-
-	public void setGoBribeFort(boolean goBribeFort) {
-		this.goBribeFort = goBribeFort;
-	}
-
-	
 	public Coordinates getNextTarget() {
 		return nextTarget;
-	}
-
-	public void setNextTarget(Coordinates nextTarget) {
-		this.nextTarget = nextTarget;
 	}
 
 	public void setHalves() {
@@ -190,20 +136,7 @@ public class TargetSelector {
 		}
 		myHalfCopy = myHalf;
 		enemyHalfCopy = enemyHalf;
-		//------------------------- test print
-		/*System.out.println("unvisitedTotal");
-		for( Map.Entry<Coordinates, MapField> mapEntry : unvisitedTotal.entrySet() ) {
-			System.out.println(mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
-		}
-		System.out.println("myHalf");
-		for( Map.Entry<Coordinates, MapField> mapEntry : myHalf.entrySet() ) {
-			System.out.println(mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
-		}
-		System.out.println("enemyHalf");
-		for( Map.Entry<Coordinates, MapField> mapEntry : enemyHalf.entrySet() ) {
-			System.out.println(mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
-		}*/
-		//------------------------- test print
+	
 		
 	}
 	
@@ -219,28 +152,18 @@ public class TargetSelector {
 		boolean pickedUpTreasure = (gameState.getHasCollectedTreasure() != null && gameState.getHasCollectedTreasure() == true);
 		boolean foundTreasure = (gameState.getTreasureIsPresentAt() != null); // treasure is present i didn t get it yet!!
 		boolean foundEnemyFort = (gameState.getEnemyFortIsPresentAt() != null); // enemy fort is present
-		//boolean searchingForTreasure = (gameState.getTreasureIsPresentAt() == null); // treasure is not present yet
-		//boolean searchingForEnemyFort = (gameState.getEnemyFortIsPresentAt() == null); // enemy forrt is not present yet
+
 		if (pickedUpTreasure && gameState.getEnemyFortIsPresentAt() == null) {
 			searchingForTreasure = false;
 			searchingForEnemyFort = true;
 		}
 		if (gameState.getEnemyFortIsPresentAt() != null) {
-			//searchingForTreasure = false;
+		
 			searchingForEnemyFort = false;
 		}
 		if (foundTreasure) {
 			searchingForTreasure = false;
 		}
-		
-		
-		//------------------------- test print
-		/*System.out.println("foundTreasure" + foundTreasure);
-		System.out.println("foundEnemyFort" + foundEnemyFort);
-		System.out.println("searchingForTreasure" + searchingForTreasure);
-		System.out.println("searchingForEnemyFort" + searchingForEnemyFort);*/
-		//------------------------- test print
-		
 	
 		if (myMap.getFields().get(gameState.getPlayerPosition()).getType() == MapFieldType.MOUNTAIN) {
 			
@@ -254,20 +177,7 @@ public class TargetSelector {
 					unvisitedTotal.remove(mapEntry.getValue());
 					updateMapHalf();
 				}
-				/*
-				// if it's my treasure then it means it hasn't been picked up yet
-				if (myMap.getFields().get(mapEntry.getValue()).getTreasureState() == TreasureState.MYTREASURE) {
-					// if it's not visited yet
-				
-					return mapEntry.getValue();
-				}
-				
-				if (foundTreasure && myMap.getFields().get(mapEntry.getValue()).getFortState() == FortState.ENEMYFORT) {
-					// if it's not visited yet
-					
-					return mapEntry.getValue();
-				}*/
-			
+		
 			}
 		}
 		
@@ -280,7 +190,7 @@ public class TargetSelector {
 		
 				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), myHalf, myHalfCopy);
 				this.nextTarget = toRet;
-				//System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
+				
 				return toRet;
 			}
 			
@@ -292,7 +202,7 @@ public class TargetSelector {
 				searchingForTreasure = false;
 				toRet = gameState.getTreasureIsPresentAt();	
 				this.nextTarget = toRet;
-				//System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
+				
 				return toRet;
 				
 			}
@@ -304,7 +214,7 @@ public class TargetSelector {
 				searchingForEnemyFort = true;
 				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), enemyHalf, enemyHalfCopy);
 				this.nextTarget = toRet;
-				//System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
+		
 				return toRet;
 			
 			}
@@ -317,19 +227,17 @@ public class TargetSelector {
 				searchingForEnemyFort = false;
 				toRet = gameState.getEnemyFortIsPresentAt();
 				this.nextTarget = toRet;
-				//System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
+			
 				return toRet;
-				
-				
+			
 			}
 		}
 		
-		System.out.println("toRet ALES: " + toRet.getX() + " " + toRet.getY());
+
 		return toRet;
 	}
 	
-	//TODO
-	public Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf, Map<Coordinates, MapField> copyHalf ) {
+	private Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf, Map<Coordinates, MapField> copyHalf ) {
 		logger.info("calculating next available neighbour");
 		Coordinates toRet = new Coordinates();
 		
@@ -362,65 +270,14 @@ public class TargetSelector {
 				toRet = mapEntry.getKey();
 				break;
 			}
-			
-			
+				
 		}
 
 		return toRet;
 		
 	}
-		/*
 	
-	//TODO
-	public Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf, Map<Coordinates, MapField> copyHalf ) {
-		logger.info("calculating next available neighbour");
-		Coordinates toRet = new Coordinates();
-		
-		toRet.setX(-1);
-		toRet.setY(-1);
-		int count = 2;
-		
-	
-		while ((toRet.getX() < 0 || toRet.getY() < 0) && count > 0) {
-			count-=1;
-			Map<String, Coordinates> fieldsAround = pos.getFieldsAround(myMap);	
-
-			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
-				
-				// if it's not visited yet
-				
-				if (mapHalf.containsKey(mapEntry.getValue()) && unvisitedTotal.containsKey(mapEntry.getValue())) {
-					toRet = mapEntry.getValue();
-					//------------------------- test print
-					System.out.println("next unvisited neighbour: " + toRet.getX() + " " + toRet.getY());
-					//------------------------- test print
-					break;
-				} else {
-					if (copyHalf.containsKey(mapEntry.getValue())) {
-						pos = mapEntry.getValue();	
-						logger.info("setting pos");
-					}
-				}
-
-			}
-			
-		
-			//System.out.println("nextAvailableNeighbour: " + pos.getX() + " " + pos.getY());
-		}
-		if (toRet.getX() < 0 || toRet.getY() < 0) {
-			logger.info("toRet = pos");
-			toRet = pos;	
-		}
-		
-		// remove from unvisited;
-		//mapHalf.remove(toRet);
-		unvisitedTotal.remove(toRet);
-		updateMapHalf();
-		return toRet;
-		
-	}*/
-	
-	public void updateMapHalf() {
+	private void updateMapHalf() {
 		
 		Set<Entry<Coordinates, MapField>> entrySet = myHalf.entrySet();
 		
@@ -430,7 +287,7 @@ public class TargetSelector {
 			Entry<Coordinates, MapField> entry = itr.next();
 			if (!unvisitedTotal.contains(entry.getKey())) {
 				itr.remove();
-				//System.out.println("i removed: " + entry.getKey().getX() + " " + entry.getKey().getY());
+		
 			}
 		}
 		
@@ -442,27 +299,10 @@ public class TargetSelector {
 			Entry<Coordinates, MapField> entry = itr.next();
 			if (!unvisitedTotal.contains(entry.getKey())) {
 				itr.remove();
-				//System.out.println("i removed: " + entry.getKey().getX() + " " + entry.getKey().getY());
+			
 			}
 		}
-		
-		//------------------------- test print
-		/*System.out.println("myhalf remained:");
-		for( Entry<Coordinates, MapField> mapEntry : myHalf.entrySet() ) {
 
-				
-				System.out.println(mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
-	
-		}
-		System.out.println("enemyhalf remained:");
-		for( Entry<Coordinates, MapField> mapEntry : enemyHalf.entrySet() ) {
-
-				
-				System.out.println(mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
-	
-		}*/
-		//------------------------- test print
-		
 	}
 	
 	

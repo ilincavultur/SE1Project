@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import client.models.mapData.ClientMap;
 import client.models.mapData.Coordinates;
@@ -18,15 +16,13 @@ import client.movement.enums.MoveCommand;
 public class PathCalculator {
 	
 	private ClientMap myMap;
-	Coordinates startPos;
-	Map<Coordinates, Integer> costs = new HashMap<Coordinates, Integer>();
-	List<Coordinates> settledNodes = new ArrayList<Coordinates>();
-	List<Coordinates> unsettledNodes = new ArrayList<Coordinates>();
-	//the value is the current Node, the key is the previous node
-	Map<Coordinates, Coordinates> previousNode = new HashMap<Coordinates, Coordinates>();
-	private static final Logger logger = LoggerFactory.getLogger(PathCalculator.class);
-	List<Coordinates> shortestPath = new ArrayList<Coordinates>();
-	//private Map<Coordinates, MapField> unvisitedTotal = new HashMap<Coordinates, MapField>();
+	private Coordinates startPos;
+	private Map<Coordinates, Integer> costs = new HashMap<Coordinates, Integer>();
+	private List<Coordinates> settledNodes = new ArrayList<Coordinates>();
+	private List<Coordinates> unsettledNodes = new ArrayList<Coordinates>();
+	//the key is the previous node, the value is the current Node
+	private Map<Coordinates, Coordinates> previousNode = new HashMap<Coordinates, Coordinates>();
+	private List<Coordinates> shortestPath = new ArrayList<Coordinates>();
 	private List<Coordinates> unvisitedTotal = new ArrayList<Coordinates>();
 	
 	public PathCalculator(ClientMap myMap) {
@@ -36,10 +32,6 @@ public class PathCalculator {
 	
 	public PathCalculator() {
 		super();
-	}
-
-	public ClientMap getMyMap() {
-		return myMap;
 	}
 
 	public void setMyMap(ClientMap myMap) {
@@ -90,13 +82,10 @@ public class PathCalculator {
 	//https://www.baeldung.com/java-dijkstra
 	public void getShortestPath(Coordinates startingField, MapField targetField) {
 		
-		// test
 		settledNodes = new ArrayList<Coordinates>();
 		unsettledNodes = new ArrayList<Coordinates>();
 		shortestPath = new ArrayList<Coordinates>();
-		
-		// test
-		
+
 		Coordinates currPos = new Coordinates();
 		this.startPos = startingField;
 		
@@ -130,21 +119,14 @@ public class PathCalculator {
 			settledNodes.add(currPos);
 			
 			if(currPos.equals(targetField.getPosition())) {
-				//TODO
-				//targetField.getShortestPath().add(currPos);
-				//logger.info("am ajuns la target");
+			
 				break;
 			}
 		}
 		
 		targetField.setShortestPath(shortestPath);
 		this.setShortestPath(shortestPath);
-		//------------------------- test print
-		/*for( Entry<Coordinates, Coordinates> mapEntry : previousNode.entrySet() ) {
-			System.out.println("prev :" + mapEntry.getKey().getX() + mapEntry.getKey().getY() + " curr :" + mapEntry.getValue().getX() + mapEntry.getValue().getY());
-		}
-*/
-		//------------------------- test print
+
 	}
 	
 	public List<MoveCommand> getMovesPath(MapField field) {
@@ -210,7 +192,7 @@ public class PathCalculator {
 	}
 	
 	//https://www.baeldung.com/java-dijkstra
-	public void calcMinDistance(Coordinates startingPos, Entry<String, Coordinates> mapEntry) {
+	private void calcMinDistance(Coordinates startingPos, Entry<String, Coordinates> mapEntry) {
 		
 		int sourceDist = costs.get(startingPos);
 		int weight = 0;
@@ -237,7 +219,7 @@ public class PathCalculator {
 			
 			costs.put(mapEntry.getValue(), sourceDist + weight);
 			List<Coordinates> path = new ArrayList<Coordinates>(myMap.getFields().get(startingPos).getShortestPath());
-		
+			//List<Coordinates> path = new ArrayList<Coordinates>(this.getShortestPath());
 			if(!startingPos.equals(this.startPos)) {
 				path.add(startingPos);
 			}
@@ -251,7 +233,7 @@ public class PathCalculator {
 	}
 	
 	//https://www.baeldung.com/java-dijkstra
-	public Coordinates getLowestDistanceNode(List<Coordinates> nodes) {
+	private Coordinates getLowestDistanceNode(List<Coordinates> nodes) {
 		
 		int min = 9999;
 		Coordinates toReturn = new Coordinates();
