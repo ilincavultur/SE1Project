@@ -1,6 +1,10 @@
 package client.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import MessagesBase.MessagesFromClient.PlayerRegistration;
+import client.exceptions.NetworkException;
 import client.models.gameData.GameStateData;
 import client.models.gameData.enums.ClientPlayerState;
 import client.models.mapData.ClientMap;
@@ -12,6 +16,7 @@ public class NetworkController {
 	
 	private Network network;
 	private NetworkConverter networkConverter;
+	private static final Logger logger = LoggerFactory.getLogger(NetworkController.class);
 
 	public NetworkController(String gameId, String serverBaseUrl) {
 		super();
@@ -44,21 +49,38 @@ public class NetworkController {
 	}
 
 	void registerPlayer(PlayerRegistration playerReg) {
-		network.registerPlayer(playerReg);
+		try {
+			network.registerPlayer(playerReg);
+		} catch (NetworkException e) {
+			logger.info("");
+			
+		}
 	}
 	
 	GameStateData getGameState(String gameId, String playerId) {
 		
 		GameStateData gsd = new GameStateData();
 		
-		gsd = networkConverter.convertGameStateFrom(network.getGameState(gameId, playerId));
+		try {
+			gsd = networkConverter.convertGameStateFrom(network.getGameState(gameId, playerId));
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return gsd;
 	}
 	
 	boolean checkIfMyTurn(String playerId) {
 				
-		GameStateData state = networkConverter.convertGameStateFrom(network.getGameState(network.getGameID(), playerId));
+		GameStateData state = new GameStateData();
+		try {
+			
+			state = networkConverter.convertGameStateFrom(network.getGameState(network.getGameID(), playerId));
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return state.getPlayerState() == ClientPlayerState.MUSTACT;
 	
@@ -66,12 +88,22 @@ public class NetworkController {
 	
 	void sendMap(ClientMap map, String plID) {
 
-		network.sendMap(networkConverter.convertMapTo(plID, map));
+		try {
+			network.sendMap(networkConverter.convertMapTo(plID, map));
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//network.sendMap(networkConverter.convertMapTo(network.getPlayerID(), map));
 	}
 	
 	void sendMove(String playerId, MoveCommand move) {
-		network.sendMove(networkConverter.convertMoveTo(playerId, move));
+		try {
+			network.sendMove(networkConverter.convertMoveTo(playerId, move));
+		} catch (NetworkException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	

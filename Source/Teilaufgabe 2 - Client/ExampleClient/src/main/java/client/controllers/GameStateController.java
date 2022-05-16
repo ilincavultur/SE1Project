@@ -120,7 +120,7 @@ public class GameStateController {
 	
 	public void play(String pl1) {
 		
-		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON) {
+		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
 			
 			while(!networkController.checkIfMyTurn(pl1)) {
 				

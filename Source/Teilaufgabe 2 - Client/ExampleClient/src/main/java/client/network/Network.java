@@ -84,7 +84,7 @@ public class Network {
 		return dur.getSeconds() > 0.4;
 	}
 
-	public void registerPlayer(PlayerRegistration playerReg) {
+	public void registerPlayer(PlayerRegistration playerReg) throws NetworkException {
 		
 		UniquePlayerIdentifier uniqueID = new UniquePlayerIdentifier();
 		
@@ -95,8 +95,8 @@ public class Network {
 		ResponseEnvelope<UniquePlayerIdentifier> resultReg = webAccess.block();
 
 		if (resultReg.getState() == ERequestState.Error) {
-			//throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
-			System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
+			throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
+			//System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
 		} else {
 			uniqueID = resultReg.getData().get();
 			this.playerID = uniqueID.getUniquePlayerID();
@@ -105,7 +105,7 @@ public class Network {
 				
 	}
 	
-	public GameState getGameState(String gameId, String playerId) {
+	public GameState getGameState(String gameId, String playerId) throws NetworkException {
 
 			while (!canMakeNewRequest()) {
 				//wait
@@ -120,15 +120,15 @@ public class Network {
 			ResponseEnvelope<GameState> requestResult = webAccess.block();
 
 			if (requestResult.getState() == ERequestState.Error) {
-				//throw new NetworkException("Client error, errormessage: " + requestResult.getExceptionMessage());
-				System.err.println("Client error, errormessage: " + requestResult.getExceptionMessage());
+				throw new NetworkException("Client error, errormessage: " + requestResult.getExceptionMessage());
+				//System.err.println("Client error, errormessage: " + requestResult.getExceptionMessage());
 			} 
 		return requestResult.getData().get();
 			
 		
 	}
 	
-	public void sendMap(HalfMap networkHalfMap) {
+	public void sendMap(HalfMap networkHalfMap) throws NetworkException {
 		
 		Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.POST).uri("/" + this.gameID + "/halfmaps")
 				.body(BodyInserters.fromValue(networkHalfMap)) 
@@ -137,8 +137,8 @@ public class Network {
 		ResponseEnvelope resultReg = webAccess.block();
 
 		if (resultReg.getState() == ERequestState.Error) {
-			//throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
-			System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
+			throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
+			//System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
 		} else {
 			System.out.println("half map was correct");
 		}
@@ -146,7 +146,7 @@ public class Network {
 		
 	}
 	
-	public void sendMove(PlayerMove networkMove) {
+	public void sendMove(PlayerMove networkMove) throws NetworkException {
 		
 		Mono<ResponseEnvelope> webAccess = baseWebClient.method(HttpMethod.POST).uri("/" + this.gameID + "/moves")
 				.body(BodyInserters.fromValue(networkMove)) 
@@ -155,8 +155,8 @@ public class Network {
 		ResponseEnvelope resultReg = webAccess.block();
 
 		if (resultReg.getState() == ERequestState.Error) {
-			//throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
-			System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
+			throw new NetworkException("Client error, errormessage: " + resultReg.getExceptionMessage());
+			//System.err.println("Client error, errormessage: " + resultReg.getExceptionMessage());
 		} else {
 			System.out.println("move was correct");
 		}
