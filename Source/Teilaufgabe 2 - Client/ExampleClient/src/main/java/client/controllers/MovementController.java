@@ -153,6 +153,7 @@ public class MovementController {
 		this.targetSelector.setGoBribeFort(goBribeFort);
 		System.out.println("goBribeFort " + goBribeFort);*/
 		
+		
 		// if i haven't gotten any path yet 
 		if (this.movesList == null) {
 			
@@ -181,7 +182,8 @@ public class MovementController {
 		// if I have picked up the treasure but still haven't found the enemy fort
 		//goBribeFort == false && 
 		// || this.movesList.size() == 1
-		if (gameState.getHasCollectedTreasure() != null && gameState.getHasCollectedTreasure() == true && (this.movesList.isEmpty() || this.movesList.size() == 0)) {
+		//&& (this.movesList.isEmpty() || this.movesList.size() == 0)
+		if (gameState.getHasCollectedTreasure() != null && gameState.getHasCollectedTreasure() == true && (this.movesList.isEmpty() || this.movesList.size() == 0 || targetSelector.getNextTarget().equals(currentField)) ) {
 			
 			logger.info("I have picked up the treasure but still haven't found the enemy fort");
 			calcMovesToGoal();
@@ -200,12 +202,14 @@ public class MovementController {
 		// if i reached the previous goal
 		// aici fii atenta ca la pathcalculator nu cred ca e inclus targetul..
 		//|| this.movesList.size() == 1
-		if (this.movesList.isEmpty() || this.movesList.size() == 0) {
+		///this.movesList.isEmpty() || this.movesList.size() == 0 || 
+		if (targetSelector.getNextTarget().equals(currentField) || this.movesList.isEmpty() || this.movesList.size() == 0) {
 			
 			logger.info("i reached prev goal");
 			calcMovesToGoal();
 			
 		}
+		System.out.println("current next target is " + targetSelector.getNextTarget().getX() + " " + targetSelector.getNextTarget().getY() );
 		
 		
 	}

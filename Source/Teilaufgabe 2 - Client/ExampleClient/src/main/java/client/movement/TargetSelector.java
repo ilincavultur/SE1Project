@@ -36,6 +36,7 @@ public class TargetSelector {
 	boolean goBribeFort = false;
 	boolean searchingForEnemyFort = false;
 	boolean searchingForTreasure = true;
+	Coordinates nextTarget = new Coordinates();
 	// test
 	
 	
@@ -100,6 +101,15 @@ public class TargetSelector {
 
 	public void setGoBribeFort(boolean goBribeFort) {
 		this.goBribeFort = goBribeFort;
+	}
+
+	
+	public Coordinates getNextTarget() {
+		return nextTarget;
+	}
+
+	public void setNextTarget(Coordinates nextTarget) {
+		this.nextTarget = nextTarget;
 	}
 
 	public void setHalves() {
@@ -269,6 +279,7 @@ public class TargetSelector {
 				logger.info("I am searching for the treasure");
 		
 				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), myHalf, myHalfCopy);
+				this.nextTarget = toRet;
 				//System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 				return toRet;
 			}
@@ -280,6 +291,7 @@ public class TargetSelector {
 				logger.info("The treasure is present and I am going towards it");
 				searchingForTreasure = false;
 				toRet = gameState.getTreasureIsPresentAt();	
+				this.nextTarget = toRet;
 				//System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 				return toRet;
 				
@@ -291,6 +303,7 @@ public class TargetSelector {
 				logger.info("I have the treasure and I am searching for the enemy Fort");
 				searchingForEnemyFort = true;
 				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), enemyHalf, enemyHalfCopy);
+				this.nextTarget = toRet;
 				//System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 				return toRet;
 			
@@ -303,6 +316,7 @@ public class TargetSelector {
 				logger.info("The fort is present and I am going towards it");
 				searchingForEnemyFort = false;
 				toRet = gameState.getEnemyFortIsPresentAt();
+				this.nextTarget = toRet;
 				//System.out.println("toRet: " + toRet.getX() + " " + toRet.getY());
 				return toRet;
 				
