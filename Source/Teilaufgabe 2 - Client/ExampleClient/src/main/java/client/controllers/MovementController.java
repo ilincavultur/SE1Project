@@ -163,10 +163,11 @@ public class MovementController {
 		
 		// if current path that i am following is only made of already visited nodes
 		//pathCalc.getUnvisitedTotal()
+		/*
 		if (Collections.disjoint(this.targetSelector.getUnvisitedTotal(), pathCalc.getShortestPath())) {
 			logger.info("my path is only made of already visited nodes");
 			calcMovesToGoal();
-		}
+		}8*/
 		
 		// if treasure is present and I havent picked it up yet
 		//goPickUpTreasure == true && 

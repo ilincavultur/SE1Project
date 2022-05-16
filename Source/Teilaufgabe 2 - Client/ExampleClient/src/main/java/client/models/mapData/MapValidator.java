@@ -18,9 +18,12 @@ public class MapValidator {
 		for(int y =0; y < 4; y++) {
 			for (int x = 0; x < 8; x++) {
 				Coordinates pos = new Coordinates(x, y);
+				
 				if(mapToVerify.getFields().get(pos).getFortState()==FortState.MYFORT && mapToVerify.getFields().get(pos).getType() == MapFieldType.GRASS) {
 					return true;
 				}
+				
+				
 			}
 		}
 		return false;
