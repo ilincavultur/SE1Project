@@ -14,6 +14,7 @@ import client.models.mapData.enums.MapFieldType;
 import client.movement.enums.MoveCommand;
 
 public class PathCalculator {
+	// CODE TAKEN FROM https://www.baeldung.com/java-dijkstra
 	
 	private ClientMap myMap;
 	private Coordinates startPos;
@@ -79,7 +80,7 @@ public class PathCalculator {
 	}
 
 
-	//https://www.baeldung.com/java-dijkstra
+	// CODE TAKEN FROM START https://www.baeldung.com/java-dijkstra
 	public void getShortestPath(Coordinates startingField, MapField targetField) {
 		
 		settledNodes = new ArrayList<Coordinates>();
@@ -105,12 +106,13 @@ public class PathCalculator {
 			
 			unsettledNodes.remove(currPos);
 						
-			// luam vecinii nodului curent
+			// getting neighbours of the current node
 			Map<String, Coordinates> neighbours = currPos.getFieldsAround(myMap);
 		
 			for( Entry<String, Coordinates> mapEntry : neighbours.entrySet() ) {
 				if (!settledNodes.contains(mapEntry.getValue())) {
 					
+					// get the closest node
 					calcMinDistance(currPos, mapEntry);	
 					
 					unsettledNodes.add(mapEntry.getValue());
@@ -126,21 +128,75 @@ public class PathCalculator {
 		
 		targetField.setShortestPath(shortestPath);
 		this.setShortestPath(shortestPath);
-
+	}
+	
+	private void calcMinDistance(Coordinates startingPos, Entry<String, Coordinates> mapEntry) {
+		
+		int sourceDist = costs.get(startingPos);
+		int weight = 0;
+		
+		if(mapEntry.getKey() == "up") {
+			weight = getPathWeight(startingPos, mapEntry.getValue());
+		}
+		
+		if(mapEntry.getKey() == "down") {
+			weight = getPathWeight(startingPos, mapEntry.getValue());
+			
+		}
+		
+		if(mapEntry.getKey() == "left") {
+			weight = getPathWeight(startingPos, mapEntry.getValue());
+		
+		}
+		
+		if(mapEntry.getKey() == "right") {
+			weight = getPathWeight(startingPos, mapEntry.getValue());
+		
+		}
+		if (sourceDist + weight < costs.get(mapEntry.getValue())) {
+			
+			costs.put(mapEntry.getValue(), sourceDist + weight);
+			List<Coordinates> path = new ArrayList<Coordinates>(myMap.getFields().get(startingPos).getShortestPath());
+			//List<Coordinates> path = new ArrayList<Coordinates>(this.getShortestPath());
+			if(!startingPos.equals(this.startPos)) {
+				path.add(startingPos);
+			}
+			previousNode.put(mapEntry.getValue(), startingPos);
+			
+			this.setShortestPath(path);
+			
+			myMap.getFields().get(mapEntry.getValue()).setShortestPath(path);
+			
+		}
+	}
+	
+	private Coordinates getLowestDistanceNode(List<Coordinates> nodes) {
+		
+		int min = 9999;
+		Coordinates toReturn = new Coordinates();
+		for (Coordinates coords : nodes) {
+			if (costs.get(coords) < min) {
+				min = costs.get(coords);
+				toReturn = coords;
+			}
+		}
+		return toReturn;
+	}
+	// CODE TAKEN FROM END https://www.baeldung.com/java-dijkstra
+	
+	public MoveCommand getNextMove(List<MoveCommand> movesList) {
+		return movesList.get(0);
 	}
 	
 	public List<MoveCommand> getMovesPath(MapField field) {
 		
-		// get it from the target field node
 		List<MoveCommand> toReturn = new ArrayList<MoveCommand>();
 		//List<Coordinates> sPath = field.getShortestPath();
 		List<Coordinates> sPath = this.getShortestPath();
 		
 		Coordinates stPos = this.startPos;
 		for (int i=0; i<sPath.size(); i++) {
-			
-			//asta nuj daca ii bine
-			
+		
 			if (myMap.getFields().get(sPath.get(i)).getPosition().equals(stPos.getUpNeighbour(myMap)) ) {
 			
 				int movesNo = this.getPathWeight(stPos,stPos.getUpNeighbour(myMap));
@@ -184,65 +240,6 @@ public class PathCalculator {
 
 		}
 	
-		return toReturn;
-	}
-	
-	public MoveCommand getNextMove(List<MoveCommand> movesList) {
-		return movesList.get(0);
-	}
-	
-	//https://www.baeldung.com/java-dijkstra
-	private void calcMinDistance(Coordinates startingPos, Entry<String, Coordinates> mapEntry) {
-		
-		int sourceDist = costs.get(startingPos);
-		int weight = 0;
-		
-		if(mapEntry.getKey() == "up") {
-			weight = getPathWeight(startingPos, mapEntry.getValue());
-		}
-		
-		if(mapEntry.getKey() == "down") {
-			weight = getPathWeight(startingPos, mapEntry.getValue());
-			
-		}
-		
-		if(mapEntry.getKey() == "left") {
-			weight = getPathWeight(startingPos, mapEntry.getValue());
-		
-		}
-		
-		if(mapEntry.getKey() == "right") {
-			weight = getPathWeight(startingPos, mapEntry.getValue());
-		
-		}
-		if (sourceDist + weight < costs.get(mapEntry.getValue())) {
-			
-			costs.put(mapEntry.getValue(), sourceDist + weight);
-			List<Coordinates> path = new ArrayList<Coordinates>(myMap.getFields().get(startingPos).getShortestPath());
-			//List<Coordinates> path = new ArrayList<Coordinates>(this.getShortestPath());
-			if(!startingPos.equals(this.startPos)) {
-				path.add(startingPos);
-			}
-			previousNode.put(mapEntry.getValue(), startingPos);
-			
-			this.setShortestPath(path);
-			
-			myMap.getFields().get(mapEntry.getValue()).setShortestPath(path);
-			
-		}
-	}
-	
-	//https://www.baeldung.com/java-dijkstra
-	private Coordinates getLowestDistanceNode(List<Coordinates> nodes) {
-		
-		int min = 9999;
-		Coordinates toReturn = new Coordinates();
-		for (Coordinates coords : nodes) {
-			if (costs.get(coords) < min) {
-				min = costs.get(coords);
-				toReturn = coords;
-			}
-		}
 		return toReturn;
 	}
 	 

@@ -84,8 +84,9 @@ public class MapController {
 	
 
 	public void placeFort(ClientMap myMap) {
-		for( Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
-			if (mapEntry.getKey().equals(myMapGenerator.placeFort())) {
+		Coordinates fortPos = myMapGenerator.placeFort();
+;		for( Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
+			if (mapEntry.getKey().equals(fortPos)) {
 				mapEntry.getValue().setFortState(FortState.MYFORT);
 			}
 		}

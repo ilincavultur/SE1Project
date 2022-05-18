@@ -32,6 +32,12 @@ public class MovementController {
 		this.pathCalc = new PathCalculator(fullMap);
 		this.targetSelector = new TargetSelector(gameState);
 	}
+	
+	public MovementController(List<MoveCommand> ml, PathCalculator pc) {
+		super();
+		this.movesList = ml;
+		this.pathCalc = pc;
+	}
 
 	public MovementController(PathCalculator pathCalc, Coordinates currentField, ClientMap fullMap) {
 		super();

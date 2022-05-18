@@ -10,6 +10,8 @@ import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
 
 public class MapValidator {
+	// CODE TAKEN FROM https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
+	// I have never used Floodfill algorithm before so I learnt the idea from this website. 
 
 	private List<Coordinates> alreadyVisited = new ArrayList<Coordinates>();
 
@@ -19,15 +21,7 @@ public class MapValidator {
 				return true;
 			}
 		}
-		//TODO my fort was once on a mountain
-		/*for(int y =0; y < 4; y++) {
-			for (int x = 0; x < 8; x++) {
-				Coordinates pos = new Coordinates(x, y);
-				if(mapToVerify.getFields().get(pos).getFortState()==FortState.MYFORT && mapToVerify.getFields().get(pos).getType() == MapFieldType.GRASS) {
-					return true;
-				}
-			}
-		}*/
+
 		return false;
 	}
 	
@@ -66,10 +60,9 @@ public class MapValidator {
 		return (alreadyVisited.size() == this.getGrassMountainFields(mapToVerify).size());
 	}
 	
-	//floodfill
+	// CODE TAKEN FROM START https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
 	public void checkIfReachable(Coordinates startingPos, ClientMap mapToVerify, List<Coordinates> visitedNodes) {
 		
-		// TODO inlocuieste || || || 
 		if(!mapToVerify.getFields().containsKey(startingPos) || visitedNodes.contains(startingPos) || mapToVerify.getFields().get(startingPos).getType() == MapFieldType.WATER) {
 			return;
 		}else {
@@ -79,7 +72,9 @@ public class MapValidator {
 			checkIfReachable(new Coordinates(startingPos.getX(), startingPos.getY() - 1), mapToVerify, visitedNodes);
 			checkIfReachable(new Coordinates(startingPos.getX(), startingPos.getY() + 1), mapToVerify, visitedNodes);
 		}
+		
 	}
+	// CODE TAKEN FROM END https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
 	
 	public boolean verifyNoOfFields(ClientMap mapToVerify) {
 		
@@ -136,10 +131,6 @@ public class MapValidator {
 		int grassFields = 0;
 		int mountainFields = 0;
 		
-		/*int waterFields = 4;
-		int grassFields = 15;
-		int mountainFields = 3;*/
-		
 		for( Map.Entry<Coordinates, MapField> mapEntry : mapToVerify.getFields().entrySet() ) {
 			if (mapEntry.getValue().getType() == MapFieldType.GRASS) {
 				grassFields+=1;
@@ -151,24 +142,9 @@ public class MapValidator {
 				waterFields+=1;
 			}
 		}
-		/*
-		for (int y=0 ; y<4; y++) {
-			for(int x=0; x<8; x++) {
-				Coordinates pos = new Coordinates(x, y);
-				if(mapToVerify.getFields().get(pos).getType()==MapFieldType.GRASS) {
-					grassFields--;
-				}
-				if(mapToVerify.getFields().get(pos).getType()==MapFieldType.MOUNTAIN) {
-					mountainFields--;
-				}
-				if(mapToVerify.getFields().get(pos).getType()==MapFieldType.WATER) {
-					waterFields--;
-				}
-			}
-		}*/
+
 
 		return (waterFields >=4 && grassFields >= 15 && mountainFields >= 3);
-		//return (waterFields <= 0 && grassFields <= 0 && mountainFields <= 0);
 	}
 	
 	public boolean validateMap(ClientMap myMap) {

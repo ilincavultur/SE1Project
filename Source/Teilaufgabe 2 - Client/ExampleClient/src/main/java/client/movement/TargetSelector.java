@@ -49,6 +49,10 @@ public class TargetSelector {
 	public List<Coordinates> getUnvisitedTotal() {
 		return unvisitedTotal;
 	}
+	
+	public void setUnvisitedTotal(List<Coordinates> ut) {
+		this.unvisitedTotal = ut;
+	}
 
 	public void setGameState(GameStateData gameState) {
 		this.gameState = gameState;
@@ -188,7 +192,7 @@ public class TargetSelector {
 				
 				logger.info("I am searching for the treasure");
 		
-				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), myHalf, myHalfCopy);
+				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), myHalf);
 				this.nextTarget = toRet;
 				
 				return toRet;
@@ -212,7 +216,7 @@ public class TargetSelector {
 				searchingForTreasure = false;
 				logger.info("I have the treasure and I am searching for the enemy Fort");
 				searchingForEnemyFort = true;
-				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), enemyHalf, enemyHalfCopy);
+				toRet = nextAvailableNeighbour(gameState.getPlayerPosition(), enemyHalf);
 				this.nextTarget = toRet;
 		
 				return toRet;
@@ -237,7 +241,7 @@ public class TargetSelector {
 		return toRet;
 	}
 	
-	private Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf, Map<Coordinates, MapField> copyHalf ) {
+	public Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf) {
 		logger.info("calculating next available neighbour");
 		Coordinates toRet = new Coordinates();
 		
@@ -245,14 +249,15 @@ public class TargetSelector {
 		toRet.setY(-1);
 
 		while ((toRet.getX() < 0 || toRet.getY() < 0)) {
-		
+			
 			Map<String, Coordinates> fieldsAround = pos.getFieldsAround(myMap);	
 
 			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
-				
+				logger.info("calculating next available neighbour");
 				// if it's not visited yet
 				
 				if (mapHalf.containsKey(mapEntry.getValue()) && unvisitedTotal.contains(mapEntry.getValue())) {
+					
 					toRet = mapEntry.getValue();
 					//------------------------- test print
 					System.out.println("next unvisited neighbour: " + toRet.getX() + " " + toRet.getY());
