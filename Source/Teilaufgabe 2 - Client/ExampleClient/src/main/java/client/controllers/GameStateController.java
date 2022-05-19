@@ -117,13 +117,18 @@ public class GameStateController {
 		updateGameStateData(networkController.getGameState(networkController.getGameId(), networkController.getPlayerId()));
 		
 		while (this.gameStateData.getFullMap() == null) {
+			logger.info("i still don t have the full map");
 			updateGameStateData(networkController.getGameState(networkController.getGameId(), networkController.getPlayerId()));	
 		}
 	
-		//------------------------- test print
-		//System.out.println("my fort:" + mapController.getMyFortField().getPosition().getX() + " "+ mapController.getMyFortField().getPosition().getY());
-		System.out.println("my fort based on the data:" +this.gameStateData.getPlayerPosition().getX() + " "+ this.gameStateData.getPlayerPosition().getY());
-		//------------------------- test print
+		/*if (this.gameStateData.getFullMap() != null) {
+			//------------------------- test print
+			//System.out.println("my fort:" + mapController.getMyFortField().getPosition().getX() + " "+ mapController.getMyFortField().getPosition().getY());
+			System.out.println("my fort based on the data:" +this.gameStateData.getPlayerPosition().getX() + " "+ this.gameStateData.getPlayerPosition().getY());
+			//------------------------- test print
+		}
+		*/
+		
 
 		logger.info("Full Map has been received");
 		
@@ -133,7 +138,7 @@ public class GameStateController {
 		
 		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
 			
-			while(this.gameStateData.getPlayerState() != ClientPlayerState.MUSTACT) {
+			while(this.gameStateData.getPlayerState() == ClientPlayerState.MUSTWAIT) {
 			
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
 		
@@ -142,7 +147,7 @@ public class GameStateController {
 		
 			MoveCommand newMove = moveController.getNextMove();
 			
-			if (newMove != null) {
+			if (newMove != null && this.gameStateData.getPlayerState() == ClientPlayerState.MUSTACT) {
 				
 				networkController.sendMove(pl1, newMove);	
 				

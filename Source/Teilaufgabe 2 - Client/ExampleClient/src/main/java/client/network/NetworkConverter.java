@@ -218,6 +218,7 @@ public class NetworkConverter {
 					
 					state.setEnemyFortIsPresentAt(mapEntry.getKey());
 				}
+			
 			}
 			
 		} else {
