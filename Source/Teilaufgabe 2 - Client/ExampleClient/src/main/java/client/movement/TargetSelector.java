@@ -146,9 +146,10 @@ public class TargetSelector {
 	
 	public Coordinates nextTarget() {
 		
-		unvisitedTotal.remove(gameState.getPlayerPosition());
-		updateMapHalf();
+		//unvisitedTotal.remove(gameState.getPlayerPosition());
 		
+		updateMapHalf();
+	
 		Coordinates toRet = new Coordinates();
 		toRet.setX(-1);
 		toRet.setY(-1);
@@ -242,7 +243,7 @@ public class TargetSelector {
 	}
 	
 	public Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf) {
-		logger.info("calculating next available neighbour");
+		//logger.info("calculating next available neighbour");
 		Coordinates toRet = new Coordinates();
 		
 		toRet.setX(-1);
@@ -253,14 +254,14 @@ public class TargetSelector {
 			Map<String, Coordinates> fieldsAround = pos.getFieldsAround(myMap);	
 
 			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
-				logger.info("calculating next available neighbour");
+				
 				// if it's not visited yet
 				
 				if (mapHalf.containsKey(mapEntry.getValue()) && unvisitedTotal.contains(mapEntry.getValue())) {
 					
 					toRet = mapEntry.getValue();
 					//------------------------- test print
-					System.out.println("next unvisited neighbour: " + toRet.getX() + " " + toRet.getY());
+					//System.out.println("next unvisited neighbour: " + toRet.getX() + " " + toRet.getY());
 					//------------------------- test print
 					break;
 				} 
@@ -291,6 +292,7 @@ public class TargetSelector {
 		while (itr.hasNext()) {
 			Entry<Coordinates, MapField> entry = itr.next();
 			if (!unvisitedTotal.contains(entry.getKey())) {
+				//System.out.println("i removed in targetselector: " + entry.getKey().getX() + entry.getKey().getY());
 				itr.remove();
 		
 			}

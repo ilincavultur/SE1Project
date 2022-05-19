@@ -26,9 +26,9 @@ public class ClientMapGenerator {
 		
 		// initialize map with only grass fields => grass fields min number already accomplished
 		
-		for(int y=0; y<4; y++) {
+		for(int y=0; y<4; ++y) {
 		
-			for (int x = 0 ; x < 8; x++) {
+			for (int x = 0 ; x < 8; ++x) {
 				
 				MapField newField = new MapField();
 				Coordinates pos = new Coordinates(x, y);
@@ -37,7 +37,7 @@ public class ClientMapGenerator {
 			}
 		}
 
-		for (int i=0; i<4 ; i++) {
+		for (int i=0; i<4 ; ++i) {
 			
 			int randomWaterX = randomNo.nextInt(8);
 			int randomWaterY = randomNo.nextInt(4);
@@ -52,7 +52,7 @@ public class ClientMapGenerator {
 			
 		}
 		
-		for (int i=0; i<3 ; i++) {
+		for (int i=0; i<3 ; ++i) {
 			int randomMountainX = randomNo.nextInt(8);
 			int randomMountainY = randomNo.nextInt(4);
 			Coordinates pos = new Coordinates(randomMountainX, randomMountainY);

@@ -1,5 +1,6 @@
 package client.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ public class MovementController {
 	private GameStateData gameState;
 	private boolean goPickUpTreasure = false;
 	private boolean goBribeFort = false;
+	private List<Coordinates> unvisitedTotal = new ArrayList<Coordinates>();
 	//private List<Coordinates> shortestPath = new ArrayList<Coordinates>();
 
 	private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
@@ -68,6 +70,15 @@ public class MovementController {
 		pathCalc.setMyMap(fullMap);
 		
 	}
+	
+
+	public List<Coordinates> getUnvisitedTotal() {
+		return unvisitedTotal;
+	}
+
+	public void setUnvisitedTotal(List<Coordinates> unvisitedTotal) {
+		this.unvisitedTotal = unvisitedTotal;
+	}
 
 	public void setMovesList(List<MoveCommand> movesList) {
 		this.movesList = movesList;
@@ -82,7 +93,7 @@ public class MovementController {
 		this.targetSelector.setMyMap(fullMap);
 		this.targetSelector.setHalves();
 		this.targetSelector.setGameState(gameState);
-		this.pathCalc.setUnvisitedTotal(this.targetSelector.getUnvisitedTotal());
+		//this.pathCalc.setUnvisitedTotal(this.targetSelector.getUnvisitedTotal());
 		
 		logger.info("setup");
 	}
@@ -92,8 +103,23 @@ public class MovementController {
 		logger.info("updatepath");
 		
 		this.targetSelector.setGameState(gameState);
+		
+		///
+		this.unvisitedTotal = this.targetSelector.getUnvisitedTotal();
+		
+		
+		if (unvisitedTotal.contains(gameState.getPlayerPosition())) {
+			System.out.println("i just visited in movementcontroller: " + gameState.getPlayerPosition().getX() + gameState.getPlayerPosition().getY());
+			unvisitedTotal.remove(gameState.getPlayerPosition());	
+		}
+		
+		
+		this.targetSelector.setUnvisitedTotal(unvisitedTotal);
+		
+		
+		///
 	
-		this.pathCalc.setUnvisitedTotal(this.targetSelector.getUnvisitedTotal());
+		//this.pathCalc.setUnvisitedTotal(this.targetSelector.getUnvisitedTotal());
 
 		
 		// if i haven't gotten any path yet 

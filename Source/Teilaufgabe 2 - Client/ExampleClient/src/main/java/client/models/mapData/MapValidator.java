@@ -14,6 +14,41 @@ public class MapValidator {
 	// I have never used Floodfill algorithm before so I learnt the idea from this website. 
 
 	private List<Coordinates> alreadyVisited = new ArrayList<Coordinates>();
+	
+	//reachable nodes (in theory)
+	public boolean checkCoordinates(ClientMap myMap) {
+	
+		int y0 = 0;
+		int y1 = 0;
+		int y2 = 0;
+		int y3 = 0;
+		for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
+			if (mapEntry.getKey().getX() < 0 || mapEntry.getKey().getY() < 0) {
+				return false;
+			}
+				
+			if (mapEntry.getKey().getY() == 0 ) {
+				y0+=1;
+			}
+			if (mapEntry.getKey().getY() == 1 ) {
+				y1+=1;		
+			}
+			if (mapEntry.getKey().getY() == 2 ) {
+				y2+=1;
+			}
+			if (mapEntry.getKey().getY() == 3 ) {
+				y3+=1;
+			}
+		}
+
+		if (y0==8 && y1==8 && y2==8 && y3==8) {
+			System.out.println("all good");
+			return true;
+		}
+		System.out.println("all bad");
+		return false;
+		
+	}
 
 	public boolean hasFort(ClientMap mapToVerify) {
 		for( Map.Entry<Coordinates, MapField> mapEntry : mapToVerify.getFields().entrySet() ) {
@@ -148,8 +183,8 @@ public class MapValidator {
 	}
 	
 	public boolean validateMap(ClientMap myMap) {
-		
-		if ( hasFort(myMap) && hasNoIsland(myMap) && verifyNoOfFields(myMap) && verifyLongSides(myMap) && verifyShortSides(myMap) && verifyFieldTypesNo(myMap) ) {
+
+		if (checkCoordinates(myMap) && hasFort(myMap) && hasNoIsland(myMap) && verifyNoOfFields(myMap) && verifyLongSides(myMap) && verifyShortSides(myMap) && verifyFieldTypesNo(myMap) ) {
 			return true;
 		}
 		
