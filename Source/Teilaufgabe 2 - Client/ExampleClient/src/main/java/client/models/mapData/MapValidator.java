@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+import client.controllers.NetworkController;
 import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
 
@@ -14,15 +19,16 @@ public class MapValidator {
 	// I have never used Floodfill algorithm before so I learnt the idea from this website. 
 
 	private List<Coordinates> alreadyVisited = new ArrayList<Coordinates>();
+	private static final Logger logger = LoggerFactory.getLogger(MapValidator.class);
 	
 	//reachable nodes (in theory)
-	public boolean checkCoordinates(ClientMap myMap) {
+	private boolean checkCoordinates(ClientMap myMap) {
 	
 		int y0 = 0;
 		int y1 = 0;
 		int y2 = 0;
 		int y3 = 0;
-		for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
+		/*for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
 			if (mapEntry.getKey().getX() < 0 || mapEntry.getKey().getY() < 0) {
 				return false;
 			}
@@ -40,13 +46,40 @@ public class MapValidator {
 				y3+=1;
 			}
 		}
-
-		if (y0==8 && y1==8 && y2==8 && y3==8) {
+*/
+		for (int y = 0; y < myMap.getySize(); ++y) {
+			
+			for(int x =0; x < myMap.getxSize(); ++x) {
+				//MapField newField = new MapField();
+				Coordinates pos = new Coordinates(x, y);
+				if (myMap.getFields().containsKey(pos) == false) {
+					return false;
+				}
+				if (myMap.getFields().get(pos).getPosition().getX() < 0 || myMap.getFields().get(pos).getPosition().getY() < 0) {
+					return false;
+				}
+					
+				/*if (myMap.getFields().get(pos).getPosition().getY() == 0 ) {
+					y0+=1;
+				}
+				if (myMap.getFields().get(pos).getPosition().getY() == 1 ) {
+					y1+=1;		
+				}
+				if (myMap.getFields().get(pos).getPosition().getY() == 2 ) {
+					y2+=1;
+				}
+				if (myMap.getFields().get(pos).getPosition().getY() == 3 ) {
+					y3+=1;
+				}
+				*/
+			}
+		}
+		/*if (y0==8 && y1==8 && y2==8 && y3==8) {
 			System.out.println("all good");
 			return true;
-		}
-		System.out.println("all bad");
-		return false;
+		}*/
+		//System.out.println("all bad");
+		return true;
 		
 	}
 
@@ -61,7 +94,7 @@ public class MapValidator {
 	}
 	
 	//reachable nodes (in theory)
-	public Map<Coordinates, MapField> getGrassMountainFields(ClientMap myMap) {
+	private Map<Coordinates, MapField> getGrassMountainFields(ClientMap myMap) {
 		
 		Map<Coordinates, MapField> fieldsGrassMountain = new HashMap<Coordinates, MapField>();
 		
@@ -96,7 +129,7 @@ public class MapValidator {
 	}
 	
 	// CODE TAKEN FROM START https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
-	public void checkIfReachable(Coordinates startingPos, ClientMap mapToVerify, List<Coordinates> visitedNodes) {
+	private void checkIfReachable(Coordinates startingPos, ClientMap mapToVerify, List<Coordinates> visitedNodes) {
 		
 		if(!mapToVerify.getFields().containsKey(startingPos) || visitedNodes.contains(startingPos) || mapToVerify.getFields().get(startingPos).getType() == MapFieldType.WATER) {
 			return;
@@ -111,7 +144,7 @@ public class MapValidator {
 	}
 	// CODE TAKEN FROM END https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
 	
-	public boolean verifyNoOfFields(ClientMap mapToVerify) {
+	private boolean verifyNoOfFields(ClientMap mapToVerify) {
 		
 		int xSize = mapToVerify.getxSize();
 		int ySize = mapToVerify.getySize();
@@ -183,12 +216,46 @@ public class MapValidator {
 	}
 	
 	public boolean validateMap(ClientMap myMap) {
+		if (checkCoordinates(myMap) == false) {
+			logger.info("check coordinates is false");
+			return false;
+		}
 
-		if (checkCoordinates(myMap) && hasFort(myMap) && hasNoIsland(myMap) && verifyNoOfFields(myMap) && verifyLongSides(myMap) && verifyShortSides(myMap) && verifyFieldTypesNo(myMap) ) {
-			return true;
+		if (hasFort(myMap) == false) {
+			logger.info("hasFort is false");
+			return false;
 		}
 		
-		return false;
+		if (hasNoIsland(myMap) == false) {
+			logger.info("hasnoIsland is false");
+			return false;
+		}
+		
+		if (verifyNoOfFields(myMap) == false) {
+			logger.info("verifynooffields is false");
+			return false;
+		}
+		
+		if (verifyLongSides(myMap) == false) {
+			logger.info("verifylongsides is false");
+			return false;
+		}
+		
+		if (verifyShortSides(myMap) == false) {
+			logger.info("verifyshortsides is false");
+			return false;
+		}
+		
+		if (verifyFieldTypesNo(myMap) == false) {
+			logger.info("verifyfieldtypesno is false");
+			return false;
+		}
+		
+		/*if (checkCoordinates(myMap) && hasFort(myMap) && hasNoIsland(myMap) && verifyNoOfFields(myMap) && verifyLongSides(myMap) && verifyShortSides(myMap) && verifyFieldTypesNo(myMap) ) {
+			return true;
+		}*/
+		
+		return true;
 		
 	}
 	

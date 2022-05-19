@@ -45,16 +45,12 @@ public class MapController {
 		
 		//placeFort(myNewMap);
 		Coordinates fortPos = myMapGenerator.placeFort();
-		for( Entry<Coordinates, MapField> mapEntry : myNewMap.getFields().entrySet() ) {
-			if (mapEntry.getKey().equals(fortPos)) {
-				mapEntry.getValue().setFortState(FortState.MYFORT);
-			}
-		}
-		//myNewMap.getFields().get(myMapGenerator.placeFort()).setFortState(FortState.MYFORT);
+		myNewMap.getFields().get(fortPos).setFortState(FortState.MYFORT);
+		System.out.println("my fort : " + myNewMap.getFields().get(fortPos).getFortState().toString());
 		myNewMap.setxSize(8);
 		myNewMap.setySize(4);
 		
-		if(validator.validateMap(myNewMap)) {
+		if(validator.validateMap(myNewMap) == true) {
 			
 			this.myMap = myNewMap;
 			return;

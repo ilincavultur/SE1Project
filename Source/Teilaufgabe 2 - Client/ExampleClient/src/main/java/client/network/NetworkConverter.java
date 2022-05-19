@@ -195,7 +195,7 @@ public class NetworkConverter {
 			}
 		}
 		
-		ClientMap fullMap = new ClientMap();
+		//ClientMap fullMap = new ClientMap();
 		
 		if(gameState.getMap().isPresent()) {
 			
@@ -221,8 +221,8 @@ public class NetworkConverter {
 			}
 			
 		} else {
-			System.out.println("Full Map not available");
-			state.setFullMap(fullMap);
+			//System.out.println("Full Map not available");
+			state.setFullMap(null);
 		}
 
 		return state;

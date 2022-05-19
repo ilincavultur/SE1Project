@@ -109,7 +109,7 @@ public class MovementController {
 		
 		
 		if (unvisitedTotal.contains(gameState.getPlayerPosition())) {
-			System.out.println("i just visited in movementcontroller: " + gameState.getPlayerPosition().getX() + gameState.getPlayerPosition().getY());
+			//System.out.println("i just visited in movementcontroller: " + gameState.getPlayerPosition().getX() + gameState.getPlayerPosition().getY());
 			unvisitedTotal.remove(gameState.getPlayerPosition());	
 		}
 		
