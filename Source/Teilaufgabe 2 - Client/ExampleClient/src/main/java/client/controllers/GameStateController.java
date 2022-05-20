@@ -22,7 +22,7 @@ public class GameStateController {
 	private MovementController moveController;
 	private CLI ui;
 	private int moves = 0;
-	private Coordinates currPos = new Coordinates();
+	private Coordinates currPos = new Coordinates(0,0);
 
 	public GameStateController(String gameId, String serverBaseUrl) {
 		super();
@@ -41,11 +41,22 @@ public class GameStateController {
 		this.gameStateData.setGameStateId(newGSD.getGameStateId());
 		if(newGSD.getFullMap() != null) {
 			this.mapController.setMyMap(newGSD.getFullMap());
+			if (this.currPos != null) {
+				if (this.currPos.equals(newGSD.getPlayerPosition()) == false) {
+					this.gameStateData.setFullMapPositionChanged(newGSD.getFullMap());	
+				} else {
+					this.gameStateData.setFullMap(newGSD.getFullMap());	
+				}
+			} else {
+				this.gameStateData.setFullMapPositionChanged(newGSD.getFullMap());
+			}
+			/*
 			if (this.currPos.equals(newGSD.getPlayerPosition()) == false) {
 				this.gameStateData.setFullMapPositionChanged(newGSD.getFullMap());	
 			} else {
 				this.gameStateData.setFullMap(newGSD.getFullMap());	
-			}
+			}*/
+			//this.gameStateData.setFullMapPositionChanged(newGSD.getFullMap());
 			this.gameStateData.setPlayerPosition(newGSD.getPlayerPosition());
 			this.currPos = newGSD.getPlayerPosition();
 			this.moveController.setFullMap(newGSD.getFullMap());
@@ -103,21 +114,20 @@ public class GameStateController {
 		
 		logger.info("Map has been generated");
 		
+		this.currPos.setX(0);
+		this.currPos.setY(0);
+
 		updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
 		System.out.println(this.gameStateData.getPlayerState().toString());
 		while(this.gameStateData.getPlayerState() != ClientPlayerState.MUSTACT) {
-			logger.info("not my turn");
+			System.out.println(this.gameStateData.getPlayerState().toString());
 			updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
 		}
-		logger.info("my turn");
-		networkController.sendMap(mapToSend,pl1);
-		++moves;
-		/*if (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON) {
-			networkController.sendMap(mapController.getMyMap(),pl1);
+		System.out.println("" + this.gameStateData.getPlayerState().toString());
+		if (this.gameStateData.getPlayerState() == ClientPlayerState.MUSTACT) {
+			networkController.sendMap(mapToSend,pl1);
 			++moves;
-		} else {
-			return;
-		}*/
+		}
 		
 		gameStateData.registerInterestedView(ui);
 		
@@ -133,22 +143,7 @@ public class GameStateController {
 		}
 	
 		this.currPos = this.gameStateData.getPlayerPosition();
-		/*if (this.gameStateData.getFullMap() != null) {
-			//------------------------- test print
-			//System.out.println("my fort:" + mapController.getMyFortField().getPosition().getX() + " "+ mapController.getMyFortField().getPosition().getY());
-			System.out.println("my fort based on the data:" +this.gameStateData.getPlayerPosition().getX() + " "+ this.gameStateData.getPlayerPosition().getY());
-			//------------------------- test print
-		}
-		*/
-		
-
-		/*if (this.gameStateData.getFullMap() != null) {
-			logger.info("Full Map has been received");
-			return;
-		} else {
-			receiveFullMap();
-		}*/
-		
+	
 		
 	}
 	
@@ -156,13 +151,19 @@ public class GameStateController {
 		
 		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
 			
-			
-			while(this.gameStateData.getPlayerState() == ClientPlayerState.MUSTWAIT) {
-			
+			/*while(this.gameStateData.getPlayerState() != ClientPlayerState.MUSTACT) {
+				System.out.println(this.gameStateData.getPlayerState().toString());
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
 		
 				moveController.updatePath();
-			}
+			}*/
+			
+			do {
+				System.out.println(this.gameStateData.getPlayerState().toString());
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+		
+				moveController.updatePath();
+			} while (this.gameStateData.getPlayerState() != ClientPlayerState.MUSTACT);
 		
 			MoveCommand newMove = moveController.getNextMove();
 			
@@ -171,12 +172,12 @@ public class GameStateController {
 				networkController.sendMove(pl1, newMove);	
 				
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-				
+								
 				// update path
 				moveController.updatePath();
 				
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-				
+
 				//------------------------- test print
 				System.out.println("we are here now in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
 				//------------------------- test print
@@ -184,9 +185,87 @@ public class GameStateController {
 				++moves;
 			} 
 	
+			
 		}
+
+		/*
+		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
+			
+			while(this.gameStateData.getPlayerState() == ClientPlayerState.MUSTWAIT) {
+			
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+				
+			}
+			
+			if (this.gameStateData.getPlayerState() == ClientPlayerState.LOST) {
+				return;
+			}
+			
+			if (this.gameStateData.getPlayerState() == ClientPlayerState.WON) {
+				return;
+			}
+			
+			moveController.updatePath();
 		
+			MoveCommand newMove = moveController.getNextMove();
+			
+			if (newMove != null && this.gameStateData.getPlayerState() == ClientPlayerState.MUSTACT) {
+				
+				networkController.sendMove(pl1, newMove);	
+				
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+								
+				// update path
+				moveController.updatePath();
+				
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+
+				//------------------------- test print
+				System.out.println("we are here now in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
+				//------------------------- test print
+				
+				++moves;
+			} 
+	
+			
+		}*/
+
+		/*
+		//updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
+			while (networkController.getGameState(networkController.getGameId(), pl1).getPlayerState() != ClientPlayerState.MUSTACT) {
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+			}
+			moveController.updatePath();
+			
+			if (this.gameStateData.getPlayerState() == ClientPlayerState.LOST) {
+				return;
+			}
+			
+			if (this.gameStateData.getPlayerState() == ClientPlayerState.WON) {
+				return;
+			}
+			
+			MoveCommand newMove = moveController.getNextMove();
 		
+			if (newMove != null && this.gameStateData.getPlayerState() == ClientPlayerState.MUSTACT) {
+				logger.info("send move");
+				System.out.println(this.gameStateData.getPlayerState().toString());
+				networkController.sendMove(pl1, newMove);	
+				
+				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+				
+				if (this.gameStateData.getPlayerState() == ClientPlayerState.LOST) {
+					return;
+				}
+				
+				if (this.gameStateData.getPlayerState() == ClientPlayerState.WON) {
+					return;
+				}
+				
+				++moves;
+			} 
+		}*/
 	}
 	
 	private void endGame() {
