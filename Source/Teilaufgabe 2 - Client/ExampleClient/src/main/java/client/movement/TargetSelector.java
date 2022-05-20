@@ -20,15 +20,11 @@ import client.models.mapData.enums.MapFieldType;
 public class TargetSelector {
 	
 	private Map<Coordinates, MapField> myHalf = new HashMap<Coordinates, MapField>();
-	private Map<Coordinates, MapField> myHalfCopy = new HashMap<Coordinates, MapField>();
 	private Map<Coordinates, MapField> enemyHalf = new HashMap<Coordinates, MapField>();
-	private Map<Coordinates, MapField> enemyHalfCopy = new HashMap<Coordinates, MapField>();
 	private ClientMap myMap;
 	private List<Coordinates> unvisitedTotal = new ArrayList<Coordinates>();
 	private GameStateData gameState;
 	private static final Logger logger = LoggerFactory.getLogger(TargetSelector.class);
-	//private boolean goPickUpTreasure = false;
-	//private boolean goBribeFort = false;
 	private boolean searchingForEnemyFort = false;
 	private boolean searchingForTreasure = true;
 	private Coordinates nextTarget = new Coordinates();
@@ -67,8 +63,6 @@ public class TargetSelector {
 		
 		for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
 			if (mapEntry.getValue().getType() != MapFieldType.WATER) {
-			
-				//unvisitedTotal.put(mapEntry.getKey(), mapEntry.getValue());
 				unvisitedTotal.add(mapEntry.getKey());
 			}
 		}
@@ -138,10 +132,6 @@ public class TargetSelector {
 				}
 			}
 		}
-		myHalfCopy = myHalf;
-		enemyHalfCopy = enemyHalf;
-	
-		
 	}
 	
 	public Coordinates nextTarget() {
@@ -186,7 +176,6 @@ public class TargetSelector {
 			}
 		}
 		
-		// find a way to return 
 		// searching for treasure
 		while (toRet.getX() < 0 || toRet.getY() < 0) {
 			if (!pickedUpTreasure && !foundTreasure && searchingForTreasure) {
@@ -200,7 +189,6 @@ public class TargetSelector {
 			}
 			
 			// treasure is Present => go to treasure (foundTreasure)
-			// && this.goPickUpTreasure == true
 			if (!pickedUpTreasure && foundTreasure ) {
 				
 				logger.info("The treasure is present and I am going towards it");
@@ -225,7 +213,6 @@ public class TargetSelector {
 			}
 			
 			// enemyFort is Present => go to enemyFort (foundEnemyFort)
-			//&& this.goBribeFort == true
 			if (pickedUpTreasure && foundEnemyFort ) {
 				searchingForTreasure = false;
 				logger.info("The fort is present and I am going towards it");
@@ -243,7 +230,7 @@ public class TargetSelector {
 	}
 	
 	public Coordinates nextAvailableNeighbour(Coordinates pos, Map<Coordinates, MapField> mapHalf) {
-		//logger.info("calculating next available neighbour");
+	
 		Coordinates toRet = new Coordinates();
 		
 		toRet.setX(-1);
@@ -256,13 +243,10 @@ public class TargetSelector {
 			for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 				
 				// if it's not visited yet
-				
 				if (mapHalf.containsKey(mapEntry.getValue()) && unvisitedTotal.contains(mapEntry.getValue())) {
 					
 					toRet = mapEntry.getValue();
-					//------------------------- test print
-					//System.out.println("next unvisited neighbour: " + toRet.getX() + " " + toRet.getY());
-					//------------------------- test print
+		
 					break;
 				} 
 
@@ -292,7 +276,6 @@ public class TargetSelector {
 		while (itr.hasNext()) {
 			Entry<Coordinates, MapField> entry = itr.next();
 			if (!unvisitedTotal.contains(entry.getKey())) {
-				//System.out.println("i removed in targetselector: " + entry.getKey().getX() + entry.getKey().getY());
 				itr.remove();
 		
 			}

@@ -25,15 +25,12 @@ public class ClientMapGenerator {
 		Random randomNo = new Random();
 		
 		// initialize map with only grass fields => grass fields min number already accomplished
-		
 		for (int x = 0 ; x < 8; ++x) {
 			for(int y=0; y<4; ++y) {
-				//System.out.println("x: " + x + " y: " + y);
 				MapField newField = new MapField();
 				Coordinates pos = new Coordinates(x, y);
 				newField = newField.createMapField(pos);
 				newfields.put(pos, newField);
-				//System.out.println("x pos: " + pos.getX() + " y pos: " + pos.getY());
 			}
 		}
 

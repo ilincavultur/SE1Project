@@ -76,17 +76,7 @@ public class NetworkController {
 	}
 	
 	public void sendMap(ClientMap map, String plID) {
-		/*for (int x = 0 ; x < 8; ++x) {
-			for(int y=0; y<4; ++y) {
-				
-				
-				Coordinates pos = new Coordinates(x, y);
-				
-				
-				System.out.println("x pos: " + map.getFields().get(pos).getPosition().getX() + " y pos: " + map.getFields().get(pos).getPosition().getY());
-			}
-		}
-*/
+
 		try {
 			network.sendMap(networkConverter.convertMapTo(plID, map));
 		} catch (NetworkException e) {

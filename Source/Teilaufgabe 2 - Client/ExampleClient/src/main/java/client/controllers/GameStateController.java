@@ -22,6 +22,7 @@ public class GameStateController {
 	private MovementController moveController;
 	private CLI ui;
 	private int moves = 0;
+	private Coordinates currPos = new Coordinates();
 
 	public GameStateController(String gameId, String serverBaseUrl) {
 		super();
@@ -40,8 +41,13 @@ public class GameStateController {
 		this.gameStateData.setGameStateId(newGSD.getGameStateId());
 		if(newGSD.getFullMap() != null) {
 			this.mapController.setMyMap(newGSD.getFullMap());
-			this.gameStateData.setFullMap(newGSD.getFullMap());
+			if (this.currPos.equals(newGSD.getPlayerPosition()) == false) {
+				this.gameStateData.setFullMapPositionChanged(newGSD.getFullMap());	
+			} else {
+				this.gameStateData.setFullMap(newGSD.getFullMap());	
+			}
 			this.gameStateData.setPlayerPosition(newGSD.getPlayerPosition());
+			this.currPos = newGSD.getPlayerPosition();
 			this.moveController.setFullMap(newGSD.getFullMap());
 			this.moveController.setCurrentField(newGSD.getPlayerPosition());
 			this.moveController.getPathCalc().setMyMap(newGSD.getFullMap());
@@ -61,8 +67,11 @@ public class GameStateController {
 	
 		createAndSendMap(pl1);
 		
+		logger.info("Map has been sent & was correct");
+		
 		receiveFullMap();
 		
+		logger.info("Full Map has been received");
 		
 		moveController.setUp();
 		moveController.updatePath();
@@ -70,9 +79,10 @@ public class GameStateController {
 		play(pl1);
 		
 		logger.info("play function has ended");
-		
-
+	
 		endGame();
+		
+		System.exit(0);
 
 	}
 	
@@ -92,6 +102,9 @@ public class GameStateController {
 		ClientMap mapToSend = mapController.getMyMap();
 		
 		logger.info("Map has been generated");
+		
+		updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
+		System.out.println(this.gameStateData.getPlayerState().toString());
 		while(this.gameStateData.getPlayerState() != ClientPlayerState.MUSTACT) {
 			logger.info("not my turn");
 			updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
@@ -108,8 +121,6 @@ public class GameStateController {
 		
 		gameStateData.registerInterestedView(ui);
 		
-		logger.info("Map has been sent & was correct");
-		
 	}
 	
 	private void receiveFullMap() {
@@ -121,6 +132,7 @@ public class GameStateController {
 			updateGameStateData(networkController.getGameState(networkController.getGameId(), networkController.getPlayerId()));	
 		}
 	
+		this.currPos = this.gameStateData.getPlayerPosition();
 		/*if (this.gameStateData.getFullMap() != null) {
 			//------------------------- test print
 			//System.out.println("my fort:" + mapController.getMyFortField().getPosition().getX() + " "+ mapController.getMyFortField().getPosition().getY());
@@ -130,13 +142,20 @@ public class GameStateController {
 		*/
 		
 
-		logger.info("Full Map has been received");
+		/*if (this.gameStateData.getFullMap() != null) {
+			logger.info("Full Map has been received");
+			return;
+		} else {
+			receiveFullMap();
+		}*/
+		
 		
 	}
 	
 	private void play(String pl1) {
 		
 		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
+			
 			
 			while(this.gameStateData.getPlayerState() == ClientPlayerState.MUSTWAIT) {
 			
@@ -152,12 +171,12 @@ public class GameStateController {
 				networkController.sendMove(pl1, newMove);	
 				
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-								
+				
 				// update path
 				moveController.updatePath();
 				
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-
+				
 				//------------------------- test print
 				System.out.println("we are here now in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
 				//------------------------- test print
@@ -165,8 +184,8 @@ public class GameStateController {
 				++moves;
 			} 
 	
-			
 		}
+		
 		
 	}
 	
@@ -183,13 +202,8 @@ public class GameStateController {
 			
 			if (moves >= 100) {
 				System.out.println("100 moves reached ");
-			}
-
-
-			System.exit(0);		
+			}			
 	
 	}
-	
-	
 	
 }

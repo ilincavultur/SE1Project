@@ -22,7 +22,6 @@ public class GameStateData {
 	private Coordinates playerPosition;
 	private ClientMap fullMap;
 	private final PropertyChangeSupport notifyChanges = new PropertyChangeSupport(this);
-	//private static final Logger logger = LoggerFactory.getLogger(GameStateData.class);
 
 	public GameStateData() {
 		super();
@@ -50,10 +49,7 @@ public class GameStateData {
 	public String getPlayerId() {
 		return playerId;
 	}
-
 	
-
-
 	public void setPlayerId(String playerId) {
 		this.playerId = playerId;
 	}
@@ -118,32 +114,20 @@ public class GameStateData {
 	public ClientMap getFullMap() {
 		return fullMap;
 	}
-
+	
 	public void setFullMap(ClientMap fullMap) {
+		
+		this.fullMap = fullMap;
+		
+	}
+
+	public void setFullMapPositionChanged(ClientMap fullMap) {
 		ClientMap before = this.fullMap;
 		this.fullMap = fullMap;
 		
 		notifyChanges.firePropertyChange("myMap", before, fullMap);
 		
 	}
-	/*
-	
-	public MapField getMyCurrentPosition(ClientMap myMap) {
-
-		if (myMap !=null) {
-			
-			for( Map.Entry<Coordinates, MapField> mapEntry : myMap.getFields().entrySet() ) {
-				
-				if (mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.MYPLAYER || mapEntry.getValue().getPlayerPositionState() == PlayerPositionState.BOTH) {
-					
-					this.setPlayerPosition(mapEntry.getKey());
-					return mapEntry.getValue();
-				}
-			}
-		}
-		
-		return null;
-	}*/
 
 	@Override
 	public int hashCode() {

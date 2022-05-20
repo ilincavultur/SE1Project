@@ -24,7 +24,6 @@ public class PathCalculator {
 	//the key is the previous node, the value is the current Node
 	private Map<Coordinates, Coordinates> previousNode = new HashMap<Coordinates, Coordinates>();
 	private List<Coordinates> shortestPath = new ArrayList<Coordinates>();
-	//private List<Coordinates> unvisitedTotal = new ArrayList<Coordinates>();
 	
 	public PathCalculator(ClientMap myMap) {
 		super();
@@ -54,14 +53,6 @@ public class PathCalculator {
 		return firstFieldMoves + secondFieldMoves;
 		
 	}
-
-	/*public List<Coordinates> getUnvisitedTotal() {
-		return unvisitedTotal;
-	}
-
-	public void setUnvisitedTotal(List<Coordinates> unvisitedTotal) {
-		this.unvisitedTotal = unvisitedTotal;
-	}*/
 
 	public List<Coordinates> getShortestPath() {
 		return shortestPath;

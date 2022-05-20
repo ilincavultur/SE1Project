@@ -25,7 +25,6 @@ public class MovementController {
 	private boolean goPickUpTreasure = false;
 	private boolean goBribeFort = false;
 	private List<Coordinates> unvisitedTotal = new ArrayList<Coordinates>();
-	//private List<Coordinates> shortestPath = new ArrayList<Coordinates>();
 
 	private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
 
@@ -71,7 +70,6 @@ public class MovementController {
 		
 	}
 	
-
 	public List<Coordinates> getUnvisitedTotal() {
 		return unvisitedTotal;
 	}
@@ -93,7 +91,6 @@ public class MovementController {
 		this.targetSelector.setMyMap(fullMap);
 		this.targetSelector.setHalves();
 		this.targetSelector.setGameState(gameState);
-		//this.pathCalc.setUnvisitedTotal(this.targetSelector.getUnvisitedTotal());
 		
 		logger.info("setup");
 	}
@@ -103,24 +100,15 @@ public class MovementController {
 		logger.info("updatepath");
 		
 		this.targetSelector.setGameState(gameState);
-		
-		///
+	
 		this.unvisitedTotal = this.targetSelector.getUnvisitedTotal();
 		
 		
 		if (unvisitedTotal.contains(gameState.getPlayerPosition())) {
-			//System.out.println("i just visited in movementcontroller: " + gameState.getPlayerPosition().getX() + gameState.getPlayerPosition().getY());
 			unvisitedTotal.remove(gameState.getPlayerPosition());	
 		}
-		
-		
+			
 		this.targetSelector.setUnvisitedTotal(unvisitedTotal);
-		
-		
-		///
-	
-		//this.pathCalc.setUnvisitedTotal(this.targetSelector.getUnvisitedTotal());
-
 		
 		// if i haven't gotten any path yet 
 		if (this.movesList == null) {
@@ -163,7 +151,6 @@ public class MovementController {
 		}
 		System.out.println("current next target is " + targetSelector.getNextTarget().getX() + " " + targetSelector.getNextTarget().getY() );
 		
-		
 	}
 	
 	private void calcMovesToGoal() {
@@ -175,10 +162,6 @@ public class MovementController {
 		if (currentField.equals(targetPosition)) {
 			targetPosition = this.targetSelector.nextTarget();
 		}
-		
-		//------------------------- test print
-		//System.out.println("target field " + targetPosition.getX() + " " + targetPosition.getY());
-		//------------------------- test print
 		
 		MapField targetField = fullMap.getFields().get(targetPosition);
 		

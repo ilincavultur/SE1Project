@@ -43,7 +43,6 @@ public class MapController {
 		
 		ClientMap myNewMap = new ClientMap(myMapGenerator.getFields());	
 		
-		//placeFort(myNewMap);
 		Coordinates fortPos = myMapGenerator.placeFort();
 		myNewMap.getFields().get(fortPos).setFortState(FortState.MYFORT);
 		System.out.println("my fort : " + myNewMap.getFields().get(fortPos).getFortState().toString());

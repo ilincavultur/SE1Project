@@ -14,8 +14,6 @@ public class ClientMap {
 	private Map<Coordinates, MapField> fields;
 	private int xSize;
 	private int ySize;
-	
-	//private static final Logger logger = LoggerFactory.getLogger(ClientMap.class);
 
 	public ClientMap() {
 		super();
