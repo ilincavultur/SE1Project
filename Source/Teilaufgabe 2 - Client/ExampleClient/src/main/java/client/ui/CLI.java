@@ -14,11 +14,7 @@ import client.exceptions.MapException;
 public class CLI implements PropertyChangeListener {
 	
 	private void printMapField(MapField myMapField) {
-		
-		if (myMapField.getPosition().getX() < 0 || myMapField.getPosition().getY() < 0) {
-			throw new MapException("Incorrect coordinates");
-		}
-		
+	
 		System.out.print(myMapField.getPosition().getX());
 		System.out.print(myMapField.getPosition().getY());
 		
