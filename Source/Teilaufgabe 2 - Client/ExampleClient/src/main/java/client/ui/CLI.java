@@ -9,10 +9,15 @@ import client.models.mapData.enums.FortState;
 import client.models.mapData.enums.MapFieldType;
 import client.models.mapData.enums.PlayerPositionState;
 import client.models.mapData.enums.TreasureState;
+import client.exceptions.MapException;
 
 public class CLI implements PropertyChangeListener {
 	
 	private void printMapField(MapField myMapField) {
+		
+		if (myMapField.getPosition().getX() < 0 || myMapField.getPosition().getY() < 0) {
+			throw new MapException("Incorrect coordinates");
+		}
 		
 		System.out.print(myMapField.getPosition().getX());
 		System.out.print(myMapField.getPosition().getY());
