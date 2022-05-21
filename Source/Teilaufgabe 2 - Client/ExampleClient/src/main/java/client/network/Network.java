@@ -46,7 +46,7 @@ public class Network {
 		this.gameID = gameID;
 	}
 	
-	boolean canMakeNewRequest() {
+	boolean isNewRequestAccepted() {
 		if (gameDataRequestTimestamp == null) {
 			return true;
 		}
@@ -85,7 +85,7 @@ public class Network {
 			throw new NetworkException("Client error, errormessage:");
 		}
 
-		while (!canMakeNewRequest()) {
+		while (!isNewRequestAccepted()) {
 			//wait
 		}
 		gameDataRequestTimestamp = Instant.now();

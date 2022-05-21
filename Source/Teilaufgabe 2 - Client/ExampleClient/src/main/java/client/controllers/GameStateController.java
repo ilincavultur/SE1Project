@@ -50,12 +50,6 @@ public class GameStateController {
 			} else {
 				this.gameStateData.setFullMapPositionChanged(newGSD.getFullMap());
 			}
-			/*
-			if (this.currPos.equals(newGSD.getPlayerPosition()) == false) {
-				this.gameStateData.setFullMapPositionChanged(newGSD.getFullMap());	
-			} else {
-				this.gameStateData.setFullMap(newGSD.getFullMap());	
-			}*/
 			//this.gameStateData.setFullMapPositionChanged(newGSD.getFullMap());
 			this.gameStateData.setPlayerPosition(newGSD.getPlayerPosition());
 			this.currPos = newGSD.getPlayerPosition();
@@ -150,14 +144,7 @@ public class GameStateController {
 	private void play(String pl1) {
 		
 		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
-			
-			/*while(this.gameStateData.getPlayerState() != ClientPlayerState.MUSTACT) {
-				System.out.println(this.gameStateData.getPlayerState().toString());
-				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-		
-				moveController.updatePath();
-			}*/
-			
+
 			do {
 				System.out.println(this.gameStateData.getPlayerState().toString());
 				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
@@ -188,84 +175,6 @@ public class GameStateController {
 			
 		}
 
-		/*
-		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
-			
-			while(this.gameStateData.getPlayerState() == ClientPlayerState.MUSTWAIT) {
-			
-				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-				
-			}
-			
-			if (this.gameStateData.getPlayerState() == ClientPlayerState.LOST) {
-				return;
-			}
-			
-			if (this.gameStateData.getPlayerState() == ClientPlayerState.WON) {
-				return;
-			}
-			
-			moveController.updatePath();
-		
-			MoveCommand newMove = moveController.getNextMove();
-			
-			if (newMove != null && this.gameStateData.getPlayerState() == ClientPlayerState.MUSTACT) {
-				
-				networkController.sendMove(pl1, newMove);	
-				
-				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-								
-				// update path
-				moveController.updatePath();
-				
-				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-
-				//------------------------- test print
-				System.out.println("we are here now in gamestatecontroller: " + this.gameStateData.getPlayerPosition().getX() + " " + this.gameStateData.getPlayerPosition().getY());
-				//------------------------- test print
-				
-				++moves;
-			} 
-	
-			
-		}*/
-
-		/*
-		//updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-		while (this.gameStateData.getPlayerState() != ClientPlayerState.LOST && this.gameStateData.getPlayerState() != ClientPlayerState.WON && moves < 100) {
-			while (networkController.getGameState(networkController.getGameId(), pl1).getPlayerState() != ClientPlayerState.MUSTACT) {
-				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-			}
-			moveController.updatePath();
-			
-			if (this.gameStateData.getPlayerState() == ClientPlayerState.LOST) {
-				return;
-			}
-			
-			if (this.gameStateData.getPlayerState() == ClientPlayerState.WON) {
-				return;
-			}
-			
-			MoveCommand newMove = moveController.getNextMove();
-		
-			if (newMove != null && this.gameStateData.getPlayerState() == ClientPlayerState.MUSTACT) {
-				logger.info("send move");
-				System.out.println(this.gameStateData.getPlayerState().toString());
-				networkController.sendMove(pl1, newMove);	
-				
-				updateGameStateData(networkController.getGameState(networkController.getGameId(), pl1));
-				
-				if (this.gameStateData.getPlayerState() == ClientPlayerState.LOST) {
-					return;
-				}
-				
-				if (this.gameStateData.getPlayerState() == ClientPlayerState.WON) {
-					return;
-				}
-				
-				++moves;
-			} 
-		}*/
 	}
 	
 	private void endGame() {
