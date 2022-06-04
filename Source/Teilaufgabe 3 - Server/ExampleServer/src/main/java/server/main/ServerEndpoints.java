@@ -122,7 +122,7 @@ public class ServerEndpoints {
 			@Validated @PathVariable UniqueGameIdentifier gameID,
 			@Validated @RequestBody HalfMap halfMap) {
 		
-		ResponseEnvelope toRet = new ResponseEnvelope();
+		ResponseEnvelope toRet = new ResponseEnvelope<>();
 		
 		// validate if game exists
 		// validate if player is in that game
@@ -148,6 +148,7 @@ public class ServerEndpoints {
 		// save 
 		gameStateController.receiveHalfMap(iHalfMap, halfMap.getUniquePlayerID(), gameID.getUniqueGameID());
 		gameStateController.swapPlayerOnTurn(gameID);
+		gameStateController.updateGameStateId(gameID);
 		
 		return toRet;
 
@@ -158,7 +159,7 @@ public class ServerEndpoints {
 			@Validated @PathVariable UniqueGameIdentifier gameID,
 			@Validated @RequestBody PlayerMove move) {
 		
-		ResponseEnvelope toRet = new ResponseEnvelope();
+		ResponseEnvelope toRet = new ResponseEnvelope<>();
 		
 		// validate if game exists
 		// validate if player is in that game
@@ -179,7 +180,8 @@ public class ServerEndpoints {
 		// process
 		gameStateController.receiveMove(move);
 		gameStateController.swapPlayerOnTurn(gameID);
-
+		gameStateController.updateGameStateId(gameID);
+		
 		return toRet;
 
 	}

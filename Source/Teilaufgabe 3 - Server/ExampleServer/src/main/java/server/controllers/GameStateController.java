@@ -125,16 +125,21 @@ public class GameStateController {
 	public void removeGame(String gameId) {
 		this.games.remove(gameId);
 	}
+
+	public void updateGameStateId(UniqueGameIdentifier gameID) {
+		String newGameStateId = UUID.randomUUID().toString();
+		
+		this.games.get(gameID.getUniqueGameID()).setGameStateId(newGameStateId);
+	}
 	
 	public void createNewGame(UniqueGameIdentifier gameId) {
 		
 		if (this.games.size() >= maximumGamesNumber) {
+			
 			String oldestGameId = getOldestGameId();
-			System.out.println(oldestGameId);
+			
 			removeGame(oldestGameId);
-			for (Entry<String, GameData> mapEntry : this.games.entrySet()) {
-				System.out.println(mapEntry.getKey());
-			}
+			
 		}
 		
 		GameData newGame = new GameData();
