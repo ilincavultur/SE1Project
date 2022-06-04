@@ -27,6 +27,17 @@ public class TerrainsNumberRule implements IRuleValidation{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void validatePlayerId(Map<String, GameState> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
+		
+	}
+	
+	// if game exists
+	@Override
+	public void validateGameId(Map<String, GameState> games, UniqueGameIdentifier gameId) {
+		
+	}
 
 	@Override
 	public void validateHalfMap(HalfMap halfMap) {

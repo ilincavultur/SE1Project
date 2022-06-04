@@ -9,6 +9,19 @@ public class GameState {
 	private List<Player> players = new ArrayList<Player>();
 	private InternalFullMap fullMap = new InternalFullMap();
 	
+	public GameState() {
+		super();
+		this.gameId = null;
+		this.players = new ArrayList<Player>();;
+		this.fullMap = new InternalFullMap();;
+	}
+	
+	public GameState(String gameId, List<Player> players, InternalFullMap fullMap) {
+		super();
+		this.gameId = gameId;
+		this.players = players;
+		this.fullMap = fullMap;
+	}
 	public String getGameId() {
 		return gameId;
 	}

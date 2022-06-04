@@ -1,23 +1,62 @@
 package server.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
 import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
+import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import server.models.GameState;
+import server.models.InternalHalfMap;
+import server.models.Player;
 import server.network.NetworkConverter;
+import server.validation.BothPlayersRegisteredRule;
+import server.validation.DontMoveIntoWaterRule;
+import server.validation.DontMoveOutsideMapRule;
+import server.validation.FieldsCoordinatesRule;
+import server.validation.FortRule;
+import server.validation.GameIdRule;
+import server.validation.HalfMapSizeRule;
+import server.validation.IRuleValidation;
+import server.validation.MaxNoOfPlayersReachedRule;
+import server.validation.MyTurnRule;
+import server.validation.NoIslandsRule;
+import server.validation.PlayerIdRule;
+import server.validation.TerrainsNumberRule;
+import server.validation.WaterOnEdgesRule;
 
 public class GameStateController {
 
 	private Map<String, GameState> games = new HashMap<String, GameState>();
-	private NetworkConverter networkConverter = new NetworkConverter();
+	
+	List<IRuleValidation> rules = new ArrayList<IRuleValidation>();	
 	
 	
 	
+	
+	public GameStateController() {
+		super();
+	
+		rules.add(new BothPlayersRegisteredRule());
+		rules.add(new DontMoveIntoWaterRule());
+		rules.add(new DontMoveOutsideMapRule());
+		rules.add(new FieldsCoordinatesRule());
+		rules.add(new FortRule());
+		rules.add(new GameIdRule());
+		rules.add(new HalfMapSizeRule());
+		rules.add(new MaxNoOfPlayersReachedRule());
+		rules.add(new MyTurnRule());
+		rules.add(new NoIslandsRule());
+		rules.add(new PlayerIdRule());
+		rules.add(new TerrainsNumberRule());
+		rules.add(new WaterOnEdgesRule());
+	}
+
 	public Map<String, GameState> getGames() {
 		return games;
 	}
@@ -57,36 +96,45 @@ public class GameStateController {
 		return toRet;
 	}
 	
-	public void createNewGame() {
-		
+	public void createNewGame(UniqueGameIdentifier gameId) {
+		GameState newGame = new GameState();
+		newGame.setGameId(gameId.getUniqueGameID());
+		this.games.put(gameId.getUniqueGameID(), newGame);
 	}
 	
-	public void registerPlayer (UniqueGameIdentifier gameId, PlayerRegistration playerReg) {
-		
+	// validation already made in serverendpoints
+	public void registerPlayer (UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId, PlayerRegistration playerReg) {
+		Player newPlayer = new Player();
+		newPlayer.setPlayerId(playerId.getUniquePlayerID());
+		List<Player> players = this.games.get(gameId.getUniqueGameID()).getPlayers();
+		players.add(newPlayer);
+		this.games.get(gameId.getUniqueGameID()).setPlayers(players);
 	}
 	
 	// validate done in servernedpoints
-	public void receiveHalfMap() {
+
+	// translate
+	
+	public void receiveHalfMap(InternalHalfMap halfMap) {
 		
-		
-		// translate
 		
 		// save
 	}
 	
 	//validate done in servernedpoints
+
+	// translate
+	
 	public void requestGameState() {
 	
 		
-		// translate
-		
 		// save
 	}
 	
 	//validate done in servernedpoints
-	public void receiveMove() {
+	public void receiveMove(PlayerMove move) {
 		
-		// translate
+		//process
 		
 	}
 }

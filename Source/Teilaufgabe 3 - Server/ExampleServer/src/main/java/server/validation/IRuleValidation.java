@@ -19,9 +19,15 @@ public interface IRuleValidation {
 
 	//public void validatePlayerReg(String playerId, String gameId, Map<String, GameState> games);
 	// aici trebuie sa fie deja salvate jocurile
-	// check if game exists (for player reg)
+	
 	// check if no more than 2 players are being registered
 	public void validatePlayerReg(Map<String, GameState> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId);
+	
+	// if player exists
+	public void validatePlayerId(Map<String, GameState> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId);
+	
+	// if game exists
+	public void validateGameId(Map<String, GameState> games, UniqueGameIdentifier gameId);
 	
 	// public void validateHalfMap(InternalHalfMap halfMap);
 	// aici trebuie sa fie deja jocurile salvate

@@ -26,6 +26,17 @@ public class DontMoveOutsideMapRule implements IRuleValidation{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void validatePlayerId(Map<String, GameState> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
+		
+	}
+	
+	// if game exists
+	@Override
+	public void validateGameId(Map<String, GameState> games, UniqueGameIdentifier gameId) {
+		
+	}
 
 	@Override
 	public void validateHalfMap(HalfMap halfMap) {
@@ -43,9 +54,9 @@ public class DontMoveOutsideMapRule implements IRuleValidation{
 	@Override
 	public void validateMove(Map<String, GameState> games, PlayerMove move, UniqueGameIdentifier gameId) {
 
-		String playerId = move.getUniquePlayerID().toString();
-		Player player = games.get(gameId.toString()).getPlayerWithId(playerId);
-		GameState game = games.get(gameId.toString());
+		String playerId = move.getUniquePlayerID();
+		Player player = games.get(gameId.getUniqueGameID()).getPlayerWithId(playerId);
+		GameState game = games.get(gameId.getUniqueGameID());
 		Coordinates pos = player.getCurrPos();
 		Map<Coordinates, MapNode> fields = game.getFullMap().getFields();
 		

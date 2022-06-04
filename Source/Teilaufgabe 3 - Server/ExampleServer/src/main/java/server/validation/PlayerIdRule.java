@@ -12,6 +12,7 @@ import MessagesBase.MessagesFromClient.HalfMapNode;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import server.enums.MoveCommand;
+import server.exceptions.GameIdException;
 import server.exceptions.PlayerIdException;
 import server.models.Coordinates;
 import server.models.GameState;
@@ -19,22 +20,33 @@ import server.models.InternalHalfMap;
 import server.models.MapNode;
 import server.models.Player;
 
-// check if it s unique -> creation
 // check if exists in the respective game
 public class PlayerIdRule implements IRuleValidation {
 
 	@Override
 	public void validatePlayerReg(Map<String, GameState> games, UniquePlayerIdentifier playerId,
 			UniqueGameIdentifier gameId) {
+		
+		
+	}
+	
+	// if player exists
+	@Override
+	public void validatePlayerId(Map<String, GameState> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
 		boolean ok = false;
-		for (Player player: games.get(gameId.toString()).getPlayers())
-			if (player.getPlayerId().equals(playerId.toString())) {
+		for (Player player: games.get(gameId.getUniqueGameID()).getPlayers())
+			if (player.getPlayerId().equals(playerId.getUniquePlayerID())) {
 				ok = true;
 			}
 		
 		if (ok == false) {
-			throw new PlayerIdException("Player Id Invalid", "Player id "+ playerId.toString() + " not found in game: " + gameId.toString());
+			throw new PlayerIdException("Player Id Invalid", "Player id "+ playerId.getUniquePlayerID() + " not found in game: " + gameId.getUniqueGameID());
 		}
+	}
+	
+	// if game exists
+	@Override
+	public void validateGameId(Map<String, GameState> games, UniqueGameIdentifier gameId) {
 		
 	}
 

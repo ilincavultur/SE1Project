@@ -11,6 +11,7 @@ import MessagesBase.MessagesFromClient.ETerrain;
 import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.HalfMapNode;
 import MessagesBase.MessagesFromClient.PlayerMove;
+import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.EFortState;
 import MessagesBase.MessagesFromServer.EPlayerGameState;
 import MessagesBase.MessagesFromServer.EPlayerPositionState;
@@ -62,6 +63,14 @@ public class NetworkConverter {
 		//toReturn.setxSize(maxX + 1);
 		//toReturn.setySize(maxY + 1);
 		
+		return toReturn;
+		
+	}
+	
+	public Player convertPlayerRegFrom(PlayerRegistration playerReg) {
+		
+		Player toReturn = new Player();
+	
 		return toReturn;
 		
 	}

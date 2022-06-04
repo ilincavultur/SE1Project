@@ -41,7 +41,7 @@ public class WaterOnEdgesRule implements IRuleValidation{
 		
 		for (int x = 0; x < 8 ; x++) {
 			Coordinates pos1 = new Coordinates(x, 0);
-			Coordinates pos2 = new Coordinates(x, 7);
+			Coordinates pos2 = new Coordinates(x, 3);
 			if (fields.get(pos1).getTerrain() == ETerrain.Water) {
 				waterNo1++;
 			}
@@ -99,6 +99,17 @@ public class WaterOnEdgesRule implements IRuleValidation{
 	public void validatePlayerReg(Map<String, GameState> games, UniquePlayerIdentifier playerId,
 			UniqueGameIdentifier gameId) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void validatePlayerId(Map<String, GameState> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
+		
+	}
+	
+	// if game exists
+	@Override
+	public void validateGameId(Map<String, GameState> games, UniqueGameIdentifier gameId) {
 		
 	}
 

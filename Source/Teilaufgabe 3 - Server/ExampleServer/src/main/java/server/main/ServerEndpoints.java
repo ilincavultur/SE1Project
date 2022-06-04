@@ -1,5 +1,7 @@
 package server.main;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,87 +25,147 @@ import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.GameState;
 import server.controllers.GameStateController;
+import server.validation.PlayerIdRule;
 import server.exceptions.GenericExampleException;
+import server.models.InternalHalfMap;
+import server.network.NetworkConverter;
+import server.validation.BothPlayersRegisteredRule;
+import server.validation.DontMoveIntoWaterRule;
+import server.validation.DontMoveOutsideMapRule;
+import server.validation.FieldsCoordinatesRule;
+import server.validation.FortRule;
+import server.validation.GameIdRule;
+import server.validation.HalfMapSizeRule;
+import server.validation.IRuleValidation;
+import server.validation.MaxNoOfPlayersReachedRule;
+import server.validation.MyTurnRule;
+import server.validation.NoIslandsRule;
+import server.validation.TerrainsNumberRule;
+import server.validation.WaterOnEdgesRule;
 
 @RestController
 @RequestMapping(value = "/games")
 public class ServerEndpoints {
 	
-	GameStateController gameStateController = new GameStateController();
+	private GameStateController gameStateController = new GameStateController();
+	private NetworkConverter networkConverter = new NetworkConverter();
+	List<IRuleValidation> rules = List.of(new BothPlayersRegisteredRule(), new GameIdRule(), new DontMoveIntoWaterRule(), new DontMoveOutsideMapRule(), new FieldsCoordinatesRule(), new FortRule(),
+			new HalfMapSizeRule(), new MaxNoOfPlayersReachedRule(), new MyTurnRule(), new NoIslandsRule(), new PlayerIdRule(), new TerrainsNumberRule(), new WaterOnEdgesRule());
 
-
-	/*
-	 * Please do NOT add all the necessary code in the methods provided below. When
-	 * following the single responsibility principle, those methods should only
-	 * contain the bare minimum related to network handling. Such as the converts
-	 * which convert the objects from/to internal data objects to/from messages.
-	 * Include the other logic (e.g., new game creation and game id handling) by
-	 * means of composition (i.e., other classes should provide it).
-	 */
 
 	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
 	public @ResponseBody UniqueGameIdentifier newGame(
 			@RequestParam(required = false, defaultValue = "false", value = "enableDebugMode") boolean enableDebugMode,
 			@RequestParam(required = false, defaultValue = "false", value = "enableDummyCompetition") boolean enableDummyCompetition) {
 
-		boolean showExceptionHandling = false;
-		if (showExceptionHandling) {
-		
-			throw new GenericExampleException("Name: Something", "Message: went totally wrong");
-		}
-		
-		UniqueGameIdentifier gameIdentifier = gameStateController.createUniqueGameId();
-		return gameIdentifier;
+		UniqueGameIdentifier toRet = gameStateController.createUniqueGameId();
 
-		// you will need to include additional logic, e.g., additional classes
-		// which create, store, validate, etc. exchanged data	
+	
+		
+		// translate 
+		
+		// save game
+		gameStateController.createNewGame(toRet);
+		
+		return toRet;
+
 	}
 
-	// example for a POST endpoint based on games/{gameID}/players
 	@RequestMapping(value = "/{gameID}/players", method = RequestMethod.POST, consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
 	public @ResponseBody ResponseEnvelope<UniquePlayerIdentifier> registerPlayer(
 			@Validated @PathVariable UniqueGameIdentifier gameID,
 			@Validated @RequestBody PlayerRegistration playerRegistration) {
+		
 		UniquePlayerIdentifier newPlayerID = gameStateController.createUniquePlayerId();
+		
+		// validate if game id exists
+		// validate if player id exists
+		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
+		rules.forEach(rule -> rule.validatePlayerReg(gameStateController.getGames(), newPlayerID, gameID));
+		
+		// translate 
+		 
+		
+		// save player
+		gameStateController.registerPlayer(newPlayerID, gameID, playerRegistration);
+		
+		ResponseEnvelope<UniquePlayerIdentifier> toRet = new ResponseEnvelope<>(newPlayerID);
+		return toRet;
 
-		ResponseEnvelope<UniquePlayerIdentifier> playerIDMessage = new ResponseEnvelope<>(newPlayerID);
-		return playerIDMessage;
-
-		// you will need to include additional logic, e.g., additional classes
-		// which create, store, validate, etc. exchanged data
 	}
 	
-	///games/<SpielID>/states/<SpielerID>
 	@RequestMapping(value = "/{gameID}/states/{playerID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
 	public @ResponseBody ResponseEnvelope<GameState> requestGameState(@Validated @PathVariable UniqueGameIdentifier gameID,
 			@Validated @PathVariable UniquePlayerIdentifier playerID) {
-
-		UniqueGameIdentifier gameIdentifier = new UniqueGameIdentifier("game1");
-		return gameIdentifier;
+		
+		ResponseEnvelope<GameState> toRet = new ResponseEnvelope<GameState>();
+		
+		// validate if game id exists
+		// validate if player is in the respective game
+		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
+		rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), playerID, gameID));
+				
+		// translate 
+		
+		
+		// process
+		gameStateController.requestGameState();
+		
+		return toRet;
 
 	}
 	
-	///games/<SpielID>/halfmaps
 	@RequestMapping(value = "/{gameID}/halfmaps", method = RequestMethod.POST, consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
 	public @ResponseBody ResponseEnvelope getHalfMap(
 			@Validated @PathVariable UniqueGameIdentifier gameID,
 			@Validated @RequestBody HalfMap halfMap) {
-		UniquePlayerIdentifier newPlayerID = new UniquePlayerIdentifier(UUID.randomUUID().toString());
-
-		ResponseEnvelope<UniquePlayerIdentifier> playerIDMessage = new ResponseEnvelope<>(newPlayerID);
-		return playerIDMessage;
+		
+		ResponseEnvelope toRet = new ResponseEnvelope();
+		
+		// validate if game exists
+		// validate if player is in that game
+		// validate if both players registered
+		// validate if player's turn
+		// validate map stuff
+		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
+		rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
+		rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
+		rules.forEach(rule -> rule.myTurn(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
+		rules.forEach(rule -> rule.validateHalfMap(halfMap));
+		
+		// translate 
+		InternalHalfMap iHalfMap = networkConverter.convertHalfMapFrom(halfMap);
+		
+		// save 
+		gameStateController.receiveHalfMap(iHalfMap);
+		
+		return toRet;
 
 	}
 	
-	// /games/<SpielID>/moves
 	@RequestMapping(value = "/{gameID}/moves", method = RequestMethod.POST, consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
 	public @ResponseBody ResponseEnvelope getMove(
 			@Validated @PathVariable UniqueGameIdentifier gameID,
 			@Validated @RequestBody PlayerMove move) {
-		UniquePlayerIdentifier newPlayerID = new UniquePlayerIdentifier(UUID.randomUUID().toString());
+		
+		ResponseEnvelope toRet = new ResponseEnvelope();
+		
+		// validate if game exists
+		// validate if player is in that game
+		// validate if player's turn
+		// validate move
+		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
+		rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
+		rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
+		rules.forEach(rule -> rule.validateMove(gameStateController.getGames(), move, gameID));
+		
+		// translate 
+		
+		
+		// process
+		gameStateController.receiveMove(move);
 
-		ResponseEnvelope<UniquePlayerIdentifier> playerIDMessage = new ResponseEnvelope<>(newPlayerID);
-		return playerIDMessage;
+		return toRet;
 
 	}
 
