@@ -13,7 +13,7 @@ import MessagesBase.MessagesFromClient.PlayerRegistration;
 import server.enums.MoveCommand;
 import server.exceptions.MoveException;
 import server.models.Coordinates;
-import server.models.GameState;
+import server.models.GameData;
 import server.models.InternalHalfMap;
 import server.models.MapNode;
 import server.models.Player;
@@ -21,20 +21,20 @@ import server.models.Player;
 public class DontMoveOutsideMapRule implements IRuleValidation{
 
 	@Override
-	public void validatePlayerReg(Map<String, GameState> games, UniquePlayerIdentifier playerId,
+	public void validatePlayerReg(Map<String, GameData> games, UniquePlayerIdentifier playerId,
 			UniqueGameIdentifier gameId) {
 		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
-	public void validatePlayerId(Map<String, GameState> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
+	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
 		
 	}
 	
 	// if game exists
 	@Override
-	public void validateGameId(Map<String, GameState> games, UniqueGameIdentifier gameId) {
+	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {
 		
 	}
 
@@ -45,18 +45,18 @@ public class DontMoveOutsideMapRule implements IRuleValidation{
 	}
 
 	@Override
-	public void validateGameState(Map<String, GameState> games, UniquePlayerIdentifier playerId,
+	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
 			UniqueGameIdentifier gameId) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void validateMove(Map<String, GameState> games, PlayerMove move, UniqueGameIdentifier gameId) {
+	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {
 
 		String playerId = move.getUniquePlayerID();
 		Player player = games.get(gameId.getUniqueGameID()).getPlayerWithId(playerId);
-		GameState game = games.get(gameId.getUniqueGameID());
+		GameData game = games.get(gameId.getUniqueGameID());
 		Coordinates pos = player.getCurrPos();
 		Map<Coordinates, MapNode> fields = game.getFullMap().getFields();
 		
@@ -91,7 +91,7 @@ public class DontMoveOutsideMapRule implements IRuleValidation{
 	}
 
 	@Override
-	public void myTurn(Map<String, GameState> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
+	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
 		// TODO Auto-generated method stub
 		
 	}

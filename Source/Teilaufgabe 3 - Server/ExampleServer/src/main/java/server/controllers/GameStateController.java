@@ -1,17 +1,27 @@
 package server.controllers;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
-import server.models.GameState;
+import MessagesBase.MessagesFromServer.FullMap;
+import MessagesBase.MessagesFromServer.GameState;
+import MessagesBase.MessagesFromServer.PlayerState;
+import server.models.GameData;
 import server.models.InternalHalfMap;
 import server.models.Player;
 import server.network.NetworkConverter;
@@ -32,7 +42,8 @@ import server.validation.WaterOnEdgesRule;
 
 public class GameStateController {
 
-	private Map<String, GameState> games = new HashMap<String, GameState>();
+	private Map<String, GameData> games = new HashMap<String, GameData>();
+	private static int maximumGamesNumber = 999;
 	
 	List<IRuleValidation> rules = new ArrayList<IRuleValidation>();	
 	
@@ -57,11 +68,11 @@ public class GameStateController {
 		rules.add(new WaterOnEdgesRule());
 	}
 
-	public Map<String, GameState> getGames() {
+	public Map<String, GameData> getGames() {
 		return games;
 	}
 
-	public void setGames(Map<String, GameState> games) {
+	public void setGames(Map<String, GameData> games) {
 		this.games = games;
 	}
 
@@ -96,8 +107,37 @@ public class GameStateController {
 		return toRet;
 	}
 	
+
+	public String getOldestGameId() {
+		String toRet = "";
+		Duration longestDur = Duration.ZERO;
+		for (Entry<String, GameData> mapEntry : this.games.entrySet()) {
+			Duration entryDur = Duration.between(mapEntry.getValue().getGameCreationTime(), Instant.now());
+			if (entryDur.compareTo(longestDur) >= 0) {
+				longestDur = entryDur;
+				toRet = mapEntry.getKey();
+			}
+		}
+		
+		return toRet;
+	}
+	
+	public void removeGame(String gameId) {
+		this.games.remove(gameId);
+	}
+	
 	public void createNewGame(UniqueGameIdentifier gameId) {
-		GameState newGame = new GameState();
+		
+		if (this.games.size() >= maximumGamesNumber) {
+			String oldestGameId = getOldestGameId();
+			System.out.println(oldestGameId);
+			removeGame(oldestGameId);
+			for (Entry<String, GameData> mapEntry : this.games.entrySet()) {
+				System.out.println(mapEntry.getKey());
+			}
+		}
+		
+		GameData newGame = new GameData();
 		newGame.setGameId(gameId.getUniqueGameID());
 		this.games.put(gameId.getUniqueGameID(), newGame);
 	}
@@ -115,20 +155,67 @@ public class GameStateController {
 
 	// translate
 	
-	public void receiveHalfMap(InternalHalfMap halfMap) {
-		
+	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
+		List<Player> players = this.games.get(gameId).getPlayers();
+		for (Player player: players) {
+			if (player.getPlayerId().equals(playerId)) {
+				player.setHalfMap(halfMap);
+			}
+		}
 		
 		// save
+	}
+	
+	public boolean myTurn (UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID) {
+		
+		GameData game = this.games.get(gameID.getUniqueGameID());
+		
+		return game.myTurn(playerID.getUniquePlayerID());
+	}
+	
+	public void swapPlayerOnTurn(UniqueGameIdentifier gameID) {
+		GameData game = this.games.get(gameID.getUniqueGameID());
+		game.swapPlayerOnTurn();
 	}
 	
 	//validate done in servernedpoints
 
 	// translate
 	
-	public void requestGameState() {
+	// nush daca iti trebuie pt ca daca not noth maps present inseamna ca full map e null
+	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {
 	
+		for (Player pl : this.games.get(gameID.getUniqueGameID()).getPlayers()) {
+			if (pl.getHalfMap() == null) {
+				return false;
+			}
+		}
 		
-		// save
+		return true;
+	}
+	
+	public GameState requestGameState(UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID, NetworkConverter networkConverter) {
+		
+		GameData game = this.games.get(gameID.getUniqueGameID());
+		Player player = this.games.get(gameID.getUniqueGameID()).getPlayerWithId(playerID.getUniquePlayerID());
+		Player enemy = null;
+		
+		Set<PlayerState> players = new HashSet<>();
+		for (Player pl : this.games.get(gameID.getUniqueGameID()).getPlayers()) {
+			if (!pl.getPlayerId().equals(playerID.getUniquePlayerID())) {
+				enemy = pl;
+				players.add(networkConverter.convertPlayerFrom(this.games.get(gameID.getUniqueGameID()), player, true));
+				
+			} else {
+				players.add(networkConverter.convertPlayerFrom(this.games.get(gameID.getUniqueGameID()), player, false));
+			}
+			
+		}
+		
+		Optional<FullMap> map = networkConverter.convertServerFullMapTo(player, enemy, game.getFullMap(), game);
+		
+		
+		return new GameState(map, players, game.getGameStateId());
 	}
 	
 	//validate done in servernedpoints

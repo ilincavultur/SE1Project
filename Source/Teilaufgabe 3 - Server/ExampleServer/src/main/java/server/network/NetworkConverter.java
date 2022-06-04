@@ -3,9 +3,11 @@ package server.network;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.ETerrain;
 import MessagesBase.MessagesFromClient.HalfMap;
@@ -18,6 +20,7 @@ import MessagesBase.MessagesFromServer.EPlayerPositionState;
 import MessagesBase.MessagesFromServer.ETreasureState;
 import MessagesBase.MessagesFromServer.FullMap;
 import MessagesBase.MessagesFromServer.FullMapNode;
+import MessagesBase.MessagesFromServer.PlayerState;
 import server.models.InternalHalfMap;
 import server.models.MapNode;
 import server.models.Player;
@@ -28,7 +31,7 @@ import server.enums.PlayerPositionState;
 import server.enums.ServerPlayerState;
 import server.enums.TreasureState;
 import server.models.Coordinates;
-import server.models.GameState;
+import server.models.GameData;
 import server.models.InternalFullMap;
 
 public class NetworkConverter {
@@ -67,11 +70,53 @@ public class NetworkConverter {
 		
 	}
 	
-	public Player convertPlayerRegFrom(PlayerRegistration playerReg) {
+	// enemy flag is true if the player is an enemy
+	public PlayerState convertPlayerFrom(GameData game, Player player, boolean enemy) {
 		
-		Player toReturn = new Player();
+		PlayerState toReturn = new PlayerState();
+		if (enemy) {
+			String firstName = "";
+			String lastName = "";
+			String uaccount = "";
+			EPlayerGameState state = EPlayerGameState.MustWait;
+			if (game.myTurn(player.getPlayerId())) {
+				state = EPlayerGameState.MustAct;
+			} else {
+				state = EPlayerGameState.MustWait;
+			} 
+			if (game.getWinnerId() != null) {
+				if (game.getWinnerId().equals(player.getPlayerId())) {
+					state = EPlayerGameState.Won;	
+				} else {
+					state = EPlayerGameState.Lost;
+				}		
+			} 
+			UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(player.getPlayerId());
+			boolean collectedTreasure = false;
+			return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
+		}
+		String firstName = "";
+		String lastName = "";
+		String uaccount = "";
+		EPlayerGameState state = EPlayerGameState.MustWait;
+		if (game.myTurn(player.getPlayerId())) {
+			state = EPlayerGameState.MustAct;
+		} else {
+			state = EPlayerGameState.MustWait;
+		} 
+		
+		if (game.getWinnerId() != null) {
+			if (game.getWinnerId().equals(player.getPlayerId())) {
+				state = EPlayerGameState.Won;	
+			} else {
+				state = EPlayerGameState.Lost;
+			}		
+		} 
+		
+		UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(player.getPlayerId());
+		boolean collectedTreasure = player.isHasCollectedTreasure();
+		return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
 	
-		return toReturn;
 		
 	}
 	
@@ -203,7 +248,11 @@ public class NetworkConverter {
 	}
 	
 	// server full map to network fullmap
-	public FullMap convertServerFullMapTo(Player myPlayer, Player enemyPlayer, InternalFullMap myMap, GameState gameState) {
+	public Optional<FullMap> convertServerFullMapTo(Player myPlayer, Player enemyPlayer, InternalFullMap myMap, GameData gameState) {
+		
+		if (myMap == null) {
+			return Optional.empty();
+		}
 		//TODO
 		FullMap toRet = new FullMap();
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
@@ -237,7 +286,7 @@ public class NetworkConverter {
 		}
 	
 		toRet = new FullMap(mapNodes);
-		return toRet;
+		return Optional.of(toRet);
 		
 	}
 	
