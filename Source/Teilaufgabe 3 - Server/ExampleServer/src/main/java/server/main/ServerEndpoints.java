@@ -108,6 +108,7 @@ public class ServerEndpoints {
 			gameStateController.assembleHalfMaps(gameID);
 		}
 		
+		
 		// process
 		GameState newGameState = gameStateController.requestGameState(playerID, gameID, networkConverter);
 		

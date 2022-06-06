@@ -71,6 +71,7 @@ public class NetworkConverter {
 			Coordinates pos = new Coordinates(node.getX(), node.getY());
 			newMp.put(pos, field);
 		}
+		logger.info("convertHalfMapfrom "+ toReturn.getFortPos().getX() + " " + toReturn.getFortPos().getY());
 		toReturn.setFields(newMp);
 		//toReturn.setxSize(maxX + 1);
 		//toReturn.setySize(maxY + 1);
@@ -137,6 +138,7 @@ public class NetworkConverter {
 		MapNode toReturn = new MapNode();
 		
 		toReturn.setFieldType(convertTerrainTypeFrom(node.getTerrain()));
+		
 		//toReturn.setPlayerPositionState(convertPlayerPositionStateFrom(node.ge));
 		
 		Coordinates pos = new Coordinates(node.getX(), node.getY());
@@ -267,7 +269,7 @@ public class NetworkConverter {
 			toRet.setX(randomFortX);
 			int randomFortY = randomNo.nextInt(8);
 			toRet.setY(randomFortY);
-			logger.info("fort pos square" + toRet.getX() + " " + toRet.getY());
+			
 			return toRet;
 		}
 		
@@ -275,7 +277,7 @@ public class NetworkConverter {
 		toRet.setX(randomFortX);
 		int randomFortY = randomNo.nextInt(4);
 		toRet.setY(randomFortY);
-		logger.info("fort pos " + toRet.getX() + " " + toRet.getY());
+		
 		return toRet;
 	}
 	
@@ -292,7 +294,10 @@ public class NetworkConverter {
 
 		Coordinates enemyPos = getRandomEnemyPos(myMap);
 		Coordinates myFortPos = myPlayer.getHalfMap().getFortPos();
+		logger.info("my fort pos " + myFortPos.getX() + " " + myFortPos.getY());
 		Coordinates enemyFortPos = enemyPlayer.getHalfMap().getFortPos();
+		
+		logger.info("enemy fort pos " + enemyFortPos.getX() + " " + enemyFortPos.getY());
 
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
 			//FullMapNode toReturn = new FullMapNode();

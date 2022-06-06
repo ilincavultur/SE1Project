@@ -5,15 +5,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.slf4j.LoggerFactory;
+
 import MessagesBase.MessagesFromClient.ETerrain;
 import MessagesBase.MessagesFromClient.HalfMapNode;
 import MessagesBase.MessagesFromServer.FullMapNode;
+import ch.qos.logback.classic.Logger;
 import server.enums.MapFieldType;
+import server.network.NetworkConverter;
 
 public class InternalFullMap {
 	private Map<Coordinates, MapNode> fields = new HashMap<Coordinates, MapNode>();
 	private int xSize;
 	private int ySize;
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(InternalFullMap.class);
 
 	
 	public InternalFullMap() {
@@ -94,16 +99,39 @@ public class InternalFullMap {
 		// square
 		if (this.xSize == 8) {
 		// y + 4
+			logger.info("size = square");
+			Coordinates fortPos = new Coordinates(); 
+			Coordinates oldFortPos = halfMap.getFortPos();
+			logger.info("old fort pos" + oldFortPos.getX() + " " + oldFortPos.getY());
 			for( Map.Entry<Coordinates, MapNode> mapEntry : halfMap.getFields().entrySet() ) {
+				
 				Coordinates newPos = new Coordinates(mapEntry.getKey().getX(), mapEntry.getKey().getY() + 4);
 				mapEntry.getValue().setPosition(newPos);
+				if (mapEntry.getKey().equals(oldFortPos)) {
+					
+					fortPos = newPos;
+					logger.info("NEW" + fortPos.getX() + " " + fortPos.getY());
+					halfMap.setFortPos(newPos);
+				}
 				fields.put(newPos, mapEntry.getValue());
 			}
+			
+			
+			
 		} else if (this.ySize == 16) {
 		// x + 8
+			logger.info("size = line");
+			Coordinates fortPos = new Coordinates();
+			Coordinates oldFortPos = halfMap.getFortPos();
+			logger.info("old fort pos" + oldFortPos.getX() + " " + oldFortPos.getY());
 			for( Map.Entry<Coordinates, MapNode> mapEntry : halfMap.getFields().entrySet() ) {
 				Coordinates newPos = new Coordinates(mapEntry.getKey().getX() + 8, mapEntry.getKey().getY());
 				mapEntry.getValue().setPosition(newPos);
+				if (mapEntry.getKey().equals(oldFortPos)) {
+					fortPos = newPos;
+					logger.info("fort pos" + fortPos.getX() + " " + fortPos.getY());
+					halfMap.setFortPos(newPos);
+				}
 				fields.put(newPos, mapEntry.getValue());
 			}
 		}
