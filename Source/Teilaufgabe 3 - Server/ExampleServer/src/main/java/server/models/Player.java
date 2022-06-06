@@ -9,12 +9,14 @@ public class Player {
 	Coordinates currPos;
 	boolean hasCollectedTreasure;
 	PlayerRegistration playerReg;
+	private boolean showEnemyFort;
 	
 	
 	public Player() {
 		super();
 		Coordinates currPos = new Coordinates(0,0);
 		this.currPos = currPos;
+		this.showEnemyFort = false;
 		// TODO Auto-generated constructor stub
 	}
 	public String getPlayerId() {
@@ -49,6 +51,12 @@ public class Player {
 	}
 	
 
+	public boolean isShowEnemyFort() {
+		return showEnemyFort;
+	}
+	public void setShowEnemyFort(boolean showEnemyFort) {
+		this.showEnemyFort = showEnemyFort;
+	}
 	public boolean isPlayersHalfMapPresent() {
 		return this.getHalfMap() != null;
 	}

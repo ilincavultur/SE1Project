@@ -315,7 +315,9 @@ public class NetworkConverter {
 				fort = EFortState.MyFortPresent;
 			}
 			if (enemyFortPos.equals(mapEntry.getKey())) {
-				fort = EFortState.EnemyFortPresent;	
+				if (myPlayer.isShowEnemyFort()) {
+					fort = EFortState.EnemyFortPresent;	
+				}
 			}
 			
 			
