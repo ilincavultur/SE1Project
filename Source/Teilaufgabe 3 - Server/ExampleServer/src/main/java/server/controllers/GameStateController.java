@@ -248,32 +248,16 @@ public class GameStateController {
 			
 				if (player1.isPlayersHalfMapPresent()) {
 					map = networkConverter.convertIHalfMapToNetworkFullMap(player1, game);
+					
 				} else if (player2.isPlayersHalfMapPresent()) {
+					
 					map = networkConverter.convertIHalfMapToNetworkFullMap(player2, game);
 				}
 				
 			}
 			
-			
 		}
 		
-		/*
-		Player player = this.games.get(gameID.getUniqueGameID()).getPlayerWithId(playerID.getUniquePlayerID());
-		players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player, false));
-		
-		logger.info("half maps" + player.getHalfMap().getFields().size());
-		if (bothPlayersRegistered(gameID)) {
-			Player enemy = this.games.get(gameID.getUniqueGameID()).getTheOtherPlayer(playerID.getUniquePlayerID());
-			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), enemy, true));
-			if (bothHalfMapsPresent(gameID)) {
-				map = networkConverter.convertServerFullMapTo(player, enemy, game.getFullMap(), game);	
-			}
-			
-		} else if (!bothPlayersRegistered(gameID) && player.getHalfMap() != null) {
-			map = networkConverter.convertIHalfMapToNetworkFullMap(player, player.getHalfMap(), game);
-		}
-		
-		*/
 		
 		return new GameState(map, players, game.getGameStateId());
 	}

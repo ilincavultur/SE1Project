@@ -15,6 +15,7 @@ public class GameData {
 	private String gameStateId;
 	private int idxPlayersTurn;
 	private String winnerId;
+	private int roundNo;
 	
 	public GameData() {
 		super();
@@ -26,6 +27,7 @@ public class GameData {
 		Random randomNo = new Random();
 		this.idxPlayersTurn = randomNo.nextInt(2);
 		this.winnerId = null;
+		this.roundNo = 0;
 	}
 	
 	public GameData(String gameId, List<Player> players, InternalFullMap fullMap) {
@@ -38,6 +40,7 @@ public class GameData {
 		Random randomNo = new Random();
 		this.idxPlayersTurn = randomNo.nextInt(2);
 		this.winnerId = null;
+		this.roundNo = 0;
 	}
 	public String getGameId() {
 		return gameId;
@@ -60,6 +63,14 @@ public class GameData {
 	
 	
 	
+	public int getRoundNo() {
+		return roundNo;
+	}
+
+	public void setRoundNo(int roundNo) {
+		this.roundNo = roundNo;
+	}
+
 	public String getWinnerId() {
 		return winnerId;
 	}
@@ -110,6 +121,7 @@ public class GameData {
 		} else {
 			idxPlayersTurn = 0;
 		}
+		roundNo += 1;
 	}
 
 	public Player getPlayerWithId(String playerId) {

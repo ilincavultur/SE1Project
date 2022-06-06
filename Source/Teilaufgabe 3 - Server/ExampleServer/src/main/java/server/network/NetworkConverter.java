@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.ETerrain;
@@ -26,6 +29,7 @@ import MessagesBase.MessagesFromServer.PlayerState;
 import server.models.InternalHalfMap;
 import server.models.MapNode;
 import server.models.Player;
+import server.controllers.GameStateController;
 import server.enums.FortState;
 import server.enums.MapFieldType;
 import server.enums.MoveCommand;
@@ -39,6 +43,7 @@ import server.models.InternalFullMap;
 public class NetworkConverter {
 	
 	private int roundNo = 0;
+	private static final Logger logger = LoggerFactory.getLogger(NetworkConverter.class);
 
 	public InternalHalfMap convertHalfMapFrom(HalfMap halfMap) {
 		
@@ -262,6 +267,7 @@ public class NetworkConverter {
 			toRet.setX(randomFortX);
 			int randomFortY = randomNo.nextInt(8);
 			toRet.setY(randomFortY);
+			logger.info("fort pos square" + toRet.getX() + " " + toRet.getY());
 			return toRet;
 		}
 		
@@ -269,13 +275,13 @@ public class NetworkConverter {
 		toRet.setX(randomFortX);
 		int randomFortY = randomNo.nextInt(4);
 		toRet.setY(randomFortY);
-		
+		logger.info("fort pos " + toRet.getX() + " " + toRet.getY());
 		return toRet;
 	}
 	
 	// server full map to network fullmap
 	public Optional<FullMap> convertServerFullMapTo(UniquePlayerIdentifier playerID, GameData game) {
-		roundNo += 1;
+		int roundNo = game.getRoundNo();
 		
 		InternalFullMap myMap = game.getFullMap();
 		Player myPlayer = game.getPlayerWithId(playerID.getUniquePlayerID());
@@ -307,17 +313,54 @@ public class NetworkConverter {
 				fort = EFortState.EnemyFortPresent;	
 			}
 			
-	
-			if (myPlayer.getCurrPos().equals(mapEntry.getKey()) && myPlayer.getCurrPos().equals(mapEntry.getKey())) {
-				playerPos = EPlayerPositionState.BothPlayerPosition;
-			} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
+			
+			if (roundNo > 10) {
+				
+				if (myPlayer.getCurrPos().equals(mapEntry.getKey()) && enemyPlayer.getCurrPos().equals(mapEntry.getKey())) {
+				
+					playerPos = EPlayerPositionState.BothPlayerPosition;	
+				} 
+				
+				if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
+					playerPos = EPlayerPositionState.MyPlayerPosition;
+				}
+				
+				if (mapEntry.getKey().equals(enemyPos)) {
+					playerPos = EPlayerPositionState.EnemyPlayerPosition;
+				}
+					
+			} else {
+				
+				if (myPlayer.getCurrPos().equals(mapEntry.getKey()) && enemyPos.equals(mapEntry.getKey())) {
+					playerPos = EPlayerPositionState.BothPlayerPosition;
+				} 
+				
+				if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
+					playerPos = EPlayerPositionState.MyPlayerPosition;
+				}
+				
+				if (enemyPos.equals(mapEntry.getKey())) {
+					playerPos = EPlayerPositionState.EnemyPlayerPosition;	
+				}
+			}
+			
+	/*
+			if (myPlayer.getCurrPos().equals(mapEntry.getKey()) && enemyPlayer.getCurrPos().equals(mapEntry.getKey())) {
+				if (roundNo > 10) {
+					playerPos = EPlayerPositionState.BothPlayerPosition;	
+				} else {
+					playerPos = EPlayerPositionState.MyPlayerPosition;
+				}
+				
+			} 
+			else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 				playerPos = EPlayerPositionState.MyPlayerPosition;
 			} else if (roundNo <= 10 && enemyPlayer.getCurrPos().equals(mapEntry.getKey())) {
 				playerPos = EPlayerPositionState.EnemyPlayerPosition;	
 		
 			} else if (roundNo > 10 && mapEntry.getKey().equals(enemyPos)) {
 				playerPos = EPlayerPositionState.EnemyPlayerPosition;
-			}
+			}*/
 			
 			
 			
