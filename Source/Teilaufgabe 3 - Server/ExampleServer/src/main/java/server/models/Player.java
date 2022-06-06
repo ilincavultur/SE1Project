@@ -48,5 +48,10 @@ public class Player {
 		this.playerReg = playerReg;
 	}
 	
+
+	public boolean isPlayersHalfMapPresent() {
+		return this.getHalfMap() != null;
+	}
+	
 	
 }

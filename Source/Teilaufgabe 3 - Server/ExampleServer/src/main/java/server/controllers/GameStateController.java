@@ -210,13 +210,58 @@ public class GameStateController {
 		
 	}
 	
+	
 	public GameState requestGameState(UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID, NetworkConverter networkConverter) {
 		
 		GameData game = this.games.get(gameID.getUniqueGameID());
+		
 		Set<PlayerState> players = new HashSet<>();
+		
+		Optional<FullMap> map = Optional.empty();
+		
+		List<Player> registeredPlayers = game.getPlayers();
+		
+		if (registeredPlayers.size() == 1) {
+			
+			Player player = registeredPlayers.get(0);
+			
+			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player, false));
+			
+			if (player.getHalfMap() != null) {
+				map = networkConverter.convertIHalfMapToNetworkFullMap(player, player.getHalfMap(), game);	
+			}
+			
+			
+		} else if (registeredPlayers.size() == 2) {
+			
+			Player player1 = game.getPlayerWithId(playerID.getUniquePlayerID());
+			Player player2 = game.getTheOtherPlayer(playerID.getUniquePlayerID());
+			
+			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player1, false));
+			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player2, true));
+			
+			if (bothHalfMapsPresent(gameID)) {
+				
+				map = networkConverter.convertServerFullMapTo(player1, player2, game.getFullMap(), game);
+				
+			} else {
+			
+				if (player1.isPlayersHalfMapPresent()) {
+					map = networkConverter.convertIHalfMapToNetworkFullMap(player1, player1.getHalfMap(), game);
+				} else if (player2.isPlayersHalfMapPresent()) {
+					map = networkConverter.convertIHalfMapToNetworkFullMap(player2, player2.getHalfMap(), game);
+				}
+				
+			}
+			
+			
+		}
+		
+		/*
 		Player player = this.games.get(gameID.getUniqueGameID()).getPlayerWithId(playerID.getUniquePlayerID());
 		players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player, false));
-		Optional<FullMap> map = Optional.empty();
+		
+		logger.info("half maps" + player.getHalfMap().getFields().size());
 		if (bothPlayersRegistered(gameID)) {
 			Player enemy = this.games.get(gameID.getUniqueGameID()).getTheOtherPlayer(playerID.getUniquePlayerID());
 			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), enemy, true));
@@ -228,7 +273,7 @@ public class GameStateController {
 			map = networkConverter.convertIHalfMapToNetworkFullMap(player, player.getHalfMap(), game);
 		}
 		
-		
+		*/
 		
 		return new GameState(map, players, game.getGameStateId());
 	}
