@@ -18,12 +18,13 @@ public class InternalFullMap {
 	private Map<Coordinates, MapNode> fields = new HashMap<Coordinates, MapNode>();
 	private int xSize;
 	private int ySize;
+	private String firstMap;
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(InternalFullMap.class);
 
 	
 	public InternalFullMap() {
 		super();
-		// TODO Auto-generated constructor stub
+		setupFullMap();
 	}
 
 
@@ -39,7 +40,7 @@ public class InternalFullMap {
 
 	public void pickDimensions() {
 		Random randomNo = new Random();
-		int no = randomNo.nextInt(1);
+		int no = randomNo.nextInt(2);
 		if (no == 0) {
 			this.xSize = 8;
 			this.ySize = 8;
@@ -53,7 +54,7 @@ public class InternalFullMap {
 	// choose which half Map is the first one
 	public String pickFirstHalf() {
 		Random randomNo = new Random();
-		int no = randomNo.nextInt(1);
+		int no = randomNo.nextInt(2);
 		if (no == 0) {
 			return "first";
 		}
@@ -61,12 +62,15 @@ public class InternalFullMap {
 		
 	}
 	
-	public void assembleFullMap(List<Player> players, InternalHalfMap halfMap1, InternalHalfMap halfMap2) {
+	public void setupFullMap() {
 		pickDimensions();
 		
-		String first = pickFirstHalf();
-
-		if (first.equals("first")) {
+		this.firstMap = pickFirstHalf();
+	}
+	
+	public void assembleFullMap(List<Player> players, InternalHalfMap halfMap1, InternalHalfMap halfMap2) {
+		
+		if (this.firstMap.equals("first")) {
 			fields.putAll(halfMap1.getFields());
 			transformCoordinates(halfMap2);
 		} else {
@@ -118,7 +122,7 @@ public class InternalFullMap {
 			
 			
 			
-		} else if (this.ySize == 16) {
+		} else if (this.xSize == 16) {
 		// x + 8
 			logger.info("size = line");
 			Coordinates fortPos = new Coordinates();
