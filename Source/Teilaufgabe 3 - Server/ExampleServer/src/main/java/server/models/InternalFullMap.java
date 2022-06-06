@@ -14,7 +14,6 @@ public class InternalFullMap {
 	private Map<Coordinates, MapNode> fields = new HashMap<Coordinates, MapNode>();
 	private int xSize;
 	private int ySize;
-	
 
 	
 	public InternalFullMap() {
@@ -31,7 +30,8 @@ public class InternalFullMap {
 	public void setFields(Map<Coordinates, MapNode> fields) {
 		this.fields = fields;
 	}
-	
+
+
 	public void pickDimensions() {
 		Random randomNo = new Random();
 		int no = randomNo.nextInt(1);
@@ -60,7 +60,7 @@ public class InternalFullMap {
 		pickDimensions();
 		
 		String first = pickFirstHalf();
-		
+
 		if (first.equals("first")) {
 			fields.putAll(halfMap1.getFields());
 			transformCoordinates(halfMap2);
@@ -70,6 +70,26 @@ public class InternalFullMap {
 		}
 	}
 	
+	public int getxSize() {
+		return xSize;
+	}
+
+
+	public void setxSize(int xSize) {
+		this.xSize = xSize;
+	}
+
+
+	public int getySize() {
+		return ySize;
+	}
+
+
+	public void setySize(int ySize) {
+		this.ySize = ySize;
+	}
+
+
 	public void transformCoordinates(InternalHalfMap halfMap) {
 		// square
 		if (this.xSize == 8) {

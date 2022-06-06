@@ -118,4 +118,16 @@ public class GameData {
 		return toRet;
 	}
 	
+	public Player getTheOtherPlayer(String playerId) {
+		Player toRet = new Player();
+		
+		for (Player player: players) {
+			if (!player.getPlayerId().equals(playerId)) {
+				toRet = player;
+				break;
+			}
+		}
+		return toRet;
+	}
+	
 }

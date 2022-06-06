@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import MessagesBase.UniquePlayerIdentifier;
@@ -35,6 +37,8 @@ import server.models.GameData;
 import server.models.InternalFullMap;
 
 public class NetworkConverter {
+	
+	private int roundNo = 0;
 
 	public InternalHalfMap convertHalfMapFrom(HalfMap halfMap) {
 		
@@ -71,13 +75,13 @@ public class NetworkConverter {
 	}
 	
 	// enemy flag is true if the player is an enemy
-	public PlayerState convertPlayerFrom(GameData game, Player player, boolean enemy) {
+	public PlayerState convertPlayerTo(GameData game, Player player, boolean enemy) {
 		
 		PlayerState toReturn = new PlayerState();
 		if (enemy) {
-			String firstName = "";
-			String lastName = "";
-			String uaccount = "";
+			String firstName = player.getPlayerReg().getStudentFirstName();
+			String lastName = player.getPlayerReg().getStudentLastName();
+			String uaccount = player.getPlayerReg().getStudentUAccount();
 			EPlayerGameState state = EPlayerGameState.MustWait;
 			if (game.myTurn(player.getPlayerId())) {
 				state = EPlayerGameState.MustAct;
@@ -91,13 +95,13 @@ public class NetworkConverter {
 					state = EPlayerGameState.Lost;
 				}		
 			} 
-			UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(player.getPlayerId());
+			UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(UUID.randomUUID().toString());
 			boolean collectedTreasure = false;
 			return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
 		}
-		String firstName = "";
-		String lastName = "";
-		String uaccount = "";
+		String firstName = player.getPlayerReg().getStudentFirstName();
+		String lastName = player.getPlayerReg().getStudentLastName();
+		String uaccount = player.getPlayerReg().getStudentUAccount();
 		EPlayerGameState state = EPlayerGameState.MustWait;
 		if (game.myTurn(player.getPlayerId())) {
 			state = EPlayerGameState.MustAct;
@@ -247,17 +251,49 @@ public class NetworkConverter {
 		
 	}
 	
+	public Coordinates getRandomEnemyPos(InternalFullMap myMap) {
+		Coordinates toRet = new Coordinates();
+		Random randomNo = new Random();
+		if (myMap.getxSize() == 8) {
+			int randomFortX = randomNo.nextInt(8);
+			toRet.setX(randomFortX);
+			int randomFortY = randomNo.nextInt(8);
+			toRet.setY(randomFortY);
+			return toRet;
+		}
+		
+		int randomFortX = randomNo.nextInt(16);
+		toRet.setX(randomFortX);
+		int randomFortY = randomNo.nextInt(4);
+		toRet.setY(randomFortY);
+		
+		return toRet;
+	}
+	
 	// server full map to network fullmap
 	public Optional<FullMap> convertServerFullMapTo(Player myPlayer, Player enemyPlayer, InternalFullMap myMap, GameData gameState) {
+		roundNo += 1;
 		
-		if (myMap == null) {
+		if (myPlayer.getHalfMap() == null && enemyPlayer.getHalfMap() == null) {
 			return Optional.empty();
+		} 
+		
+		if (myPlayer.getHalfMap() != null) {
+			return convertIHalfMapToNetworkFullMap(myPlayer, myPlayer.getHalfMap(), gameState);
 		}
+		
+		if (enemyPlayer.getHalfMap() != null) {
+			return convertIHalfMapToNetworkFullMap(enemyPlayer, enemyPlayer.getHalfMap(), gameState);
+		}
+		
 		//TODO
 		FullMap toRet = new FullMap();
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
-		
-		
+
+		Coordinates enemyPos = getRandomEnemyPos(myMap);
+		Coordinates myFortPos = myPlayer.getHalfMap().getFortPos();
+		Coordinates enemyFortPos = enemyPlayer.getHalfMap().getFortPos();
+
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
 			//FullMapNode toReturn = new FullMapNode();
 			
@@ -270,14 +306,70 @@ public class NetworkConverter {
 			EFortState fort = EFortState.NoOrUnknownFortState;
 			EPlayerPositionState playerPos = EPlayerPositionState.NoPlayerPresent;
 			
+			if (myFortPos.equals(mapEntry.getKey())) {
+				fort = EFortState.MyFortPresent;
+			}
+			if (enemyFortPos.equals(mapEntry.getKey())) {
+				fort = EFortState.EnemyFortPresent;	
+			}
+			
 	
 			if (myPlayer.getCurrPos().equals(mapEntry.getKey()) && myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 				playerPos = EPlayerPositionState.BothPlayerPosition;
 			} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 				playerPos = EPlayerPositionState.MyPlayerPosition;
-			} else if (enemyPlayer.getCurrPos().equals(mapEntry.getKey())) {
+			} else if (roundNo <= 10 && enemyPlayer.getCurrPos().equals(mapEntry.getKey())) {
+				playerPos = EPlayerPositionState.EnemyPlayerPosition;	
+		
+			} else if (roundNo > 10 && mapEntry.getKey().equals(enemyPos)) {
 				playerPos = EPlayerPositionState.EnemyPlayerPosition;
 			}
+			
+			
+			
+			FullMapNode fullMapNode = new FullMapNode(fieldType, playerPos, treasure, fort, pos.getX(), pos.getY());
+			mapNodes.add(fullMapNode);
+			
+			
+		}
+	
+		toRet = new FullMap(mapNodes);
+		return Optional.of(toRet);
+		
+	}
+	
+	public Optional<FullMap> convertIHalfMapToNetworkFullMap(Player player, InternalHalfMap myMap, GameData gameState) {
+		roundNo += 1;
+	
+		//TODO
+		FullMap toRet = new FullMap();
+		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
+
+		//Coordinates enemyPos = getRandomEnemyPos(myMap);
+		Coordinates myFortPos = player.getHalfMap().getFortPos();
+		
+
+		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
+			//FullMapNode toReturn = new FullMapNode();
+			
+			ETerrain fieldType = convertTerrainTypeTo(mapEntry.getValue().getFieldType());
+			//toReturn.setPlayerPositionState(convertPlayerPositionStateFrom(node.ge));
+			
+			Coordinates pos = mapEntry.getKey();
+			//de aici lucreaza
+			ETreasureState treasure = ETreasureState.NoOrUnknownTreasureState;
+			EFortState fort = EFortState.NoOrUnknownFortState;
+			EPlayerPositionState playerPos = EPlayerPositionState.NoPlayerPresent;
+			
+			if (myFortPos.equals(mapEntry.getKey())) {
+				fort = EFortState.MyFortPresent;
+			}
+		
+			if (player.getCurrPos().equals(mapEntry.getKey())) {
+				playerPos = EPlayerPositionState.MyPlayerPosition;
+			} 
+			
+			
 			
 			FullMapNode fullMapNode = new FullMapNode(fieldType, playerPos, treasure, fort, pos.getX(), pos.getY());
 			mapNodes.add(fullMapNode);

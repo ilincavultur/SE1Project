@@ -27,6 +27,7 @@ import MessagesBase.MessagesFromServer.GameState;
 import server.controllers.GameStateController;
 import server.validation.PlayerIdRule;
 import server.exceptions.GenericExampleException;
+import server.exceptions.NotEnoughPlayersException;
 import server.exceptions.TooManyMapsSentException;
 import server.models.InternalHalfMap;
 import server.network.NetworkConverter;
@@ -59,12 +60,10 @@ public class ServerEndpoints {
 			@RequestParam(required = false, defaultValue = "false", value = "enableDebugMode") boolean enableDebugMode,
 			@RequestParam(required = false, defaultValue = "false", value = "enableDummyCompetition") boolean enableDummyCompetition) {
 
+		// create unique game id
 		UniqueGameIdentifier toRet = gameStateController.createUniqueGameId();
 
-		// translate 
-		
-		
-		// save game
+		// translate + save game
 		gameStateController.createNewGame(toRet);
 		
 		return toRet;
@@ -82,14 +81,12 @@ public class ServerEndpoints {
 		// validate if player id exists
 		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
 		rules.forEach(rule -> rule.validatePlayerReg(gameStateController.getGames(), newPlayerID, gameID));
-		
-		// translate 
-		 
-		
-		// save player
+	
+		// translate + save player
 		gameStateController.registerPlayer(newPlayerID, gameID, playerRegistration);
 		
 		ResponseEnvelope<UniquePlayerIdentifier> toRet = new ResponseEnvelope<>(newPlayerID);
+		
 		return toRet;
 
 	}
@@ -98,21 +95,21 @@ public class ServerEndpoints {
 	public @ResponseBody ResponseEnvelope<GameState> requestGameState(@Validated @PathVariable UniqueGameIdentifier gameID,
 			@Validated @PathVariable UniquePlayerIdentifier playerID) {
 		
-		
-		
 		// validate if game id exists
 		// validate if player is in the respective game
 		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
 		rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), playerID, gameID));
 				
-		// translate 
-		
+		// if both maps available, create full map
+		if (gameStateController.bothHalfMapsPresent(gameID)) {
+			gameStateController.assembleHalfMaps(gameID);
+		}
 		
 		// process
 		GameState newGameState = gameStateController.requestGameState(playerID, gameID, networkConverter);
 		
-		
 		ResponseEnvelope<GameState> toRet = new ResponseEnvelope<>(newGameState);
+		
 		return toRet;
 
 	}
@@ -129,17 +126,19 @@ public class ServerEndpoints {
 		// validate if both players registered
 		// validate if player's turn
 		// validate map stuff
-		
 		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
 		rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
+		rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
+	
 		if (gameStateController.getGames().get(gameID.getUniqueGameID()).getPlayerWithId(halfMap.getUniquePlayerID()).getHalfMap() != null) {
 			throw new TooManyMapsSentException("Too many half maps sent", "Client " + halfMap.getUniquePlayerID() + " tried to send more than one half map");
 		}
-		rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
+		
 		//rules.forEach(rule -> rule.myTurn(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
 		if (!gameStateController.getGames().get(gameID.getUniqueGameID()).myTurn(halfMap.getUniquePlayerID())) {
 			return new ResponseEnvelope<>();
 		}
+
 		rules.forEach(rule -> rule.validateHalfMap(halfMap));
 		
 		// translate 
@@ -173,11 +172,8 @@ public class ServerEndpoints {
 			return new ResponseEnvelope<>();
 		}
 		rules.forEach(rule -> rule.validateMove(gameStateController.getGames(), move, gameID));
-		
-		// translate 
-		
-		
-		// process
+
+		// translate + process
 		gameStateController.receiveMove(move);
 		gameStateController.swapPlayerOnTurn(gameID);
 		gameStateController.updateGameStateId(gameID);

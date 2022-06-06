@@ -14,6 +14,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.PlayerMove;
@@ -22,6 +25,7 @@ import MessagesBase.MessagesFromServer.FullMap;
 import MessagesBase.MessagesFromServer.GameState;
 import MessagesBase.MessagesFromServer.PlayerState;
 import server.models.GameData;
+import server.models.InternalFullMap;
 import server.models.InternalHalfMap;
 import server.models.Player;
 import server.network.NetworkConverter;
@@ -44,12 +48,10 @@ public class GameStateController {
 
 	private Map<String, GameData> games = new HashMap<String, GameData>();
 	private static int maximumGamesNumber = 999;
+	private static final Logger logger = LoggerFactory.getLogger(GameStateController.class);
 	
 	List<IRuleValidation> rules = new ArrayList<IRuleValidation>();	
-	
-	
-	
-	
+
 	public GameStateController() {
 		super();
 	
@@ -107,7 +109,6 @@ public class GameStateController {
 		return toRet;
 	}
 	
-
 	public String getOldestGameId() {
 		String toRet = "";
 		Duration longestDur = Duration.ZERO;
@@ -151,24 +152,22 @@ public class GameStateController {
 	public void registerPlayer (UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId, PlayerRegistration playerReg) {
 		Player newPlayer = new Player();
 		newPlayer.setPlayerId(playerId.getUniquePlayerID());
+		newPlayer.setPlayerReg(playerReg);
+		newPlayer.setHalfMap(null);
 		List<Player> players = this.games.get(gameId.getUniqueGameID()).getPlayers();
 		players.add(newPlayer);
 		this.games.get(gameId.getUniqueGameID()).setPlayers(players);
 	}
 	
 	// validate done in servernedpoints
-
-	// translate
-	
 	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
 		List<Player> players = this.games.get(gameId).getPlayers();
 		for (Player player: players) {
 			if (player.getPlayerId().equals(playerId)) {
+				player.setCurrPos(halfMap.getFortPos());
 				player.setHalfMap(halfMap);
 			}
 		}
-		
-		// save
 	}
 	
 	public boolean myTurn (UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID) {
@@ -183,10 +182,15 @@ public class GameStateController {
 		game.swapPlayerOnTurn();
 	}
 	
-	//validate done in servernedpoints
+	public boolean bothPlayersRegistered(UniqueGameIdentifier gameID) {
+		
+		if (this.games.get(gameID.getUniqueGameID()).getPlayers().size() != 2) {
+			return false;
+		}
+		
+		return true;
+	}
 
-	// translate
-	
 	// nush daca iti trebuie pt ca daca not noth maps present inseamna ca full map e null
 	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {
 	
@@ -199,25 +203,28 @@ public class GameStateController {
 		return true;
 	}
 	
+	public void assembleHalfMaps(UniqueGameIdentifier gameID) {
+		GameData game = this.games.get(gameID.getUniqueGameID());
+		game.getFullMap().assembleFullMap(game.getPlayers(), game.getPlayers().get(0).getHalfMap(), game.getPlayers().get(1).getHalfMap());
+		this.games.get(gameID.getUniqueGameID()).setFullMap(game.getFullMap());
+		
+	}
+	
 	public GameState requestGameState(UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID, NetworkConverter networkConverter) {
 		
 		GameData game = this.games.get(gameID.getUniqueGameID());
-		Player player = this.games.get(gameID.getUniqueGameID()).getPlayerWithId(playerID.getUniquePlayerID());
-		Player enemy = null;
-		
 		Set<PlayerState> players = new HashSet<>();
-		for (Player pl : this.games.get(gameID.getUniqueGameID()).getPlayers()) {
-			if (!pl.getPlayerId().equals(playerID.getUniquePlayerID())) {
-				enemy = pl;
-				players.add(networkConverter.convertPlayerFrom(this.games.get(gameID.getUniqueGameID()), player, true));
-				
-			} else {
-				players.add(networkConverter.convertPlayerFrom(this.games.get(gameID.getUniqueGameID()), player, false));
-			}
-			
+		Player player = this.games.get(gameID.getUniqueGameID()).getPlayerWithId(playerID.getUniquePlayerID());
+		players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player, false));
+		Optional<FullMap> map = Optional.empty();
+		if (bothPlayersRegistered(gameID)) {
+			Player enemy = this.games.get(gameID.getUniqueGameID()).getTheOtherPlayer(playerID.getUniquePlayerID());
+			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), enemy, true));
+			map = networkConverter.convertServerFullMapTo(player, enemy, game.getFullMap(), game);
+		} else {
+			map = networkConverter.convertIHalfMapToNetworkFullMap(player, player.getHalfMap(), game);
 		}
 		
-		Optional<FullMap> map = networkConverter.convertServerFullMapTo(player, enemy, game.getFullMap(), game);
 		
 		
 		return new GameState(map, players, game.getGameStateId());
