@@ -228,7 +228,7 @@ public class GameStateController {
 			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player, false));
 			
 			if (player.getHalfMap() != null) {
-				map = networkConverter.convertIHalfMapToNetworkFullMap(player, player.getHalfMap(), game);	
+				map = networkConverter.convertIHalfMapToNetworkFullMap(player, game);	
 			}
 			
 			
@@ -241,15 +241,15 @@ public class GameStateController {
 			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player2, true));
 			
 			if (bothHalfMapsPresent(gameID)) {
-				
-				map = networkConverter.convertServerFullMapTo(player1, player2, game.getFullMap(), game);
+				assembleHalfMaps(gameID);
+				map = networkConverter.convertServerFullMapTo(playerID, game);
 				
 			} else {
 			
 				if (player1.isPlayersHalfMapPresent()) {
-					map = networkConverter.convertIHalfMapToNetworkFullMap(player1, player1.getHalfMap(), game);
+					map = networkConverter.convertIHalfMapToNetworkFullMap(player1, game);
 				} else if (player2.isPlayersHalfMapPresent()) {
-					map = networkConverter.convertIHalfMapToNetworkFullMap(player2, player2.getHalfMap(), game);
+					map = networkConverter.convertIHalfMapToNetworkFullMap(player2, game);
 				}
 				
 			}

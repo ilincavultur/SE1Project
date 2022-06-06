@@ -274,22 +274,13 @@ public class NetworkConverter {
 	}
 	
 	// server full map to network fullmap
-	public Optional<FullMap> convertServerFullMapTo(Player myPlayer, Player enemyPlayer, InternalFullMap myMap, GameData gameState) {
+	public Optional<FullMap> convertServerFullMapTo(UniquePlayerIdentifier playerID, GameData game) {
 		roundNo += 1;
 		
-		if (myPlayer.getHalfMap() == null && enemyPlayer.getHalfMap() == null) {
-			return Optional.empty();
-		} 
+		InternalFullMap myMap = game.getFullMap();
+		Player myPlayer = game.getPlayerWithId(playerID.getUniquePlayerID());
+		Player enemyPlayer = game.getTheOtherPlayer(playerID.getUniquePlayerID());
 		
-		if (myPlayer.getHalfMap() != null) {
-			return convertIHalfMapToNetworkFullMap(myPlayer, myPlayer.getHalfMap(), gameState);
-		}
-		
-		if (enemyPlayer.getHalfMap() != null) {
-			return convertIHalfMapToNetworkFullMap(enemyPlayer, enemyPlayer.getHalfMap(), gameState);
-		}
-		
-		//TODO
 		FullMap toRet = new FullMap();
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
 
@@ -341,12 +332,15 @@ public class NetworkConverter {
 		
 	}
 	
-	public Optional<FullMap> convertIHalfMapToNetworkFullMap(Player player, InternalHalfMap myMap, GameData gameState) {
+	public Optional<FullMap> convertIHalfMapToNetworkFullMap(Player player, GameData gameState) {
 		//roundNo += 1;
 	
 		//TODO
 		FullMap toRet = new FullMap();
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
+		
+		
+		InternalHalfMap myMap = player.getHalfMap();
 
 		//Coordinates enemyPos = getRandomEnemyPos(myMap);
 		Coordinates myFortPos = myMap.getFortPos();
