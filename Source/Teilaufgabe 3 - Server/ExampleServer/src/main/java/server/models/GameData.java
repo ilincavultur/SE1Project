@@ -16,6 +16,7 @@ public class GameData {
 	private int idxPlayersTurn;
 	private String winnerId;
 	private int roundNo;
+	//private String firstPlayerToSendMap;
 	
 	public GameData() {
 		super();
@@ -28,6 +29,8 @@ public class GameData {
 		this.idxPlayersTurn = randomNo.nextInt(2);
 		this.winnerId = null;
 		this.roundNo = 0;
+		//this.firstPlayerToSendMap = pickFirstPlayerToSendMap();
+		pickFirstPlayerToSendMap();
 	}
 	
 	public GameData(String gameId, List<Player> players, InternalFullMap fullMap) {
@@ -41,6 +44,8 @@ public class GameData {
 		this.idxPlayersTurn = randomNo.nextInt(2);
 		this.winnerId = null;
 		this.roundNo = 0;
+		//this.firstPlayerToSendMap = pickFirstPlayerToSendMap();
+		pickFirstPlayerToSendMap();
 	}
 	public String getGameId() {
 		return gameId;
@@ -98,6 +103,19 @@ public class GameData {
 	public void setWinner(String loserId) {
 		Player winner = getTheOtherPlayer(loserId);
 		this.winnerId = winner.getPlayerId();
+	}
+	
+	// choose which player sends the first map 
+	public String pickFirstPlayerToSendMap() {
+		Random randomNo = new Random();
+		int no = randomNo.nextInt(2);
+		if (no == 0) {
+			this.idxPlayersTurn = 0;
+			return "first";
+		}
+		this.idxPlayersTurn = 1;
+		return "second";
+		
 	}
 	
 	public boolean myTurn (String playerId) {
