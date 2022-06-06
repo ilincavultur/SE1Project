@@ -1,8 +1,6 @@
 package server.main;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -78,11 +76,12 @@ public class ServerEndpoints {
 			@Validated @PathVariable UniqueGameIdentifier gameID,
 			@Validated @RequestBody PlayerRegistration playerRegistration) {
 		
+		// create unique player id
 		UniquePlayerIdentifier newPlayerID = gameStateController.createUniquePlayerId();
 		
 		// validate if game id exists
-		// validate if player id exists
 		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
+		// validate if max number of players not already registered
 		rules.forEach(rule -> rule.validatePlayerReg(gameStateController.getGames(), newPlayerID, gameID));
 	
 		// translate + save player
@@ -99,15 +98,14 @@ public class ServerEndpoints {
 			@Validated @PathVariable UniquePlayerIdentifier playerID) {
 		
 		// validate if game id exists
-		// validate if player is in the respective game
 		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
+		// validate if player is in the respective game
 		rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), playerID, gameID));
 				
 		// if both maps available, create full map
 		if (gameStateController.bothHalfMapsPresent(gameID)) {
 			gameStateController.assembleHalfMaps(gameID);
 		}
-		
 		
 		// process
 		GameState newGameState = gameStateController.requestGameState(playerID, gameID, networkConverter);
@@ -142,11 +140,11 @@ public class ServerEndpoints {
 			throw e;
 		}
 		
-		try {
+		/*try {
 			rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));	
 		} catch (NotEnoughPlayersException e) {
 			throw e;
-		}
+		}*/
 		
 		if (gameStateController.bothPlayersRegistered(gameID) == false) {
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
@@ -158,7 +156,6 @@ public class ServerEndpoints {
 			throw new TooManyMapsSentException("Too many half maps sent", "Client " + halfMap.getUniquePlayerID() + " tried to send more than one half map");
 		}
 		
-		//rules.forEach(rule -> rule.myTurn(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
 		if (!gameStateController.getGames().get(gameID.getUniqueGameID()).myTurn(halfMap.getUniquePlayerID())) {
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			return new ResponseEnvelope<>();
@@ -170,7 +167,6 @@ public class ServerEndpoints {
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			throw e;
 		}
-		
 		
 		// translate 
 		InternalHalfMap iHalfMap = networkConverter.convertHalfMapFrom(halfMap);
@@ -198,7 +194,7 @@ public class ServerEndpoints {
 		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
 		rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
 		rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
-		//rules.forEach(rule -> rule.myTurn(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
+		
 		if (!gameStateController.getGames().get(gameID.getUniqueGameID()).myTurn(move.getUniquePlayerID())) {
 			return new ResponseEnvelope<>();
 		}

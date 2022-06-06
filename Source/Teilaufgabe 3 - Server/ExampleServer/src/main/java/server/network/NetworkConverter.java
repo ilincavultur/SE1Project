@@ -18,7 +18,6 @@ import MessagesBase.MessagesFromClient.ETerrain;
 import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.HalfMapNode;
 import MessagesBase.MessagesFromClient.PlayerMove;
-import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.EFortState;
 import MessagesBase.MessagesFromServer.EPlayerGameState;
 import MessagesBase.MessagesFromServer.EPlayerPositionState;
@@ -29,7 +28,6 @@ import MessagesBase.MessagesFromServer.PlayerState;
 import server.models.InternalHalfMap;
 import server.models.MapNode;
 import server.models.Player;
-import server.controllers.GameStateController;
 import server.enums.FortState;
 import server.enums.MapFieldType;
 import server.enums.MoveCommand;
@@ -42,7 +40,6 @@ import server.models.InternalFullMap;
 
 public class NetworkConverter {
 	
-	private int roundNo = 0;
 	private static final Logger logger = LoggerFactory.getLogger(NetworkConverter.class);
 
 	public InternalHalfMap convertHalfMapFrom(HalfMap halfMap) {
@@ -51,19 +48,10 @@ public class NetworkConverter {
 		Map<Coordinates, MapNode> newMp = new HashMap<Coordinates, MapNode>();
 		Set<HalfMapNode> halfMapFields = halfMap.getMapNodes().stream().collect(Collectors.toSet());
 
-		//int maxX = 0;
-		//int maxY = 0;
-		
 		for (HalfMapNode node : halfMapFields) {
 			MapNode field = new MapNode();
 			field = convertMapNodeFrom(node);
-			/*if(node.getX() > maxX) {
-				maxX = node.getX();
-			}
-			if(node.getY() > maxY) {
-				maxY = node.getY();
-			}*/
-			
+
 			if (node.isFortPresent()) {
 				Coordinates fortPos = new Coordinates(node.getX(), node.getY());
 				toReturn.setFortPos(fortPos);
@@ -71,11 +59,9 @@ public class NetworkConverter {
 			Coordinates pos = new Coordinates(node.getX(), node.getY());
 			newMp.put(pos, field);
 		}
-		logger.info("convertHalfMapfrom "+ toReturn.getFortPos().getX() + " " + toReturn.getFortPos().getY());
+	
 		toReturn.setFields(newMp);
-		//toReturn.setxSize(maxX + 1);
-		//toReturn.setySize(maxY + 1);
-		
+
 		return toReturn;
 		
 	}
@@ -130,7 +116,6 @@ public class NetworkConverter {
 		boolean collectedTreasure = player.isHasCollectedTreasure();
 		return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
 	
-		
 	}
 	
 	private MapNode convertMapNodeFrom(HalfMapNode node) {
@@ -150,7 +135,6 @@ public class NetworkConverter {
 		
 	}
 	
-
 	private ETerrain convertTerrainTypeTo(MapFieldType fieldType) {
 		
 		if(fieldType == MapFieldType.GRASS) {
@@ -264,6 +248,7 @@ public class NetworkConverter {
 	public Coordinates getRandomEnemyPos(InternalFullMap myMap) {
 		Coordinates toRet = new Coordinates();
 		Random randomNo = new Random();
+		
 		if (myMap.getxSize() == 8) {
 			int randomFortX = randomNo.nextInt(8);
 			toRet.setX(randomFortX);
@@ -294,10 +279,7 @@ public class NetworkConverter {
 
 		Coordinates enemyPos = getRandomEnemyPos(myMap);
 		Coordinates myFortPos = myPlayer.getHalfMap().getFortPos();
-		logger.info("my fort pos " + myFortPos.getX() + " " + myFortPos.getY());
 		Coordinates enemyFortPos = enemyPlayer.getHalfMap().getFortPos();
-		
-		logger.info("enemy fort pos " + enemyFortPos.getX() + " " + enemyFortPos.getY());
 
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
 			//FullMapNode toReturn = new FullMapNode();
@@ -319,7 +301,6 @@ public class NetworkConverter {
 					fort = EFortState.EnemyFortPresent;	
 				}
 			}
-			
 			
 			if (roundNo > 10) {
 				
@@ -350,27 +331,7 @@ public class NetworkConverter {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;	
 				}
 			}
-			
-	/*
-			if (myPlayer.getCurrPos().equals(mapEntry.getKey()) && enemyPlayer.getCurrPos().equals(mapEntry.getKey())) {
-				if (roundNo > 10) {
-					playerPos = EPlayerPositionState.BothPlayerPosition;	
-				} else {
-					playerPos = EPlayerPositionState.MyPlayerPosition;
-				}
-				
-			} 
-			else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
-				playerPos = EPlayerPositionState.MyPlayerPosition;
-			} else if (roundNo <= 10 && enemyPlayer.getCurrPos().equals(mapEntry.getKey())) {
-				playerPos = EPlayerPositionState.EnemyPlayerPosition;	
-		
-			} else if (roundNo > 10 && mapEntry.getKey().equals(enemyPos)) {
-				playerPos = EPlayerPositionState.EnemyPlayerPosition;
-			}*/
-			
-			
-			
+
 			FullMapNode fullMapNode = new FullMapNode(fieldType, playerPos, treasure, fort, pos.getX(), pos.getY());
 			mapNodes.add(fullMapNode);
 			
@@ -383,27 +344,22 @@ public class NetworkConverter {
 	}
 	
 	public Optional<FullMap> convertIHalfMapToNetworkFullMap(Player player, GameData gameState) {
-		//roundNo += 1;
-	
-		//TODO
+
 		FullMap toRet = new FullMap();
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
 		
 		
 		InternalHalfMap myMap = player.getHalfMap();
 
-		//Coordinates enemyPos = getRandomEnemyPos(myMap);
 		Coordinates myFortPos = myMap.getFortPos();
 		
 
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
-			//FullMapNode toReturn = new FullMapNode();
 			
 			ETerrain fieldType = convertTerrainTypeTo(mapEntry.getValue().getFieldType());
-			//toReturn.setPlayerPositionState(convertPlayerPositionStateFrom(node.ge));
 			
 			Coordinates pos = mapEntry.getKey();
-			//de aici lucreaza
+			
 			ETreasureState treasure = ETreasureState.NoOrUnknownTreasureState;
 			EFortState fort = EFortState.NoOrUnknownFortState;
 			EPlayerPositionState playerPos = EPlayerPositionState.NoPlayerPresent;
@@ -415,12 +371,9 @@ public class NetworkConverter {
 			if (player.getCurrPos().equals(mapEntry.getKey())) {
 				playerPos = EPlayerPositionState.MyPlayerPosition;
 			} 
-			
-			
-			
+		
 			FullMapNode fullMapNode = new FullMapNode(fieldType, playerPos, treasure, fort, pos.getX(), pos.getY());
 			mapNodes.add(fullMapNode);
-			
 			
 		}
 	

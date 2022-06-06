@@ -15,28 +15,25 @@ import server.enums.MapFieldType;
 import server.network.NetworkConverter;
 
 public class InternalFullMap {
+	
 	private Map<Coordinates, MapNode> fields = new HashMap<Coordinates, MapNode>();
 	private int xSize;
 	private int ySize;
 	private String firstMap;
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(InternalFullMap.class);
 
-	
 	public InternalFullMap() {
 		super();
 		setupFullMap();
 	}
 
-
 	public Map<Coordinates, MapNode> getFields() {
 		return fields;
 	}
 
-
 	public void setFields(Map<Coordinates, MapNode> fields) {
 		this.fields = fields;
 	}
-
 
 	public void pickDimensions() {
 		Random randomNo = new Random();
@@ -100,42 +97,41 @@ public class InternalFullMap {
 
 
 	public void transformCoordinates(InternalHalfMap halfMap) {
+		
 		// square
 		if (this.xSize == 8) {
 		// y + 4
-			logger.info("size = square");
-			Coordinates fortPos = new Coordinates(); 
+			 
 			Coordinates oldFortPos = halfMap.getFortPos();
-			logger.info("old fort pos" + oldFortPos.getX() + " " + oldFortPos.getY());
+			
 			for( Map.Entry<Coordinates, MapNode> mapEntry : halfMap.getFields().entrySet() ) {
 				
 				Coordinates newPos = new Coordinates(mapEntry.getKey().getX(), mapEntry.getKey().getY() + 4);
 				mapEntry.getValue().setPosition(newPos);
+				
 				if (mapEntry.getKey().equals(oldFortPos)) {
 					
-					fortPos = newPos;
-					logger.info("NEW" + fortPos.getX() + " " + fortPos.getY());
 					halfMap.setFortPos(newPos);
 				}
+				
 				fields.put(newPos, mapEntry.getValue());
 			}
-			
-			
-			
 		} else if (this.xSize == 16) {
 		// x + 8
-			logger.info("size = line");
-			Coordinates fortPos = new Coordinates();
+		
 			Coordinates oldFortPos = halfMap.getFortPos();
-			logger.info("old fort pos" + oldFortPos.getX() + " " + oldFortPos.getY());
+			
 			for( Map.Entry<Coordinates, MapNode> mapEntry : halfMap.getFields().entrySet() ) {
+				
 				Coordinates newPos = new Coordinates(mapEntry.getKey().getX() + 8, mapEntry.getKey().getY());
 				mapEntry.getValue().setPosition(newPos);
+				
 				if (mapEntry.getKey().equals(oldFortPos)) {
-					fortPos = newPos;
-					logger.info("fort pos" + fortPos.getX() + " " + fortPos.getY());
+					
 					halfMap.setFortPos(newPos);
+					
 				}
+				
 				fields.put(newPos, mapEntry.getValue());
 			}
 		}
@@ -145,23 +141,7 @@ public class InternalFullMap {
 		
 		System.out.print(myMapField.getPosition().getX());
 		System.out.print(myMapField.getPosition().getY());
-		
-		/*if (myMapField.getTreasureState() == TreasureState.MYTREASURE) {
-			System.out.print("!!!T!!!");
-		}
-		
-		if (myMapField.getFortState() == FortState.ENEMYFORT) {
-			System.out.print("!!!EF!!!");
-		}
-		
-		if(myMapField.getPlayerPositionState() == PlayerPositionState.BOTH || myMapField.getPlayerPositionState() == PlayerPositionState.MYPLAYER) {
-			System.out.print("|A|");
-		}
-		
-		if(myMapField.getPlayerPositionState() == PlayerPositionState.BOTH || myMapField.getPlayerPositionState() == PlayerPositionState.ENEMYPLAYER) {
-			System.out.print("E");
-		}*/
-		
+
 		if(myMapField.getFieldType() == MapFieldType.GRASS) {
 			System.out.print("G    ");
 		}

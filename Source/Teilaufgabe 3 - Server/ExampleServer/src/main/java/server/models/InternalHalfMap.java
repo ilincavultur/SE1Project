@@ -12,7 +12,6 @@ public class InternalHalfMap {
 	
 	public InternalHalfMap() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 

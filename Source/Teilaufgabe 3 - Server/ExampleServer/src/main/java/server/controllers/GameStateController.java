@@ -191,7 +191,6 @@ public class GameStateController {
 		return true;
 	}
 
-	// nush daca iti trebuie pt ca daca not noth maps present inseamna ca full map e null
 	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {
 	
 		for (Player pl : this.games.get(gameID.getUniqueGameID()).getPlayers()) {
@@ -252,12 +251,9 @@ public class GameStateController {
 				} else if (player2.isPlayersHalfMapPresent()) {
 					
 					map = networkConverter.convertIHalfMapToNetworkFullMap(player2, game);
-				}
-				
-			}
-			
+				}	
+			}		
 		}
-		
 		
 		return new GameState(map, players, game.getGameStateId());
 	}

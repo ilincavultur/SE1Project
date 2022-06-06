@@ -11,13 +11,11 @@ public class Player {
 	PlayerRegistration playerReg;
 	private boolean showEnemyFort;
 	
-	
 	public Player() {
 		super();
 		Coordinates currPos = new Coordinates(0,0);
 		this.currPos = currPos;
 		this.showEnemyFort = false;
-		// TODO Auto-generated constructor stub
 	}
 	public String getPlayerId() {
 		return playerId;
@@ -49,8 +47,6 @@ public class Player {
 	public void setPlayerReg(PlayerRegistration playerReg) {
 		this.playerReg = playerReg;
 	}
-	
-
 	public boolean isShowEnemyFort() {
 		return showEnemyFort;
 	}
@@ -60,6 +56,5 @@ public class Player {
 	public boolean isPlayersHalfMapPresent() {
 		return this.getHalfMap() != null;
 	}
-	
 	
 }

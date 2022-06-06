@@ -16,9 +16,7 @@ public class GameData {
 	private int idxPlayersTurn;
 	private String winnerId;
 	private int roundNo;
-	
-	//private String firstPlayerToSendMap;
-	
+
 	public GameData() {
 		super();
 		this.gameId = null;
@@ -30,8 +28,6 @@ public class GameData {
 		this.idxPlayersTurn = randomNo.nextInt(2);
 		this.winnerId = null;
 		this.roundNo = 0;
-		
-		//this.firstPlayerToSendMap = pickFirstPlayerToSendMap();
 		pickFirstPlayerToSendMap();
 	}
 	
@@ -46,8 +42,6 @@ public class GameData {
 		this.idxPlayersTurn = randomNo.nextInt(2);
 		this.winnerId = null;
 		this.roundNo = 0;
-		
-		//this.firstPlayerToSendMap = pickFirstPlayerToSendMap();
 		pickFirstPlayerToSendMap();
 	}
 	public String getGameId() {
