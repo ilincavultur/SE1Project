@@ -83,18 +83,21 @@ public class NetworkConverter {
 			String lastName = player.getPlayerReg().getStudentLastName();
 			String uaccount = player.getPlayerReg().getStudentUAccount();
 			EPlayerGameState state = EPlayerGameState.MustWait;
-			if (game.myTurn(player.getPlayerId())) {
-				state = EPlayerGameState.MustAct;
-			} else {
-				state = EPlayerGameState.MustWait;
-			} 
 			if (game.getWinnerId() != null) {
 				if (game.getWinnerId().equals(player.getPlayerId())) {
 					state = EPlayerGameState.Won;	
 				} else {
 					state = EPlayerGameState.Lost;
 				}		
-			} 
+			} else {
+				if (game.myTurn(player.getPlayerId())) {
+					state = EPlayerGameState.MustAct;
+				} else {
+					state = EPlayerGameState.MustWait;
+				} 
+			}
+			
+			
 			UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(UUID.randomUUID().toString());
 			boolean collectedTreasure = false;
 			return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
@@ -103,19 +106,19 @@ public class NetworkConverter {
 		String lastName = player.getPlayerReg().getStudentLastName();
 		String uaccount = player.getPlayerReg().getStudentUAccount();
 		EPlayerGameState state = EPlayerGameState.MustWait;
-		if (game.myTurn(player.getPlayerId())) {
-			state = EPlayerGameState.MustAct;
-		} else {
-			state = EPlayerGameState.MustWait;
-		} 
-		
 		if (game.getWinnerId() != null) {
 			if (game.getWinnerId().equals(player.getPlayerId())) {
 				state = EPlayerGameState.Won;	
 			} else {
 				state = EPlayerGameState.Lost;
 			}		
-		} 
+		} else {
+			if (game.myTurn(player.getPlayerId())) {
+				state = EPlayerGameState.MustAct;
+			} else {
+				state = EPlayerGameState.MustWait;
+			} 
+		}
 		
 		UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(player.getPlayerId());
 		boolean collectedTreasure = player.isHasCollectedTreasure();

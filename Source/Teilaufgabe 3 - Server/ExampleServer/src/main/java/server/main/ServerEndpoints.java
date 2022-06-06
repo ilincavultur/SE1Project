@@ -26,8 +26,11 @@ import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.GameState;
 import server.controllers.GameStateController;
 import server.validation.PlayerIdRule;
+import server.exceptions.GameIdException;
 import server.exceptions.GenericExampleException;
+import server.exceptions.HalfMapException;
 import server.exceptions.NotEnoughPlayersException;
+import server.exceptions.PlayerIdException;
 import server.exceptions.TooManyMapsSentException;
 import server.models.InternalHalfMap;
 import server.network.NetworkConverter;
@@ -126,9 +129,26 @@ public class ServerEndpoints {
 		// validate if both players registered
 		// validate if player's turn
 		// validate map stuff
-		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
-		rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
-		rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
+		try {
+			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));	
+		} catch (GameIdException e) {
+			throw e;
+		}
+		
+		try {
+			rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));	
+		} catch (PlayerIdException e) {
+			throw e;
+		}
+		
+		try {
+			rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));	
+		} catch (NotEnoughPlayersException e) {
+			throw e;
+		}
+		
+		
+		
 	
 		if (gameStateController.getGames().get(gameID.getUniqueGameID()).getPlayerWithId(halfMap.getUniquePlayerID()).getHalfMap() != null) {
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
@@ -143,8 +163,9 @@ public class ServerEndpoints {
 
 		try {
 			rules.forEach(rule -> rule.validateHalfMap(halfMap));	
-		} catch(Exception e) {
+		} catch(HalfMapException e) {
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
+			throw e;
 		}
 		
 		
