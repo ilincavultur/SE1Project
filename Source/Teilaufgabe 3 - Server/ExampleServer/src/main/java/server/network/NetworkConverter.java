@@ -339,14 +339,14 @@ public class NetworkConverter {
 	}
 	
 	public Optional<FullMap> convertIHalfMapToNetworkFullMap(Player player, InternalHalfMap myMap, GameData gameState) {
-		roundNo += 1;
+		//roundNo += 1;
 	
 		//TODO
 		FullMap toRet = new FullMap();
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
 
 		//Coordinates enemyPos = getRandomEnemyPos(myMap);
-		Coordinates myFortPos = player.getHalfMap().getFortPos();
+		Coordinates myFortPos = myMap.getFortPos();
 		
 
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {

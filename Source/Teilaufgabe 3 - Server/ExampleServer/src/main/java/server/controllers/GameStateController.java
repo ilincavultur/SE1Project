@@ -220,8 +220,11 @@ public class GameStateController {
 		if (bothPlayersRegistered(gameID)) {
 			Player enemy = this.games.get(gameID.getUniqueGameID()).getTheOtherPlayer(playerID.getUniquePlayerID());
 			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), enemy, true));
-			map = networkConverter.convertServerFullMapTo(player, enemy, game.getFullMap(), game);
-		} else {
+			if (bothHalfMapsPresent(gameID)) {
+				map = networkConverter.convertServerFullMapTo(player, enemy, game.getFullMap(), game);	
+			}
+			
+		} else if (!bothPlayersRegistered(gameID) && player.getHalfMap() != null) {
 			map = networkConverter.convertIHalfMapToNetworkFullMap(player, player.getHalfMap(), game);
 		}
 		

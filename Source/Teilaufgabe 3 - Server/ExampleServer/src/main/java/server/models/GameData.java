@@ -84,7 +84,13 @@ public class GameData {
 		this.gameCreationTime = gameCreationTime;
 	}
 	
+	public void setWinner(String loserId) {
+		Player winner = getTheOtherPlayer(loserId);
+		this.winnerId = winner.getPlayerId();
+	}
+	
 	public boolean myTurn (String playerId) {
+
 		if (players.get(0).getPlayerId().equals(playerId)) {
 			if (idxPlayersTurn == 0) {
 				return true;

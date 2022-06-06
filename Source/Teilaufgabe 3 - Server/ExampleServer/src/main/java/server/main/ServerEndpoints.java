@@ -131,15 +131,22 @@ public class ServerEndpoints {
 		rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
 	
 		if (gameStateController.getGames().get(gameID.getUniqueGameID()).getPlayerWithId(halfMap.getUniquePlayerID()).getHalfMap() != null) {
+			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			throw new TooManyMapsSentException("Too many half maps sent", "Client " + halfMap.getUniquePlayerID() + " tried to send more than one half map");
 		}
 		
 		//rules.forEach(rule -> rule.myTurn(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
 		if (!gameStateController.getGames().get(gameID.getUniqueGameID()).myTurn(halfMap.getUniquePlayerID())) {
+			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			return new ResponseEnvelope<>();
 		}
 
-		rules.forEach(rule -> rule.validateHalfMap(halfMap));
+		try {
+			rules.forEach(rule -> rule.validateHalfMap(halfMap));	
+		} catch(Exception e) {
+			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
+		}
+		
 		
 		// translate 
 		InternalHalfMap iHalfMap = networkConverter.convertHalfMapFrom(halfMap);
