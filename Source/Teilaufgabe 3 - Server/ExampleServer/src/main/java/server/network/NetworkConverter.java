@@ -279,6 +279,9 @@ public class NetworkConverter {
 		Coordinates enemyPos = getRandomEnemyPos(myMap);
 		Coordinates myFortPos = myPlayer.getHalfMap().getFortPos();
 		Coordinates enemyFortPos = enemyPlayer.getHalfMap().getFortPos();
+		Coordinates actualEnemyPosition = enemyPlayer.getCurrPos();
+		
+		logger.info("				 FIRST enemy pos rounds > 10 " + enemyPlayer.getCurrPos().getX() + " " + enemyPlayer.getCurrPos().getY());
 
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
 			//FullMapNode toReturn = new FullMapNode();
@@ -309,8 +312,9 @@ public class NetworkConverter {
 				} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
 					logger.info("my player pos rounds > 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
-				} else if (mapEntry.getKey().equals(enemyPos)) {
+				} else if (mapEntry.getKey().equals(actualEnemyPosition)) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;
+					logger.info("enemy pos rounds > 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
 				}
 			
 			} else {
@@ -322,6 +326,7 @@ public class NetworkConverter {
 					logger.info("my player pos rounds < 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
 				} else if (enemyPos.equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;	
+					logger.info("enemy pos rounds < 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
 				}
 			}
 
