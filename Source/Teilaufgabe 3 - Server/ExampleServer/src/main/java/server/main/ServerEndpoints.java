@@ -27,6 +27,7 @@ import server.validation.PlayerIdRule;
 import server.exceptions.GameIdException;
 import server.exceptions.GenericExampleException;
 import server.exceptions.HalfMapException;
+import server.exceptions.MoveException;
 import server.exceptions.NotEnoughPlayersException;
 import server.exceptions.PlayerIdException;
 import server.exceptions.TooManyMapsSentException;
@@ -191,17 +192,40 @@ public class ServerEndpoints {
 		// validate if player is in that game
 		// validate if player's turn
 		// validate move
-		rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
-		rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
-		rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
+		//rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
+		//rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
+		try {
+			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));	
+		} catch (GameIdException e) {
+			throw e;
+		}
+		
+		try {
+			rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));	
+		} catch (PlayerIdException e) {
+			throw e;
+		}
+		
+		/*if (gameStateController.bothPlayersRegistered(gameID) == false) {
+			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(move.getUniquePlayerID());
+			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
+		}*/
+		
+		//rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
 		
 		if (!gameStateController.getGames().get(gameID.getUniqueGameID()).myTurn(move.getUniquePlayerID())) {
 			return new ResponseEnvelope<>();
 		}
-		rules.forEach(rule -> rule.validateMove(gameStateController.getGames(), move, gameID));
+		
+		try {
+			rules.forEach(rule -> rule.validateMove(gameStateController.getGames(), move, gameID));	
+		} catch (MoveException e) {
+			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(move.getUniquePlayerID());
+			throw e;
+		} 
 
 		// translate + process
-		gameStateController.receiveMove(move);
+		gameStateController.receiveMove(gameID, move, networkConverter);
 		gameStateController.swapPlayerOnTurn(gameID);
 		gameStateController.updateGameStateId(gameID);
 		

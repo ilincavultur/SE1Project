@@ -51,7 +51,6 @@ public class NetworkConverter {
 		for (HalfMapNode node : halfMapFields) {
 			MapNode field = new MapNode();
 			field = convertMapNodeFrom(node);
-
 			if (node.isFortPresent()) {
 				Coordinates fortPos = new Coordinates(node.getX(), node.getY());
 				toReturn.setFortPos(fortPos);
@@ -307,27 +306,21 @@ public class NetworkConverter {
 				if (myPlayer.getCurrPos().equals(mapEntry.getKey()) && enemyPlayer.getCurrPos().equals(mapEntry.getKey())) {
 				
 					playerPos = EPlayerPositionState.BothPlayerPosition;	
-				} 
-				
-				if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
+				} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
-				}
-				
-				if (mapEntry.getKey().equals(enemyPos)) {
+					logger.info("my player pos rounds > 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+				} else if (mapEntry.getKey().equals(enemyPos)) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;
 				}
-					
+			
 			} else {
 				
 				if (myPlayer.getCurrPos().equals(mapEntry.getKey()) && enemyPos.equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.BothPlayerPosition;
-				} 
-				
-				if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
+				} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
-				}
-				
-				if (enemyPos.equals(mapEntry.getKey())) {
+					logger.info("my player pos rounds < 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+				} else if (enemyPos.equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;	
 				}
 			}
@@ -380,6 +373,25 @@ public class NetworkConverter {
 		toRet = new FullMap(mapNodes);
 		return Optional.of(toRet);
 		
+	}
+	
+	public MoveCommand convertMoveFrom(PlayerMove move) {
+		if (move.getMove() == EMove.Up) {
+			return MoveCommand.UP;
+		}
+		
+		if (move.getMove() == EMove.Down) {
+			return MoveCommand.DOWN;
+		}
+		
+		if (move.getMove() == EMove.Left) {
+			return MoveCommand.LEFT;
+		}
+		
+		if (move.getMove() == EMove.Right) {
+			return MoveCommand.RIGHT;
+		}
+		return null;
 	}
 	
 	public PlayerMove convertMoveTo(String uniquePlayerID, MoveCommand move) {

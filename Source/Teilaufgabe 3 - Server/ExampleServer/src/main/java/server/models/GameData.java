@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import server.enums.MoveCommand;
+
 public class GameData {
 
 	private String gameId;
@@ -16,6 +18,7 @@ public class GameData {
 	private int idxPlayersTurn;
 	private String winnerId;
 	private int roundNo;
+	
 
 	public GameData() {
 		super();
@@ -99,7 +102,7 @@ public class GameData {
 		Player winner = getTheOtherPlayer(loserId);
 		this.winnerId = winner.getPlayerId();
 	}
-	
+
 	// choose which player sends the first map 
 	public String pickFirstPlayerToSendMap() {
 		Random randomNo = new Random();

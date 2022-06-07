@@ -20,6 +20,7 @@ public class InternalFullMap {
 	private int xSize;
 	private int ySize;
 	private String firstMap;
+	private boolean changed;
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(InternalFullMap.class);
 
 	public InternalFullMap() {
@@ -63,6 +64,7 @@ public class InternalFullMap {
 		pickDimensions();
 		
 		this.firstMap = pickFirstHalf();
+		this.changed = false;
 	}
 	
 	public void assembleFullMap(List<Player> players, InternalHalfMap halfMap1, InternalHalfMap halfMap2) {
@@ -70,10 +72,31 @@ public class InternalFullMap {
 		if (this.firstMap.equals("first")) {
 			fields.putAll(halfMap1.getFields());
 			transformCoordinates(halfMap2);
+			
+			
+			if (changed == false) {
+				changed = true;
+				logger.info("must appear once");
+				players.get(0).setCurrPos(halfMap1.getFortPos());
+				players.get(1).setCurrPos(halfMap2.getFortPos());
+			} 
+			
 		} else {
 			fields.putAll(halfMap2.getFields());
 			transformCoordinates(halfMap1);
+			
+			if (changed == false) {
+				changed = true;
+				logger.info("must appear once");
+				players.get(0).setCurrPos(halfMap1.getFortPos());
+				players.get(1).setCurrPos(halfMap2.getFortPos());
+			} 
+			
+
 		}
+		System.out.println("second map half map player 0" + players.get(0).getPlayerId() + "  " + players.get(0).getCurrPos().getX() + " " + players.get(0).getCurrPos().getY());
+		System.out.println("second map half map player 1" + players.get(1).getPlayerId() + "  " + players.get(1).getCurrPos().getX() + " " + players.get(1).getCurrPos().getY());
+	
 	}
 	
 	public int getxSize() {
@@ -112,6 +135,8 @@ public class InternalFullMap {
 				if (mapEntry.getKey().equals(oldFortPos)) {
 					
 					halfMap.setFortPos(newPos);
+					
+					
 				}
 				
 				fields.put(newPos, mapEntry.getValue());

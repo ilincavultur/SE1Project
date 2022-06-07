@@ -19,14 +19,20 @@ import org.slf4j.LoggerFactory;
 
 import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
+import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.FullMap;
 import MessagesBase.MessagesFromServer.GameState;
 import MessagesBase.MessagesFromServer.PlayerState;
+import server.enums.MapFieldType;
+import server.enums.MoveCommand;
+import server.exceptions.MoveException;
+import server.models.Coordinates;
 import server.models.GameData;
 import server.models.InternalFullMap;
 import server.models.InternalHalfMap;
+import server.models.MapNode;
 import server.models.Player;
 import server.network.NetworkConverter;
 import server.validation.BothPlayersRegisteredRule;
@@ -49,6 +55,8 @@ public class GameStateController {
 	private Map<String, GameData> games = new HashMap<String, GameData>();
 	private static int maximumGamesNumber = 999;
 	private static final Logger logger = LoggerFactory.getLogger(GameStateController.class);
+	private boolean first = true;
+	
 	
 	List<IRuleValidation> rules = new ArrayList<IRuleValidation>();	
 
@@ -68,6 +76,7 @@ public class GameStateController {
 		rules.add(new PlayerIdRule());
 		rules.add(new TerrainsNumberRule());
 		rules.add(new WaterOnEdgesRule());
+		
 	}
 
 	public Map<String, GameData> getGames() {
@@ -209,6 +218,49 @@ public class GameStateController {
 		
 	}
 	
+	private int getMoves(MapNode field) {
+		if (field.getFieldType() == MapFieldType.MOUNTAIN) {
+			return 2;
+		} 
+		return 1;
+	}
+	
+	private int getPathWeight(Player player, GameData game, Coordinates currentField, Coordinates nextField) {
+
+		int firstFieldMoves = this.getMoves(game.getFullMap().getFields().get(currentField)); 
+		int secondFieldMoves = this.getMoves(game.getFullMap().getFields().get(nextField)); 
+ 		
+		return firstFieldMoves + secondFieldMoves;
+		
+	}
+	
+	private Coordinates getTargetCoordinatesFromMove(GameData game, Coordinates pos, PlayerMove move) {
+		Coordinates toRet = new Coordinates();
+		Map<Coordinates, MapNode> fields = game.getFullMap().getFields();
+		
+		if (move.getMove() == EMove.Up) {
+			Coordinates dir = pos.getUpNeighbour(fields);
+			return dir;
+		}
+		
+		if (move.getMove() == EMove.Down) {
+			Coordinates dir = pos.getDownNeighbour(fields);
+			return dir;
+		}
+		
+		if (move.getMove() == EMove.Left) {
+			Coordinates dir = pos.getLeftNeighbour(fields);
+			return dir;
+		}
+		
+		if (move.getMove() == EMove.Right) {
+			Coordinates dir = pos.getRightNeighbour(fields);
+			return dir;
+		}
+		
+		return toRet;
+	}
+	
 	
 	public GameState requestGameState(UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID, NetworkConverter networkConverter) {
 		
@@ -258,10 +310,36 @@ public class GameStateController {
 		return new GameState(map, players, game.getGameStateId());
 	}
 	
+	
+	
 	//validate done in servernedpoints
-	public void receiveMove(PlayerMove move) {
+	public void receiveMove(UniqueGameIdentifier gameID, PlayerMove move, NetworkConverter networkConverter) {
+		GameData game = this.games.get(gameID.getUniqueGameID());
 		
-		//process
+		Player player = game.getPlayerWithId(move.getUniquePlayerID());
+		player.processMove(game, gameID, move, networkConverter);
+		
+		/*MoveCommand newMove = networkConverter.convertMoveFrom(move);
+		
+		logger.info("newMove " + move.getMove().toString());
+		
+		Coordinates target = getTargetCoordinatesFromMove(game, player.getCurrPos(), move);
+
+		int stepsToTake = getPathWeight(player, game, player.getCurrPos(), target);
+		
+		if (player.getStepsTaken() == 0) {
+			player.setCurrentDirection(newMove);
+		} else if (!player.getCurrentDirection().equals(newMove)) {
+			player.setStepsTaken(0);
+			player.setCurrentDirection(newMove);
+		}
+		
+		int stepsTaken = player.getStepsTaken();
+		player.setStepsTaken(stepsTaken + 1);
+		
+		if (stepsTaken == stepsToTake) {
+			player.setCurrPos(target);
+		}*/
 		
 	}
 }
