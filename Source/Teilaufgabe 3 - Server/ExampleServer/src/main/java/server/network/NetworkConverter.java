@@ -306,7 +306,7 @@ public class NetworkConverter {
 			
 			if (myPlayer.isHasCollectedTreasure()) {
 				treasure = ETreasureState.NoOrUnknownTreasureState;
-			} else if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
+			} else if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE && myPlayer.isShowTreasure()) {
 				treasure = ETreasureState.MyTreasureIsPresent;
 			}
 			

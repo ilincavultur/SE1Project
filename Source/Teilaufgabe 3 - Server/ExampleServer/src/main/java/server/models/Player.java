@@ -23,6 +23,7 @@ public class Player {
 	boolean hasCollectedTreasure;
 	PlayerRegistration playerReg;
 	private boolean showEnemyFort;
+	private boolean showTreasure;
 	private MoveCommand currentDirection;
 	private int currentNoOfStepsToTake;
 	
@@ -37,7 +38,7 @@ public class Player {
 		this.showEnemyFort = false;
 		this.currentNoOfStepsToTake = 0;
 		this.hasCollectedTreasure = false;
-		
+		this.showTreasure = false;
 		
 		
 	}
@@ -95,6 +96,12 @@ public class Player {
 	}
 
 	
+	public boolean isShowTreasure() {
+		return showTreasure;
+	}
+	public void setShowTreasure(boolean showTreasure) {
+		this.showTreasure = showTreasure;
+	}
 	private int getMoves(MapNode field) {
 		if (field.getFieldType() == MapFieldType.MOUNTAIN) {
 			return 2;
@@ -165,6 +172,7 @@ public class Player {
 	public void updateTreasureStatus(GameData game) {
 		if (game.getFullMap().getFields().get(this.currPos).getTreasureState() == TreasureState.MYTREASURE) {
 			this.setHasCollectedTreasure(true);
+			this.setShowTreasure(false);
 		}
 	}
 
