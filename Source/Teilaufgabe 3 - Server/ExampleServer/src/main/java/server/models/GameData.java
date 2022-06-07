@@ -18,6 +18,7 @@ public class GameData {
 	private int idxPlayersTurn;
 	private String winnerId;
 	private int roundNo;
+	private boolean changed;
 	
 
 	public GameData() {
@@ -25,6 +26,7 @@ public class GameData {
 		this.gameId = null;
 		this.players = new ArrayList<Player>();
 		this.fullMap = new InternalFullMap();
+		this.changed = false;
 		this.gameCreationTime = Instant.now();
 		this.gameStateId = UUID.randomUUID().toString();
 		Random randomNo = new Random();
@@ -39,6 +41,7 @@ public class GameData {
 		this.gameId = gameId;
 		this.players = players;
 		this.fullMap = fullMap;
+		this.changed = false;
 		this.gameCreationTime = Instant.now();
 		this.gameStateId = UUID.randomUUID().toString();
 		Random randomNo = new Random();
@@ -101,6 +104,14 @@ public class GameData {
 	public void setWinner(String loserId) {
 		Player winner = getTheOtherPlayer(loserId);
 		this.winnerId = winner.getPlayerId();
+	}
+
+	public boolean isChanged() {
+		return changed;
+	}
+
+	public void setChanged(boolean changed) {
+		this.changed = changed;
 	}
 
 	// choose which player sends the first map 

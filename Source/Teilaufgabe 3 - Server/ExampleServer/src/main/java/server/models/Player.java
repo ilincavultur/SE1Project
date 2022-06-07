@@ -157,7 +157,33 @@ public class Player {
 	public void processMove(GameData game, UniqueGameIdentifier gameID, PlayerMove move, NetworkConverter networkConverter) {
 		
 
+		// direction
 		MoveCommand newMove = networkConverter.convertMoveFrom(move);
+		logger.info("newMove " + move.getMove().toString());
+		Coordinates target = getTargetCoordinatesFromMove(game, this.currPos, move);
+		if (this.currentNoOfStepsToTake == 0) {
+			this.currentDirection = newMove;
+			this.currentNoOfStepsToTake = getPathWeight(this, game, this.currPos, target);
+		} else if (newMove != this.currentDirection) {
+			
+			this.currentDirection = newMove;
+			this.currentNoOfStepsToTake = getPathWeight(this, game, this.currPos, target);
+		}
+		
+		this.currentNoOfStepsToTake -= 1;
+		
+		if (this.currentNoOfStepsToTake == 0) {
+			this.currPos = target;
+		}
+		
+		
+		
+		
+	
+		
+		
+		/*
+		 MoveCommand newMove = networkConverter.convertMoveFrom(move);
 		
 		logger.info("newMove " + move.getMove().toString());
 		
@@ -230,6 +256,7 @@ public class Player {
 			this.currPos.setX(this.currentTarget.getX());
 			this.currPos.setY(this.currentTarget.getY());
 		}
+		 */
 		
 		
 	}

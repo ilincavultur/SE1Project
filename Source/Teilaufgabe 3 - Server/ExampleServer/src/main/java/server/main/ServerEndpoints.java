@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +55,7 @@ public class ServerEndpoints {
 	
 	private GameStateController gameStateController = new GameStateController();
 	private NetworkConverter networkConverter = new NetworkConverter();
+	private static final Logger logger = LoggerFactory.getLogger(ServerEndpoints.class);
 	List<IRuleValidation> rules = List.of(new BothPlayersRegisteredRule(), new GameIdRule(), new DontMoveIntoWaterRule(), new DontMoveOutsideMapRule(), new FieldsCoordinatesRule(), new FortRule(),
 			new HalfMapSizeRule(), new MaxNoOfPlayersReachedRule(), new MyTurnRule(), new NoIslandsRule(), new PlayerIdRule(), new TerrainsNumberRule(), new WaterOnEdgesRule());
 
@@ -175,6 +178,7 @@ public class ServerEndpoints {
 		// save 
 		gameStateController.receiveHalfMap(iHalfMap, halfMap.getUniquePlayerID(), gameID.getUniqueGameID());
 		gameStateController.swapPlayerOnTurn(gameID);
+		
 		gameStateController.updateGameStateId(gameID);
 		
 		return toRet;

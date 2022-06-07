@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import MessagesBase.MessagesFromClient.HalfMapNode;
+import server.enums.MoveCommand;
 
 public class Coordinates {
 
@@ -93,6 +94,8 @@ public class Coordinates {
 		return null;
 		
 	}
+	
+
 
 	@Override
 	public int hashCode() {

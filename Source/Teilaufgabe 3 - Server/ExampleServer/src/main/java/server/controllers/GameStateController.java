@@ -213,7 +213,7 @@ public class GameStateController {
 	
 	public void assembleHalfMaps(UniqueGameIdentifier gameID) {
 		GameData game = this.games.get(gameID.getUniqueGameID());
-		game.getFullMap().assembleFullMap(game.getPlayers(), game.getPlayers().get(0).getHalfMap(), game.getPlayers().get(1).getHalfMap());
+		game.getFullMap().assembleFullMap(game, game.getPlayers(), game.getPlayers().get(0).getHalfMap(), game.getPlayers().get(1).getHalfMap());
 		this.games.get(gameID.getUniqueGameID()).setFullMap(game.getFullMap());
 		
 	}
@@ -318,6 +318,9 @@ public class GameStateController {
 		
 		Player player = game.getPlayerWithId(move.getUniquePlayerID());
 		player.processMove(game, gameID, move, networkConverter);
+		
+		logger.info("curr pos " + player.getCurrPos().getX() + " " +  player.getCurrPos().getY());
+		
 		
 		/*MoveCommand newMove = networkConverter.convertMoveFrom(move);
 		
