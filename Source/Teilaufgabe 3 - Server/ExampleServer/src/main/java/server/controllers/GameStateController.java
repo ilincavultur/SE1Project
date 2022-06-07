@@ -27,6 +27,7 @@ import MessagesBase.MessagesFromServer.GameState;
 import MessagesBase.MessagesFromServer.PlayerState;
 import server.enums.MapFieldType;
 import server.enums.MoveCommand;
+import server.enums.TreasureState;
 import server.exceptions.MoveException;
 import server.models.Coordinates;
 import server.models.GameData;
@@ -168,12 +169,38 @@ public class GameStateController {
 		this.games.get(gameId.getUniqueGameID()).setPlayers(players);
 	}
 	
+	public Coordinates placeTreasure(InternalHalfMap halfMap) {
+		
+		//GameData game = this.games.get(gameId);
+		//Player player = game.getPlayerWithId(playerId);
+		Map<Coordinates, MapNode> fields = halfMap.getFields();
+		
+		Random randomNo = new Random();
+		
+		int randomFortX = randomNo.nextInt(8);
+		int randomFortY = randomNo.nextInt(4);
+		
+		Coordinates fortPos = new Coordinates(randomFortX, randomFortY);
+		
+		while(fields.get(fortPos).getFieldType() != MapFieldType.GRASS) {
+			randomFortX = randomNo.nextInt(8);
+			randomFortY = randomNo.nextInt(4);
+			fortPos = new Coordinates(randomFortX, randomFortY);
+		}
+		
+		
+		return fortPos;
+		
+	}
+	
 	// validate done in servernedpoints
 	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
 		List<Player> players = this.games.get(gameId).getPlayers();
 		for (Player player: players) {
 			if (player.getPlayerId().equals(playerId)) {
 				player.setCurrPos(halfMap.getFortPos());
+				Coordinates treasurePos = placeTreasure(halfMap);
+				halfMap.getFields().get(treasurePos).setTreasureState(TreasureState.MYTREASURE);
 				player.setHalfMap(halfMap);
 			}
 		}
@@ -318,31 +345,11 @@ public class GameStateController {
 		
 		Player player = game.getPlayerWithId(move.getUniquePlayerID());
 		player.processMove(game, gameID, move, networkConverter);
+		player.updateTreasureStatus(game);
 		
 		logger.info("curr pos " + player.getCurrPos().getX() + " " +  player.getCurrPos().getY());
 		
 		
-		/*MoveCommand newMove = networkConverter.convertMoveFrom(move);
-		
-		logger.info("newMove " + move.getMove().toString());
-		
-		Coordinates target = getTargetCoordinatesFromMove(game, player.getCurrPos(), move);
-
-		int stepsToTake = getPathWeight(player, game, player.getCurrPos(), target);
-		
-		if (player.getStepsTaken() == 0) {
-			player.setCurrentDirection(newMove);
-		} else if (!player.getCurrentDirection().equals(newMove)) {
-			player.setStepsTaken(0);
-			player.setCurrentDirection(newMove);
-		}
-		
-		int stepsTaken = player.getStepsTaken();
-		player.setStepsTaken(stepsTaken + 1);
-		
-		if (stepsTaken == stepsToTake) {
-			player.setCurrPos(target);
-		}*/
 		
 	}
 }

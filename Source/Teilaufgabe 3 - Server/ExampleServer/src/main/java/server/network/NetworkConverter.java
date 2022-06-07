@@ -90,7 +90,7 @@ public class NetworkConverter {
 			
 			
 			UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(UUID.randomUUID().toString());
-			boolean collectedTreasure = false;
+			boolean collectedTreasure = player.isHasCollectedTreasure();
 			return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
 		}
 		String firstName = player.getPlayerReg().getStudentFirstName();
@@ -302,6 +302,12 @@ public class NetworkConverter {
 				if (myPlayer.isShowEnemyFort()) {
 					fort = EFortState.EnemyFortPresent;	
 				}
+			}
+			
+			if (myPlayer.isHasCollectedTreasure()) {
+				treasure = ETreasureState.NoOrUnknownTreasureState;
+			} else if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
+				treasure = ETreasureState.MyTreasureIsPresent;
 			}
 			
 			if (roundNo > 10) {

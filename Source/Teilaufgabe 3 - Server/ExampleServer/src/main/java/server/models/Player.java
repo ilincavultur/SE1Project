@@ -12,6 +12,7 @@ import MessagesBase.MessagesFromClient.PlayerRegistration;
 import server.controllers.GameStateController;
 import server.enums.MapFieldType;
 import server.enums.MoveCommand;
+import server.enums.TreasureState;
 import server.network.NetworkConverter;
 
 public class Player {
@@ -35,6 +36,7 @@ public class Player {
 		this.currPos = currPos;
 		this.showEnemyFort = false;
 		this.currentNoOfStepsToTake = 0;
+		this.hasCollectedTreasure = false;
 		
 		
 		
@@ -158,6 +160,12 @@ public class Player {
 			this.currPos = target;
 		}
 		
+	}
+	
+	public void updateTreasureStatus(GameData game) {
+		if (game.getFullMap().getFields().get(this.currPos).getTreasureState() == TreasureState.MYTREASURE) {
+			this.setHasCollectedTreasure(true);
+		}
 	}
 
 }

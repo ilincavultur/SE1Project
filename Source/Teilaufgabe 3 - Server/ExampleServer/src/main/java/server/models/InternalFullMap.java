@@ -63,10 +63,14 @@ public class InternalFullMap {
 		
 	}
 	
+	
+	
 	public void setupFullMap() {
 		pickDimensions();
 		
 		this.firstMap = pickFirstHalf();
+		
+		
 		
 	}
 	
