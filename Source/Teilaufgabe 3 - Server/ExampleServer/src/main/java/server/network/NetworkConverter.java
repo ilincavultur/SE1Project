@@ -88,7 +88,7 @@ public class NetworkConverter {
 				} 
 			}
 			
-			
+		
 			UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(UUID.randomUUID().toString());
 			boolean collectedTreasure = player.isHasCollectedTreasure();
 			return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
@@ -280,8 +280,11 @@ public class NetworkConverter {
 		Coordinates myFortPos = myPlayer.getHalfMap().getFortPos();
 		Coordinates enemyFortPos = enemyPlayer.getHalfMap().getFortPos();
 		Coordinates actualEnemyPosition = enemyPlayer.getCurrPos();
-		
-		logger.info("				 FIRST enemy pos rounds > 10 " + enemyPlayer.getCurrPos().getX() + " " + enemyPlayer.getCurrPos().getY());
+		Coordinates myTreasure = myPlayer.getTreasurePos();
+		Coordinates enemyTreasure = enemyPlayer.getTreasurePos();
+		logger.info("treasure pos " + myTreasure.getX() + " " + myTreasure.getY());
+		logger.info("enemy treasure pos " + enemyTreasure.getX() + " " + enemyTreasure.getY());
+		//logger.info("				 FIRST enemy pos rounds > 10 " + enemyPlayer.getCurrPos().getX() + " " + enemyPlayer.getCurrPos().getY());
 
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
 			//FullMapNode toReturn = new FullMapNode();
@@ -295,19 +298,40 @@ public class NetworkConverter {
 			EFortState fort = EFortState.NoOrUnknownFortState;
 			EPlayerPositionState playerPos = EPlayerPositionState.NoPlayerPresent;
 			
+			
 			if (myFortPos.equals(mapEntry.getKey())) {
 				fort = EFortState.MyFortPresent;
 			}
 			if (enemyFortPos.equals(mapEntry.getKey())) {
 				if (myPlayer.isShowEnemyFort()) {
+					logger.info("isshowenemyfort");
 					fort = EFortState.EnemyFortPresent;	
+				} else {
+					fort = EFortState.NoOrUnknownFortState;
 				}
 			}
 			
-			if (myPlayer.isHasCollectedTreasure()) {
+			if (myPlayer.isHasCollectedTreasure() || myPlayer.isShowTreasure() == false) {
 				treasure = ETreasureState.NoOrUnknownTreasureState;
-			} else if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE && myPlayer.isShowTreasure()) {
-				treasure = ETreasureState.MyTreasureIsPresent;
+			} //else if (mapEntry.getKey().equals(myTreasurePos)) {
+			else //if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
+				if (mapEntry.getKey().equals(myTreasure)) {
+					if (myPlayer.isShowTreasure()) {
+						logger.info("round " + game.getRoundNo());
+						/*if (myPlayer.getHalfMap().getTreasurePos() != null ) {
+							logger.info("treasure pos " + myPlayer.getHalfMap().getTreasurePos().getX() + " " + myPlayer.getHalfMap().getTreasurePos().getY());	
+						}*/
+						
+						logger.info("player "+ myPlayer.getPlayerId() + " show treasure on " + mapEntry.getKey().getX() + "  " + mapEntry.getKey().getY());
+						treasure = ETreasureState.MyTreasureIsPresent;	
+					} else {
+						treasure = ETreasureState.NoOrUnknownTreasureState;
+					}
+				//}
+				
+			
+				
+				//logger.info("my treasure present");
 			}
 			
 			if (roundNo > 10) {
@@ -317,10 +341,10 @@ public class NetworkConverter {
 					playerPos = EPlayerPositionState.BothPlayerPosition;	
 				} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
-					logger.info("my player pos rounds > 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+					//logger.info("my player pos rounds > 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
 				} else if (mapEntry.getKey().equals(actualEnemyPosition)) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;
-					logger.info("enemy pos rounds > 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+					//logger.info("enemy pos rounds > 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
 				}
 			
 			} else {
@@ -329,10 +353,10 @@ public class NetworkConverter {
 					playerPos = EPlayerPositionState.BothPlayerPosition;
 				} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
-					logger.info("my player pos rounds < 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+					//logger.info("my player pos rounds < 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
 				} else if (enemyPos.equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;	
-					logger.info("enemy pos rounds < 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+					//logger.info("enemy pos rounds < 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
 				}
 			}
 

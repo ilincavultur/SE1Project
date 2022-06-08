@@ -151,7 +151,7 @@ public class ServerEndpoints {
 		}*/
 		
 		if (gameStateController.bothPlayersRegistered(gameID) == false) {
-			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
+			//gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
 		}
 

@@ -2,8 +2,11 @@ package server.models;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import MessagesBase.MessagesFromClient.HalfMapNode;
+import server.enums.FortState;
+import server.enums.TreasureState;
 
 public class InternalHalfMap {
 
@@ -40,6 +43,15 @@ public class InternalHalfMap {
 		this.fortPos = fortPos;
 	}
 	
-	
+	public Coordinates getTreasurePos() {
+		for( Entry<Coordinates, MapNode> mapEntry : this.fields.entrySet() ) {
+			if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
+				return mapEntry.getKey();
+				
+			}
+		
+		}
+		return null;
+	}
 	
 }

@@ -58,6 +58,18 @@ public class Coordinates {
 		return null;
 		
 	}
+	
+	public Coordinates getNorthWestNeighbour(Map<Coordinates, MapNode> fields) {
+		
+		Coordinates neighbour = new Coordinates(this.X-1, this.Y-1);
+		
+		if (fields.containsKey(neighbour)) {
+			return neighbour;
+		}
+				
+		return null;
+		
+	}
 
 	public Coordinates getDownNeighbour(Map<Coordinates, MapNode> fields) {
 		
@@ -71,9 +83,45 @@ public class Coordinates {
 		
 	}
 	
+	public Coordinates getNorthEastNeighbour(Map<Coordinates, MapNode> fields) {
+		
+		Coordinates neighbour = new Coordinates(this.X+1, this.Y-1);
+		
+		if (fields.containsKey(neighbour)) {
+			return neighbour;
+		}
+				
+		return null;
+		
+	}
+	
 	public Coordinates getLeftNeighbour(Map<Coordinates, MapNode> fields) {
 		
 		Coordinates neighbour = new Coordinates(this.X-1, this.Y);
+		
+		if (fields.containsKey(neighbour)) {
+			return neighbour;
+		}
+				
+		return null;
+		
+	}
+	
+	public Coordinates getSouthEastNeighbour(Map<Coordinates, MapNode> fields) {
+		
+		Coordinates neighbour = new Coordinates(this.X+1, this.Y+1);
+		
+		if (fields.containsKey(neighbour)) {
+			return neighbour;
+		}
+				
+		return null;
+		
+	}
+	
+	public Coordinates getSouthWestNeighbour(Map<Coordinates, MapNode> fields) {
+		
+		Coordinates neighbour = new Coordinates(this.X-1, this.Y+1);
 		
 		if (fields.containsKey(neighbour)) {
 			return neighbour;

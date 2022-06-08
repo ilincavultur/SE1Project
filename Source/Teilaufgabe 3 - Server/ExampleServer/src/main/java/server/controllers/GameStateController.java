@@ -243,6 +243,9 @@ public class GameStateController {
 		game.getFullMap().assembleFullMap(game, game.getPlayers(), game.getPlayers().get(0).getHalfMap(), game.getPlayers().get(1).getHalfMap());
 		this.games.get(gameID.getUniqueGameID()).setFullMap(game.getFullMap());
 		
+		//game.getPlayers().get(0).setTreasurePos(game.getPlayers().get(0).getHalfMap().getTreasurePos());
+		//game.getPlayers().get(1).setTreasurePos(game.getPlayers().get(1).getHalfMap().getTreasurePos());
+		
 	}
 	
 	private int getMoves(MapNode field) {
@@ -345,9 +348,14 @@ public class GameStateController {
 		
 		Player player = game.getPlayerWithId(move.getUniquePlayerID());
 		player.processMove(game, gameID, move, networkConverter);
+		//logger.info("player " + player.getPlayerId() + " has " + player.noOfMyTreasures() + " my treasures");
 		player.updateTreasureStatus(game);
+		player.updateEnemyFortStatus(game);
 		
-		logger.info("curr pos " + player.getCurrPos().getX() + " " +  player.getCurrPos().getY());
+		player.updateMountainViewStatus(game);
+		
+		
+		//logger.info("curr pos " + player.getCurrPos().getX() + " " +  player.getCurrPos().getY());
 		
 		
 		
