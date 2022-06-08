@@ -170,9 +170,7 @@ public class GameStateController {
 	}
 	
 	public Coordinates placeTreasure(InternalHalfMap halfMap) {
-		
-		//GameData game = this.games.get(gameId);
-		//Player player = game.getPlayerWithId(playerId);
+	
 		Map<Coordinates, MapNode> fields = halfMap.getFields();
 		
 		Random randomNo = new Random();
@@ -193,7 +191,6 @@ public class GameStateController {
 		
 	}
 	
-	// validate done in servernedpoints
 	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
 		List<Player> players = this.games.get(gameId).getPlayers();
 		for (Player player: players) {
@@ -239,13 +236,11 @@ public class GameStateController {
 	}
 	
 	public void assembleHalfMaps(UniqueGameIdentifier gameID) {
+		
 		GameData game = this.games.get(gameID.getUniqueGameID());
 		game.getFullMap().assembleFullMap(game, game.getPlayers(), game.getPlayers().get(0).getHalfMap(), game.getPlayers().get(1).getHalfMap());
 		this.games.get(gameID.getUniqueGameID()).setFullMap(game.getFullMap());
-		
-		//game.getPlayers().get(0).setTreasurePos(game.getPlayers().get(0).getHalfMap().getTreasurePos());
-		//game.getPlayers().get(1).setTreasurePos(game.getPlayers().get(1).getHalfMap().getTreasurePos());
-		
+
 	}
 	
 	private int getMoves(MapNode field) {
@@ -254,43 +249,6 @@ public class GameStateController {
 		} 
 		return 1;
 	}
-	
-	private int getPathWeight(Player player, GameData game, Coordinates currentField, Coordinates nextField) {
-
-		int firstFieldMoves = this.getMoves(game.getFullMap().getFields().get(currentField)); 
-		int secondFieldMoves = this.getMoves(game.getFullMap().getFields().get(nextField)); 
- 		
-		return firstFieldMoves + secondFieldMoves;
-		
-	}
-	
-	private Coordinates getTargetCoordinatesFromMove(GameData game, Coordinates pos, PlayerMove move) {
-		Coordinates toRet = new Coordinates();
-		Map<Coordinates, MapNode> fields = game.getFullMap().getFields();
-		
-		if (move.getMove() == EMove.Up) {
-			Coordinates dir = pos.getUpNeighbour(fields);
-			return dir;
-		}
-		
-		if (move.getMove() == EMove.Down) {
-			Coordinates dir = pos.getDownNeighbour(fields);
-			return dir;
-		}
-		
-		if (move.getMove() == EMove.Left) {
-			Coordinates dir = pos.getLeftNeighbour(fields);
-			return dir;
-		}
-		
-		if (move.getMove() == EMove.Right) {
-			Coordinates dir = pos.getRightNeighbour(fields);
-			return dir;
-		}
-		
-		return toRet;
-	}
-	
 	
 	public GameState requestGameState(UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID, NetworkConverter networkConverter) {
 		
@@ -339,25 +297,17 @@ public class GameStateController {
 		
 		return new GameState(map, players, game.getGameStateId());
 	}
-	
-	
-	
-	//validate done in servernedpoints
+
 	public void receiveMove(UniqueGameIdentifier gameID, PlayerMove move, NetworkConverter networkConverter) {
 		GameData game = this.games.get(gameID.getUniqueGameID());
 		
 		Player player = game.getPlayerWithId(move.getUniquePlayerID());
+		
 		player.processMove(game, gameID, move, networkConverter);
-		//logger.info("player " + player.getPlayerId() + " has " + player.noOfMyTreasures() + " my treasures");
+		
 		player.updateTreasureStatus(game);
 		player.updateEnemyFortStatus(game);
-		
 		player.updateMountainViewStatus(game);
-		
-		
-		//logger.info("curr pos " + player.getCurrPos().getX() + " " +  player.getCurrPos().getY());
-		
-		
-		
+
 	}
 }

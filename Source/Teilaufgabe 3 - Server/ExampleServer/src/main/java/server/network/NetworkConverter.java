@@ -277,13 +277,11 @@ public class NetworkConverter {
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
 
 		Coordinates enemyPos = getRandomEnemyPos(myMap);
-		//Coordinates myFortPos = myPlayer.getHalfMap().getFortPos();
-		//Coordinates enemyFortPos = enemyPlayer.getHalfMap().getFortPos();
 		Coordinates myFortPos = myPlayer.getFortPos();
 		Coordinates enemyFortPos = enemyPlayer.getFortPos();
 		Coordinates actualEnemyPosition = enemyPlayer.getCurrPos();
 		Coordinates myTreasure = myPlayer.getTreasurePos();
-		Coordinates enemyTreasure = enemyPlayer.getTreasurePos();
+		//Coordinates enemyTreasure = enemyPlayer.getTreasurePos();
 		logger.info("enemy fort pos should be:  " + enemyFortPos.getX() + "  " + enemyFortPos.getY());
 		//logger.info("treasure pos " + myTreasure.getX() + " " + myTreasure.getY());
 		//logger.info("enemy treasure pos " + enemyTreasure.getX() + " " + enemyTreasure.getY());
