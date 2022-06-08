@@ -144,11 +144,11 @@ public class ServerEndpoints {
 			throw e;
 		}
 		
-		/*try {
+		try {
 			rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));	
 		} catch (NotEnoughPlayersException e) {
 			throw e;
-		}*/
+		}
 		
 		if (gameStateController.bothPlayersRegistered(gameID) == false) {
 			//gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());

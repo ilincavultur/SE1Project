@@ -213,6 +213,10 @@ public class Player {
 		if (this.currPos.equals(enemyFortPos)) {
 			this.setShowEnemyFort(true);
 		}
+		
+		if (this.currPos.equals(enemyFortPos) && this.isHasCollectedTreasure()) {
+			game.setWinner(enemy.getPlayerId());
+		}
 	}
 	
 	public Map<String, Coordinates> getFieldsAroundMountain(Coordinates mountainPos, Map<Coordinates, MapNode> fields) {
