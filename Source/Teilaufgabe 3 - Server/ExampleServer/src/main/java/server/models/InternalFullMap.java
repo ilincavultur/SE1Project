@@ -75,62 +75,55 @@ public class InternalFullMap {
 		
 	}
 	
-	// if flag is true => transform position
-	/*public void setTreasure(Player player, InternalHalfMap halfMap) {
-		for( Map.Entry<Coordinates, MapNode> mapEntry : halfMap.getFields().entrySet() ) {
-			if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
-				if (!mapEntry.getKey().equals(secondPlayer.getTreasurePos())) {
-					// 
-					player.setTreasurePos(mapEntry.getKey());
-				}
-			}
-		}	
-	
-		
-	}*/
-	
 	public void assembleFullMap(GameData game, List<Player> players, InternalHalfMap halfMap1, InternalHalfMap halfMap2) {
 		
 		if (this.firstMap.equals("first")) {
 			fields.putAll(halfMap1.getFields());
-			logger.info("first");
-			
+			//logger.info("first");
+			players.get(0).setFortPos(halfMap1.getFortPos());
 			players.get(0).setTreasurePos(halfMap1.getTreasurePos());
 			
-			logger.info("first players pos : " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
-			//this.setTreasure(players.get(0), players.get(1), halfMap1, false);
+			//logger.info("first players pos : " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
 			
-			logger.info("second players pos before : " + players.get(1).getHalfMap().getTreasurePos().getX() + " " + players.get(1).getHalfMap().getTreasurePos().getY());
+			//logger.info("second players pos before : " + players.get(1).getHalfMap().getTreasurePos().getX() + " " + players.get(1).getHalfMap().getTreasurePos().getY());
+			/*logger.info("first players fort pos : " + players.get(0).getFortPos().getX() + " " + players.get(0).getFortPos().getY());
 			
+			logger.info("second players fort pos before : " + players.get(1).getHalfMap().getFortPos().getX() + " " + players.get(1).getHalfMap().getFortPos().getY());
+			*/
 			transformCoordinates(players.get(1), halfMap2);
 			
-			logger.info("second players pos AFTER: " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
-			//this.setTreasure(players.get(1), halfMap2);
+			//logger.info("second players pos AFTER: " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
+			//logger.info("second players fort pos AFTER: " + players.get(1).getFortPos().getX() + " " + players.get(1).getFortPos().getY());
+			
 			
 			if (game.isChanged() == false) {
 				game.setChanged(true);
-				//logger.info("must appear once game" + game.getGameId());
+				
 				players.get(0).setCurrPos(halfMap1.getFortPos());
 				players.get(1).setCurrPos(halfMap2.getFortPos());
 			}
 			
 		} else {
 			fields.putAll(halfMap2.getFields());
-			logger.info("second");
+			//logger.info("second");
 			
+			players.get(1).setFortPos(halfMap2.getFortPos());
 			players.get(1).setTreasurePos(halfMap2.getTreasurePos());
 			
-			logger.info("first players pos : " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
-			//this.setTreasure(players.get(1), players.get(0), halfMap1, false);
+			//logger.info("first players pos : " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
 			
-			logger.info("second players pos before : " + players.get(0).getHalfMap().getTreasurePos().getX() + " " + players.get(0).getHalfMap().getTreasurePos().getY());
+			//logger.info("second players pos before : " + players.get(0).getHalfMap().getTreasurePos().getX() + " " + players.get(0).getHalfMap().getTreasurePos().getY());
+			/*logger.info("first players fort pos : " + players.get(1).getFortPos().getX() + " " + players.get(1).getFortPos().getY());
+			
+			logger.info("second players fort pos before : " + players.get(0).getHalfMap().getFortPos().getX() + " " + players.get(0).getHalfMap().getFortPos().getY());*/
 			transformCoordinates(players.get(0), halfMap1);
-			//this.setTreasure(players.get(1), players.get(0), halfMap2, true);
 			
-			logger.info("second players pos AFTER: " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
+			
+			//logger.info("second players pos AFTER: " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
+			//logger.info("second players fort pos AFTER: " + players.get(0).getFortPos().getX() + " " + players.get(0).getFortPos().getY());
 			if (game.isChanged() == false) {
 				game.setChanged(true);
-				//logger.info("must appear once game" + game.getGameId());
+				
 				players.get(0).setCurrPos(halfMap1.getFortPos());
 				players.get(1).setCurrPos(halfMap2.getFortPos());
 			} 
@@ -183,7 +176,7 @@ public class InternalFullMap {
 					
 					halfMap.setFortPos(newPos);
 					
-					
+					player.setFortPos(newPos);
 				}
 				
 				
@@ -209,6 +202,8 @@ public class InternalFullMap {
 				if (mapEntry.getKey().equals(oldFortPos)) {
 					
 					halfMap.setFortPos(newPos);
+					
+					player.setFortPos(newPos);
 					
 				}
 				

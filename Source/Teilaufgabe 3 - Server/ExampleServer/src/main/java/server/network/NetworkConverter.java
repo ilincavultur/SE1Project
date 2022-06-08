@@ -277,13 +277,16 @@ public class NetworkConverter {
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
 
 		Coordinates enemyPos = getRandomEnemyPos(myMap);
-		Coordinates myFortPos = myPlayer.getHalfMap().getFortPos();
-		Coordinates enemyFortPos = enemyPlayer.getHalfMap().getFortPos();
+		//Coordinates myFortPos = myPlayer.getHalfMap().getFortPos();
+		//Coordinates enemyFortPos = enemyPlayer.getHalfMap().getFortPos();
+		Coordinates myFortPos = myPlayer.getFortPos();
+		Coordinates enemyFortPos = enemyPlayer.getFortPos();
 		Coordinates actualEnemyPosition = enemyPlayer.getCurrPos();
 		Coordinates myTreasure = myPlayer.getTreasurePos();
 		Coordinates enemyTreasure = enemyPlayer.getTreasurePos();
-		logger.info("treasure pos " + myTreasure.getX() + " " + myTreasure.getY());
-		logger.info("enemy treasure pos " + enemyTreasure.getX() + " " + enemyTreasure.getY());
+		logger.info("enemy fort pos should be:  " + enemyFortPos.getX() + "  " + enemyFortPos.getY());
+		//logger.info("treasure pos " + myTreasure.getX() + " " + myTreasure.getY());
+		//logger.info("enemy treasure pos " + enemyTreasure.getX() + " " + enemyTreasure.getY());
 		//logger.info("				 FIRST enemy pos rounds > 10 " + enemyPlayer.getCurrPos().getX() + " " + enemyPlayer.getCurrPos().getY());
 
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
@@ -298,13 +301,15 @@ public class NetworkConverter {
 			EFortState fort = EFortState.NoOrUnknownFortState;
 			EPlayerPositionState playerPos = EPlayerPositionState.NoPlayerPresent;
 			
-			
-			if (myFortPos.equals(mapEntry.getKey())) {
+			//myFortPos.equals(mapEntry.getKey())
+			if (mapEntry.getKey().equals(myFortPos)) {
 				fort = EFortState.MyFortPresent;
-			}
-			if (enemyFortPos.equals(mapEntry.getKey())) {
-				if (myPlayer.isShowEnemyFort()) {
+			} //else if (enemyFortPos.equals(mapEntry.getKey())) {
+			if (mapEntry.getKey().equals(enemyFortPos)) {
+				if (myPlayer.isShowEnemyFort() == true) {
 					logger.info("isshowenemyfort");
+				
+					logger.info("player "+ myPlayer.getPlayerId() + " show fort on " + mapEntry.getKey().getX() + "  " + mapEntry.getKey().getY());
 					fort = EFortState.EnemyFortPresent;	
 				} else {
 					fort = EFortState.NoOrUnknownFortState;
@@ -316,13 +321,13 @@ public class NetworkConverter {
 			} //else if (mapEntry.getKey().equals(myTreasurePos)) {
 			else //if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
 				if (mapEntry.getKey().equals(myTreasure)) {
-					if (myPlayer.isShowTreasure()) {
-						logger.info("round " + game.getRoundNo());
+					if (myPlayer.isShowTreasure() == true) {
+						//logger.info("round " + game.getRoundNo());
 						/*if (myPlayer.getHalfMap().getTreasurePos() != null ) {
 							logger.info("treasure pos " + myPlayer.getHalfMap().getTreasurePos().getX() + " " + myPlayer.getHalfMap().getTreasurePos().getY());	
 						}*/
 						
-						logger.info("player "+ myPlayer.getPlayerId() + " show treasure on " + mapEntry.getKey().getX() + "  " + mapEntry.getKey().getY());
+						//logger.info("player "+ myPlayer.getPlayerId() + " show treasure on " + mapEntry.getKey().getX() + "  " + mapEntry.getKey().getY());
 						treasure = ETreasureState.MyTreasureIsPresent;	
 					} else {
 						treasure = ETreasureState.NoOrUnknownTreasureState;

@@ -30,6 +30,7 @@ public class Player {
 	private MoveCommand currentDirection;
 	private int currentNoOfStepsToTake;
 	private Coordinates treasurePos;
+	private Coordinates fortPos;
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(Player.class);
@@ -44,7 +45,7 @@ public class Player {
 		this.hasCollectedTreasure = false;
 		this.showTreasure = false;
 		this.treasurePos = new Coordinates(0,0);
-		
+		this.fortPos = new Coordinates(0,0);
 	}
 	public String getPlayerId() {
 		return playerId;
@@ -76,6 +77,7 @@ public class Player {
 	public void setPlayerReg(PlayerRegistration playerReg) {
 		this.playerReg = playerReg;
 	}
+
 	public boolean isShowEnemyFort() {
 		return showEnemyFort;
 	}
@@ -100,6 +102,12 @@ public class Player {
 	}
 
 	
+	public Coordinates getFortPos() {
+		return fortPos;
+	}
+	public void setFortPos(Coordinates fortPos) {
+		this.fortPos = fortPos;
+	}
 	public Coordinates getTreasurePos() {
 		return treasurePos;
 	}
@@ -195,7 +203,14 @@ public class Player {
 	}
 	
 	public void updateEnemyFortStatus(GameData game) {
-		if (game.getFullMap().getFields().get(this.currPos).getFortState() == FortState.ENEMYFORT) {
+		if (game.getFullMap().getFields().get(this.currPos).getFieldType() != MapFieldType.MOUNTAIN) {
+			this.setShowEnemyFort(false);
+		}
+		
+		Player enemy = game.getTheOtherPlayer(this.getPlayerId());
+		Coordinates enemyFortPos = enemy.getFortPos();
+		
+		if (this.currPos.equals(enemyFortPos)) {
 			this.setShowEnemyFort(true);
 		}
 	}
@@ -265,10 +280,10 @@ public class Player {
 		for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 			if (mapEntry.getValue().equals(myTreasurePos)) {
 			//if (fields.get(mapEntry.getValue()).getTreasureState() == TreasureState.MYTREASURE) {
-				logger.info("treasure field " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
+				//logger.info("treasure field " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
 				return true;
 			} else {
-				logger.info("field around " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
+				//logger.info("field around " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
 			}
 		}
 		
@@ -276,14 +291,19 @@ public class Player {
 		
 	}
 	
-	public boolean checkFortsAroundMountain(Coordinates mountainPos, Map<Coordinates, MapNode> fields) {
-	
+	public boolean checkFortsAroundMountain(Coordinates enemyFortPos, Coordinates mountainPos, Map<Coordinates, MapNode> fields) {
+		logger.info("current mountainPos " + mountainPos.getX() + " " + mountainPos.getY());
+		
+		
 		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPos, fields);
 		
 		for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
-			if (fields.get(mapEntry.getValue()).getFortState() == FortState.ENEMYFORT) {
-				logger.info("field around fort " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
+			//if (fields.get(mapEntry.getValue()).getFortState() == FortState.ENEMYFORT) {
+			if (mapEntry.getValue().equals(enemyFortPos)) {
+				logger.info("fort field " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
 				return true;
+			} else {
+				logger.info("field around " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
 			}
 		
 		}
@@ -292,6 +312,9 @@ public class Player {
 	
 	public void updateMountainViewStatus(GameData game) {
 		Coordinates myTreasurePos = this.getTreasurePos();
+		Player enemy = game.getTheOtherPlayer(this.getPlayerId());
+		Coordinates enemyFortPos = enemy.getFortPos();
+		logger.info("enemy fort pos should be:  " + enemyFortPos.getX() + "  " + enemyFortPos.getY());
 		
 		if (game.getFullMap().getFields().get(this.currPos).getFieldType() == MapFieldType.MOUNTAIN) {
 			if (this.isHasCollectedTreasure() == false) {
@@ -303,10 +326,12 @@ public class Player {
 				}
 			}
 			if (this.isShowEnemyFort() == false) {
-				if (checkFortsAroundMountain(this.currPos, game.getFullMap().getFields())) {
+				if (checkFortsAroundMountain(enemyFortPos, this.currPos, game.getFullMap().getFields())) {
 					logger.info("found a fort around mountain!" + this.currPos.getX() + "  " + this.currPos.getY());
 					this.setShowEnemyFort(true);	
 					
+				} else {
+					this.setShowEnemyFort(false);
 				}
 			}
 			
