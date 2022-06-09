@@ -1,5 +1,6 @@
 package server.network;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -41,6 +42,7 @@ import server.models.InternalFullMap;
 public class NetworkConverter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(NetworkConverter.class);
+	private int no = 0;
 
 	public InternalHalfMap convertHalfMapFrom(HalfMap halfMap) {
 		
@@ -122,14 +124,10 @@ public class NetworkConverter {
 		MapNode toReturn = new MapNode();
 		
 		toReturn.setFieldType(convertTerrainTypeFrom(node.getTerrain()));
-		
-		//toReturn.setPlayerPositionState(convertPlayerPositionStateFrom(node.ge));
-		
+	
 		Coordinates pos = new Coordinates(node.getX(), node.getY());
 		toReturn.setPosition(pos);
-		//toReturn.setTreasureState(convertTreasureStateFrom(node.getTreasureState()));
-		
-		
+	
 		return toReturn;
 		
 	}
@@ -233,13 +231,9 @@ public class NetworkConverter {
 		FullMapNode toReturn = new FullMapNode();
 		
 		ETerrain fieldType = convertTerrainTypeTo(node.getFieldType());
-		//toReturn.setPlayerPositionState(convertPlayerPositionStateFrom(node.ge));
-		
+
 		Coordinates pos = node.getPosition();
-		
-		//toReturn.setTreasureState(convertTreasureStateFrom(node.getTreasureState()));
-		
-		
+
 		return toReturn;
 		
 	}
@@ -265,8 +259,21 @@ public class NetworkConverter {
 		return toRet;
 	}
 	
+	public void showCastles (Collection<FullMapNode> mapNodes) {
+		for (FullMapNode node : mapNodes) {
+			if (node.getFortState() == EFortState.EnemyFortPresent) {
+				logger.info("enemy fort on : " + node.getX() + " " + node.getY());
+			}
+			if (node.getFortState() == EFortState.MyFortPresent) {
+				logger.info("my fort on : " + node.getX() + " " + node.getY());
+			}
+		}
+	}
+	
 	// server full map to network fullmap
 	public Optional<FullMap> convertServerFullMapTo(UniquePlayerIdentifier playerID, GameData game) {
+		no = 0;
+		
 		int roundNo = game.getRoundNo();
 		
 		InternalFullMap myMap = game.getFullMap();
@@ -281,60 +288,77 @@ public class NetworkConverter {
 		Coordinates enemyFortPos = enemyPlayer.getFortPos();
 		Coordinates actualEnemyPosition = enemyPlayer.getCurrPos();
 		Coordinates myTreasure = myPlayer.getTreasurePos();
-		//Coordinates enemyTreasure = enemyPlayer.getTreasurePos();
-		logger.info("enemy fort pos should be:  " + enemyFortPos.getX() + "  " + enemyFortPos.getY());
-		//logger.info("treasure pos " + myTreasure.getX() + " " + myTreasure.getY());
-		//logger.info("enemy treasure pos " + enemyTreasure.getX() + " " + enemyTreasure.getY());
-		//logger.info("				 FIRST enemy pos rounds > 10 " + enemyPlayer.getCurrPos().getX() + " " + enemyPlayer.getCurrPos().getY());
+	
+		//logger.info("enemy fort pos should be:  " + enemyFortPos.getX() + "  " + enemyFortPos.getY());
 
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
-			//FullMapNode toReturn = new FullMapNode();
-			
+		
 			ETerrain fieldType = convertTerrainTypeTo(mapEntry.getValue().getFieldType());
-			//toReturn.setPlayerPositionState(convertPlayerPositionStateFrom(node.ge));
-			
+		
 			Coordinates pos = mapEntry.getKey();
-			//de aici lucreaza
+			
 			ETreasureState treasure = ETreasureState.NoOrUnknownTreasureState;
 			EFortState fort = EFortState.NoOrUnknownFortState;
 			EPlayerPositionState playerPos = EPlayerPositionState.NoPlayerPresent;
 			
-			//myFortPos.equals(mapEntry.getKey())
 			if (mapEntry.getKey().equals(myFortPos)) {
 				fort = EFortState.MyFortPresent;
-			} //else if (enemyFortPos.equals(mapEntry.getKey())) {
+			}
+			
+			
 			if (mapEntry.getKey().equals(enemyFortPos)) {
-				if (myPlayer.isShowEnemyFort() == true) {
-					logger.info("isshowenemyfort");
+				if (myPlayer.isShowEnemyFort()) {
+					
+					logger.info("show enemy fort true for pl " + myPlayer.getPlayerId());	
+					
+				//if (myPlayer.getFieldsAroundMountain(pos, myMap.getFields()).containsValue(enemyFortPos) || mapEntry.getValue().getPosition().equals(enemyFortPos)) {
+					fort = EFortState.EnemyFortPresent;
+				//}
+					
+				}
+			} 
+			
 				
-					logger.info("player "+ myPlayer.getPlayerId() + " show fort on " + mapEntry.getKey().getX() + "  " + mapEntry.getKey().getY());
+			
+			
+			/*
+			 if (myPlayer.isShowEnemyFort()) {
+				if (mapEntry.getKey().equals(enemyFortPos)) {
+					fort = EFortState.EnemyFortPresent;
+				} else if (mapEntry.getKey().equals(myFortPos)) {
+					fort = EFortState.MyFortPresent;
+				}
+			} else {
+				if (mapEntry.getKey().equals(myFortPos)) {
+					fort = EFortState.MyFortPresent;
+				}
+			}
+			 */
+			
+			/*if (mapEntry.getKey().equals(myFortPos)) {
+				//logger.info("showing my player "+ myPlayer.getPlayerId() +" s fort field " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+				
+				fort = EFortState.MyFortPresent;
+			} else if (mapEntry.getKey().equals(enemyFortPos)) {
+				
+				if (myPlayer.isShowEnemyFort() == true) {
+					//logger.info("isshowenemyfort");
+					//logger.info("showing player "+ myPlayer.getPlayerId() + " s enemy fort");
+					//logger.info("enemy player "+ enemyPlayer.getPlayerId() + " show fort on " + mapEntry.getKey().getX() + "  " + mapEntry.getKey().getY());
 					fort = EFortState.EnemyFortPresent;	
 				} else {
 					fort = EFortState.NoOrUnknownFortState;
 				}
-			}
+			}*/
 			
 			if (myPlayer.isHasCollectedTreasure() || myPlayer.isShowTreasure() == false) {
 				treasure = ETreasureState.NoOrUnknownTreasureState;
-			} //else if (mapEntry.getKey().equals(myTreasurePos)) {
-			else //if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
-				if (mapEntry.getKey().equals(myTreasure)) {
+			} else if (mapEntry.getKey().equals(myTreasure)) {
 					if (myPlayer.isShowTreasure() == true) {
-						//logger.info("round " + game.getRoundNo());
-						/*if (myPlayer.getHalfMap().getTreasurePos() != null ) {
-							logger.info("treasure pos " + myPlayer.getHalfMap().getTreasurePos().getX() + " " + myPlayer.getHalfMap().getTreasurePos().getY());	
-						}*/
-						
-						//logger.info("player "+ myPlayer.getPlayerId() + " show treasure on " + mapEntry.getKey().getX() + "  " + mapEntry.getKey().getY());
 						treasure = ETreasureState.MyTreasureIsPresent;	
 					} else {
 						treasure = ETreasureState.NoOrUnknownTreasureState;
 					}
-				//}
-				
-			
-				
-				//logger.info("my treasure present");
 			}
 			
 			if (roundNo > 10) {
@@ -344,10 +368,10 @@ public class NetworkConverter {
 					playerPos = EPlayerPositionState.BothPlayerPosition;	
 				} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
-					//logger.info("my player pos rounds > 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+					
 				} else if (mapEntry.getKey().equals(actualEnemyPosition)) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;
-					//logger.info("enemy pos rounds > 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+					
 				}
 			
 			} else {
@@ -356,19 +380,37 @@ public class NetworkConverter {
 					playerPos = EPlayerPositionState.BothPlayerPosition;
 				} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
-					//logger.info("my player pos rounds < 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+					
 				} else if (enemyPos.equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;	
-					//logger.info("enemy pos rounds < 10 " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
+					
 				}
 			}
 
+			
+			if (fort == EFortState.MyFortPresent || fort == EFortState.EnemyFortPresent) {
+				no += 1;
+				//logger.info("player : " + playerID.getUniquePlayerID());
+				//logger.info(fort.toString() + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());	
+			}/*
+			if (fort == EFortState.EnemyFortPresent) {
+				logger.info("player : " + playerID.getUniquePlayerID());
+				logger.info(fort.toString() + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());	
+			}*/
+			
 			FullMapNode fullMapNode = new FullMapNode(fieldType, playerPos, treasure, fort, pos.getX(), pos.getY());
 			mapNodes.add(fullMapNode);
 			
 			
 		}
-	
+		logger.info("-------------------------------------------------------------");
+		
+		logger.info("player : " + playerID.getUniquePlayerID() + " has " + no + " nodes with castles on the map");
+		
+		showCastles(mapNodes);
+		
+		logger.info("-------------------------------------------------------------");
+		
 		toRet = new FullMap(mapNodes);
 		return Optional.of(toRet);
 		

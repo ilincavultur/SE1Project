@@ -36,11 +36,9 @@ public class InternalFullMap {
 	public void setFields(Map<Coordinates, MapNode> fields) {
 		this.fields = fields;
 	}
-	
-	
-
 
 	public void pickDimensions() {
+		
 		Random randomNo = new Random();
 		int no = randomNo.nextInt(2);
 		if (no == 0) {
@@ -55,6 +53,7 @@ public class InternalFullMap {
 	
 	// choose which half Map is the first one
 	public String pickFirstHalf() {
+		
 		Random randomNo = new Random();
 		int no = randomNo.nextInt(2);
 		if (no == 0) {
@@ -63,38 +62,25 @@ public class InternalFullMap {
 		return "second";
 		
 	}
-	
-	
-	
+
 	public void setupFullMap() {
+		
 		pickDimensions();
 		
 		this.firstMap = pickFirstHalf();
-		
-		
-		
+	
 	}
 	
 	public void assembleFullMap(GameData game, List<Player> players, InternalHalfMap halfMap1, InternalHalfMap halfMap2) {
 		
 		if (this.firstMap.equals("first")) {
+			
 			fields.putAll(halfMap1.getFields());
-			//logger.info("first");
+		
 			players.get(0).setFortPos(halfMap1.getFortPos());
 			players.get(0).setTreasurePos(halfMap1.getTreasurePos());
-			
-			//logger.info("first players pos : " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
-			
-			//logger.info("second players pos before : " + players.get(1).getHalfMap().getTreasurePos().getX() + " " + players.get(1).getHalfMap().getTreasurePos().getY());
-			/*logger.info("first players fort pos : " + players.get(0).getFortPos().getX() + " " + players.get(0).getFortPos().getY());
-			
-			logger.info("second players fort pos before : " + players.get(1).getHalfMap().getFortPos().getX() + " " + players.get(1).getHalfMap().getFortPos().getY());
-			*/
+		
 			transformCoordinates(players.get(1), halfMap2);
-			
-			//logger.info("second players pos AFTER: " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
-			//logger.info("second players fort pos AFTER: " + players.get(1).getFortPos().getX() + " " + players.get(1).getFortPos().getY());
-			
 			
 			if (game.isChanged() == false) {
 				game.setChanged(true);
@@ -104,31 +90,21 @@ public class InternalFullMap {
 			}
 			
 		} else {
-			fields.putAll(halfMap2.getFields());
-			//logger.info("second");
 			
+			fields.putAll(halfMap2.getFields());
+	
 			players.get(1).setFortPos(halfMap2.getFortPos());
 			players.get(1).setTreasurePos(halfMap2.getTreasurePos());
 			
-			//logger.info("first players pos : " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
-			
-			//logger.info("second players pos before : " + players.get(0).getHalfMap().getTreasurePos().getX() + " " + players.get(0).getHalfMap().getTreasurePos().getY());
-			/*logger.info("first players fort pos : " + players.get(1).getFortPos().getX() + " " + players.get(1).getFortPos().getY());
-			
-			logger.info("second players fort pos before : " + players.get(0).getHalfMap().getFortPos().getX() + " " + players.get(0).getHalfMap().getFortPos().getY());*/
 			transformCoordinates(players.get(0), halfMap1);
-			
-			
-			//logger.info("second players pos AFTER: " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
-			//logger.info("second players fort pos AFTER: " + players.get(0).getFortPos().getX() + " " + players.get(0).getFortPos().getY());
+
 			if (game.isChanged() == false) {
 				game.setChanged(true);
 				
 				players.get(0).setCurrPos(halfMap1.getFortPos());
 				players.get(1).setCurrPos(halfMap2.getFortPos());
 			} 
-			
-
+	
 		}
 		
 	}
@@ -178,9 +154,7 @@ public class InternalFullMap {
 					
 					player.setFortPos(newPos);
 				}
-				
-				
-				
+					
 				fields.put(newPos, mapEntry.getValue());
 			}
 		} else if (this.xSize == 16) {
@@ -206,48 +180,10 @@ public class InternalFullMap {
 					player.setFortPos(newPos);
 					
 				}
-				
-				
-				
+					
 				fields.put(newPos, mapEntry.getValue());
 			}
 		}
 	}
-	
-	private void printMapField(MapNode myMapField) {
-		
-		System.out.print(myMapField.getPosition().getX());
-		System.out.print(myMapField.getPosition().getY());
-
-		if(myMapField.getFieldType() == MapFieldType.GRASS) {
-			System.out.print("G    ");
-		}
-		if(myMapField.getFieldType() == MapFieldType.MOUNTAIN) {
-			System.out.print("M    ");			
-		}
-		if(myMapField.getFieldType() == MapFieldType.WATER) {
-			System.out.print("W    ");
-		}
-		
-	}
- 	
-	public void printMap() {
-		
-
-		for (int y = 0; y < this.ySize; y++) {
-		
-			for(int x =0; x < this.xSize; x++) {
-				Coordinates pos = new Coordinates(x, y);
-				printMapField(fields.get(pos));
-
-				
-			}
-		
-				System.out.println("\n");
-		
-			
-		}
-	}
-	
 	
 }

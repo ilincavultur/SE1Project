@@ -242,14 +242,7 @@ public class GameStateController {
 		this.games.get(gameID.getUniqueGameID()).setFullMap(game.getFullMap());
 
 	}
-	
-	private int getMoves(MapNode field) {
-		if (field.getFieldType() == MapFieldType.MOUNTAIN) {
-			return 2;
-		} 
-		return 1;
-	}
-	
+
 	public GameState requestGameState(UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID, NetworkConverter networkConverter) {
 		
 		GameData game = this.games.get(gameID.getUniqueGameID());

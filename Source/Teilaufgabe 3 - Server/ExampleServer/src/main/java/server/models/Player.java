@@ -192,23 +192,23 @@ public class Player {
 		//if (game.getFullMap().getFields().get(this.currPos).getTreasureState() == TreasureState.MYTREASURE) {
 			this.setHasCollectedTreasure(true);
 			this.setShowTreasure(false);
-		} 
-		 
-		 
+		} 	 
 	}
 	
 	public void updateEnemyFortStatus(GameData game) {
 		
-		if (game.getFullMap().getFields().get(this.currPos).getFieldType() != MapFieldType.MOUNTAIN) {
+		/*if (game.getFullMap().getFields().get(this.currPos).getFieldType() != MapFieldType.MOUNTAIN) {
 			this.setShowEnemyFort(false);
-		}
+		}*/
 		
 		Player enemy = game.getTheOtherPlayer(this.getPlayerId());
 		Coordinates enemyFortPos = enemy.getFortPos();
 		
 		if (this.currPos.equals(enemyFortPos)) {
 			this.setShowEnemyFort(true);
-		}
+		} /*else {
+			this.setShowEnemyFort(false);
+		}*/
 		
 		if (this.currPos.equals(enemyFortPos) && this.isHasCollectedTreasure()) {
 			game.setWinner(enemy.getPlayerId());
@@ -268,79 +268,92 @@ public class Player {
 			}
 		}
 		
-		
 		return toReturn;	
 	}
 	
 	public boolean checkTreasuresAroundMountain(Coordinates myTreasurePos, Coordinates mountainPos, Map<Coordinates, MapNode> fields) {
 	
-		logger.info("current mountainPos " + mountainPos.getX() + " " + mountainPos.getY());
+		//logger.info("current mountainPos " + mountainPos.getX() + " " + mountainPos.getY());
 		
 		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPos, fields);
 		
-		for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
+		if (fieldsAround.containsValue(myTreasurePos)) {
+			return true;
+		}
+		
+		/*for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
 			if (mapEntry.getValue().equals(myTreasurePos)) {
 			//if (fields.get(mapEntry.getValue()).getTreasureState() == TreasureState.MYTREASURE) {
 				//logger.info("treasure field " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
 				return true;
-			} else {
-				//logger.info("field around " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
 			}
-		}
+		}*/
 		
 		return false;
 		
 	}
 	
 	public boolean checkFortsAroundMountain(Coordinates enemyFortPos, Coordinates mountainPos, Map<Coordinates, MapNode> fields) {
-		logger.info("current mountainPos " + mountainPos.getX() + " " + mountainPos.getY());
 		
+		//logger.info("current mountainPos " + mountainPos.getX() + " " + mountainPos.getY());
 		
 		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPos, fields);
 		
-		for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
+		if (fieldsAround.containsValue(enemyFortPos)) {
+			return true;
+		}
+		
+		
+		/*for( Map.Entry<String, Coordinates> mapEntry : fieldsAround.entrySet() ) {
+			
 			//if (fields.get(mapEntry.getValue()).getFortState() == FortState.ENEMYFORT) {
 			if (mapEntry.getValue().equals(enemyFortPos)) {
-				logger.info("fort field " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
+				logger.info("player "+ this.getPlayerId() +" s enemy fort field " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
 				return true;
-			} else {
-				logger.info("field around " + mapEntry.getValue().getX() + " " + mapEntry.getValue().getY());
 			}
-		
-		}
+		}*/
 		return false;
 	}
 	
 	public void updateMountainViewStatus(GameData game) {
+		
 		Coordinates myTreasurePos = this.getTreasurePos();
 		Player enemy = game.getTheOtherPlayer(this.getPlayerId());
 		Coordinates enemyFortPos = enemy.getFortPos();
-		logger.info("enemy fort pos should be:  " + enemyFortPos.getX() + "  " + enemyFortPos.getY());
+		
+		//logger.info("enemy fort pos should be:  " + enemyFortPos.getX() + "  " + enemyFortPos.getY());
 		
 		if (game.getFullMap().getFields().get(this.currPos).getFieldType() == MapFieldType.MOUNTAIN) {
+			
+			if (checkFortsAroundMountain(enemyFortPos, this.currPos, game.getFullMap().getFields())) {
+				
+				this.setShowEnemyFort(true);
+				if (this.isShowEnemyFort()) {
+					logger.info("show enemy fort true "  + this.getPlayerId());	
+				}
+				
+			}
+			
 			if (this.isHasCollectedTreasure() == false) {
 				if (checkTreasuresAroundMountain(myTreasurePos, this.currPos, game.getFullMap().getFields())) {
-					logger.info("found a treasure around mountain: " + this.currPos.getX() + "  " + this.currPos.getY());
+					//logger.info("found a treasure around mountain: " + this.currPos.getX() + "  " + this.currPos.getY());
 				
 					this.setShowTreasure(true);	
 					
+					
 				}
 			}
-			//if (this.isShowEnemyFort() == false) {
-				if (checkFortsAroundMountain(enemyFortPos, this.currPos, game.getFullMap().getFields())) {
-					logger.info("found a fort around mountain!" + this.currPos.getX() + "  " + this.currPos.getY());
-					this.setShowEnemyFort(true);	
-					
-				} else {
-					this.setShowEnemyFort(false);
-				}
-			//}
-			
-			
+		
+			/*if (checkFortsAroundMountain(enemyFortPos, this.currPos, game.getFullMap().getFields())) {
+				//logger.info("found a fort around mountain!" + this.currPos.getX() + "  " + this.currPos.getY());
+				this.setShowEnemyFort(true);	
+				
+			} *//*else {
+				this.setShowEnemyFort(false);
+			}*/
+	
 		}
 	
 	}
-	
-	
 
 }
