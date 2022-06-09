@@ -35,8 +35,7 @@ public class FortRule implements IRuleValidation{
 			throw new HalfMapException("Invalid Fort Number", "One Fort needed, but found: " + number);
 		}
 	}
-	
-	// Number of forts already checked
+
 	public void isFortOnGrass(HalfMapNode node) {
 	
 		if (node.getTerrain() != ETerrain.Grass) {
@@ -47,21 +46,13 @@ public class FortRule implements IRuleValidation{
 
 	@Override
 	public void validatePlayerReg(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+			UniqueGameIdentifier gameId) {}
 	
 	@Override
-	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		
-	}
-	
-	// if game exists
+	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
+
 	@Override
-	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {
-		
-	}
+	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {}
 
 	@Override
 	public void validateHalfMap(HalfMap halfMap) {
@@ -72,23 +63,12 @@ public class FortRule implements IRuleValidation{
 
 	@Override
 	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+			UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
 
-	
-	
 }

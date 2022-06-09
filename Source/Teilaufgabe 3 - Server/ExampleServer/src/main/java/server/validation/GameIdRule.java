@@ -21,18 +21,11 @@ public class GameIdRule implements IRuleValidation {
 
 	@Override
 	public void validatePlayerReg(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	// if player exists
+			UniqueGameIdentifier gameId) {}
+
 	@Override
-	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		
-	}
-	
-	// if game exists
+	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
+
 	@Override
 	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {
 		if (!games.containsKey(gameId.getUniqueGameID())) {
@@ -41,31 +34,16 @@ public class GameIdRule implements IRuleValidation {
 	}
 
 	@Override
-	public void validateHalfMap(HalfMap halfMap) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void validateHalfMap(HalfMap halfMap) {}
 
 	@Override
 	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		
-		
-	}
+			UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
-	
+	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
 
 }

@@ -23,34 +23,20 @@ public class DontMoveIntoWaterRule implements IRuleValidation{
 
 	@Override
 	public void validatePlayerReg(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+			UniqueGameIdentifier gameId) {}
 	
 	@Override
-	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		
-	}
+	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
 	
-	// if game exists
 	@Override
-	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {
-		
-	}
+	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void validateHalfMap(HalfMap halfMap) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void validateHalfMap(HalfMap halfMap) {}
 
 	@Override
 	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+			UniqueGameIdentifier gameId) {}
 
 	@Override
 	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {
@@ -92,9 +78,6 @@ public class DontMoveIntoWaterRule implements IRuleValidation{
 	}
 
 	@Override
-	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
 
 }

@@ -178,7 +178,6 @@ public class ServerEndpoints {
 		// save 
 		gameStateController.receiveHalfMap(iHalfMap, halfMap.getUniquePlayerID(), gameID.getUniqueGameID());
 		gameStateController.swapPlayerOnTurn(gameID);
-		
 		gameStateController.updateGameStateId(gameID);
 		
 		return toRet;
@@ -196,8 +195,6 @@ public class ServerEndpoints {
 		// validate if player is in that game
 		// validate if player's turn
 		// validate move
-		//rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
-		//rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
 		try {
 			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));	
 		} catch (GameIdException e) {
@@ -209,14 +206,7 @@ public class ServerEndpoints {
 		} catch (PlayerIdException e) {
 			throw e;
 		}
-		
-		/*if (gameStateController.bothPlayersRegistered(gameID) == false) {
-			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(move.getUniquePlayerID());
-			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
-		}*/
-		
-		//rules.forEach(rule -> rule.validateGameState(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
-		
+	
 		if (!gameStateController.getGames().get(gameID.getUniqueGameID()).myTurn(move.getUniquePlayerID())) {
 			return new ResponseEnvelope<>();
 		}

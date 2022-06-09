@@ -29,15 +29,10 @@ public class TerrainsNumberRule implements IRuleValidation{
 	}
 	
 	@Override
-	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		
-	}
-	
-	// if game exists
+	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
+
 	@Override
-	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {
-		
-	}
+	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {}
 
 	@Override
 	public void validateHalfMap(HalfMap halfMap) {
@@ -73,22 +68,13 @@ public class TerrainsNumberRule implements IRuleValidation{
 
 	@Override
 	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+			UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
 
 
 }

@@ -56,8 +56,6 @@ public class GameStateController {
 	private Map<String, GameData> games = new HashMap<String, GameData>();
 	private static int maximumGamesNumber = 999;
 	private static final Logger logger = LoggerFactory.getLogger(GameStateController.class);
-	private boolean first = true;
-	
 	
 	List<IRuleValidation> rules = new ArrayList<IRuleValidation>();	
 
@@ -222,6 +220,7 @@ public class GameStateController {
 		}
 		
 		return true;
+		
 	}
 
 	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {

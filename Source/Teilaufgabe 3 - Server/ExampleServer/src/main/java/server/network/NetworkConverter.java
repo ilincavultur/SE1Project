@@ -42,7 +42,6 @@ import server.models.InternalFullMap;
 public class NetworkConverter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(NetworkConverter.class);
-	private int no = 0;
 
 	public InternalHalfMap convertHalfMapFrom(HalfMap halfMap) {
 		
@@ -70,7 +69,6 @@ public class NetworkConverter {
 	// enemy flag is true if the player is an enemy
 	public PlayerState convertPlayerTo(GameData game, Player player, boolean enemy) {
 		
-		PlayerState toReturn = new PlayerState();
 		if (enemy) {
 			String firstName = player.getPlayerReg().getStudentFirstName();
 			String lastName = player.getPlayerReg().getStudentLastName();
@@ -163,81 +161,7 @@ public class NetworkConverter {
 		}
 		return null;
 	}
-	
-	private ServerPlayerState convertPlayerStateFrom(EPlayerGameState plState) {
-		
-		if(plState == EPlayerGameState.MustAct) {
-			return ServerPlayerState.MUSTACT;
-		}
-		if(plState == EPlayerGameState.MustWait) {
-			return ServerPlayerState.MUSTWAIT;		
-		}
-		if(plState == EPlayerGameState.Won) {
-			return ServerPlayerState.WON;
-		}
-		if(plState == EPlayerGameState.Lost) {
-			return ServerPlayerState.LOST;
-		}
-		return null;
-		
-	}
-	
-	private PlayerPositionState convertPlayerPositionStateFrom(EPlayerPositionState plPosState) {
-		
-		if(plPosState == EPlayerPositionState.NoPlayerPresent) {
-			return PlayerPositionState.NOPLAYER;
-		}
-		if(plPosState == EPlayerPositionState.EnemyPlayerPosition) {
-			return PlayerPositionState.ENEMYPLAYER;
-		}
-		if(plPosState == EPlayerPositionState.MyPlayerPosition) {
-			return PlayerPositionState.MYPLAYER;
-		}
-		if(plPosState == EPlayerPositionState.BothPlayerPosition) {
-			return PlayerPositionState.BOTH;
-		}
-		return null;
-	}
-	
-	private FortState convertFortStateFrom(EFortState fortState) {
-		
-		if(fortState == EFortState.EnemyFortPresent) {
-			return FortState.ENEMYFORT;
-		}
-		if(fortState == EFortState.MyFortPresent) {
-			return FortState.MYFORT;
-		}
-		if(fortState == EFortState.NoOrUnknownFortState) {
-			return FortState.UNKNOWNIFFORT;
-		}
-		
-		return null;
-		
-	}
-	
-	private TreasureState convertTreasureStateFrom(ETreasureState treasureState) {
-		
-		if(treasureState == ETreasureState.MyTreasureIsPresent) {
-			return TreasureState.MYTREASURE;
-		}
-		if(treasureState == ETreasureState.NoOrUnknownTreasureState) {
-			return TreasureState.UNKNOWNIFTREASURE;
-		}
-		return null;
-	}
-	
-	private FullMapNode convertMapNodeTo(MapNode node) {
-		
-		FullMapNode toReturn = new FullMapNode();
-		
-		ETerrain fieldType = convertTerrainTypeTo(node.getFieldType());
 
-		Coordinates pos = node.getPosition();
-
-		return toReturn;
-		
-	}
-	
 	public Coordinates getRandomEnemyPos(InternalFullMap myMap) {
 		Coordinates toRet = new Coordinates();
 		Random randomNo = new Random();
@@ -272,8 +196,7 @@ public class NetworkConverter {
 	
 	// server full map to network fullmap
 	public Optional<FullMap> convertServerFullMapTo(UniquePlayerIdentifier playerID, GameData game) {
-		no = 0;
-		
+
 		int roundNo = game.getRoundNo();
 		
 		InternalFullMap myMap = game.getFullMap();
@@ -288,8 +211,7 @@ public class NetworkConverter {
 		Coordinates enemyFortPos = enemyPlayer.getFortPos();
 		Coordinates actualEnemyPosition = enemyPlayer.getCurrPos();
 		Coordinates myTreasure = myPlayer.getTreasurePos();
-	
-		//logger.info("enemy fort pos should be:  " + enemyFortPos.getX() + "  " + enemyFortPos.getY());
+
 
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
 		
@@ -308,48 +230,11 @@ public class NetworkConverter {
 			
 			if (mapEntry.getKey().equals(enemyFortPos)) {
 				if (myPlayer.isShowEnemyFort()) {
-					
-					logger.info("show enemy fort true for pl " + myPlayer.getPlayerId());	
-					
-				//if (myPlayer.getFieldsAroundMountain(pos, myMap.getFields()).containsValue(enemyFortPos) || mapEntry.getValue().getPosition().equals(enemyFortPos)) {
+
 					fort = EFortState.EnemyFortPresent;
-				//}
-					
+			
 				}
 			} 
-			
-				
-			
-			
-			/*
-			 if (myPlayer.isShowEnemyFort()) {
-				if (mapEntry.getKey().equals(enemyFortPos)) {
-					fort = EFortState.EnemyFortPresent;
-				} else if (mapEntry.getKey().equals(myFortPos)) {
-					fort = EFortState.MyFortPresent;
-				}
-			} else {
-				if (mapEntry.getKey().equals(myFortPos)) {
-					fort = EFortState.MyFortPresent;
-				}
-			}
-			 */
-			
-			/*if (mapEntry.getKey().equals(myFortPos)) {
-				//logger.info("showing my player "+ myPlayer.getPlayerId() +" s fort field " + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());
-				
-				fort = EFortState.MyFortPresent;
-			} else if (mapEntry.getKey().equals(enemyFortPos)) {
-				
-				if (myPlayer.isShowEnemyFort() == true) {
-					//logger.info("isshowenemyfort");
-					//logger.info("showing player "+ myPlayer.getPlayerId() + " s enemy fort");
-					//logger.info("enemy player "+ enemyPlayer.getPlayerId() + " show fort on " + mapEntry.getKey().getX() + "  " + mapEntry.getKey().getY());
-					fort = EFortState.EnemyFortPresent;	
-				} else {
-					fort = EFortState.NoOrUnknownFortState;
-				}
-			}*/
 			
 			if (myPlayer.isHasCollectedTreasure() || myPlayer.isShowTreasure() == false) {
 				treasure = ETreasureState.NoOrUnknownTreasureState;
@@ -386,31 +271,13 @@ public class NetworkConverter {
 					
 				}
 			}
-
-			
-			if (fort == EFortState.MyFortPresent || fort == EFortState.EnemyFortPresent) {
-				no += 1;
-				//logger.info("player : " + playerID.getUniquePlayerID());
-				//logger.info(fort.toString() + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());	
-			}/*
-			if (fort == EFortState.EnemyFortPresent) {
-				logger.info("player : " + playerID.getUniquePlayerID());
-				logger.info(fort.toString() + mapEntry.getKey().getX() + " " + mapEntry.getKey().getY());	
-			}*/
 			
 			FullMapNode fullMapNode = new FullMapNode(fieldType, playerPos, treasure, fort, pos.getX(), pos.getY());
 			mapNodes.add(fullMapNode);
 			
 			
 		}
-		/*logger.info("-------------------------------------------------------------");
-		
-		logger.info("player : " + playerID.getUniquePlayerID() + " has " + no + " nodes with castles on the map");
-		
-		showCastles(mapNodes);
-		
-		logger.info("-------------------------------------------------------------");
-		*/
+
 		toRet = new FullMap(mapNodes);
 		return Optional.of(toRet);
 		

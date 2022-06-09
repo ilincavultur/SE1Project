@@ -20,17 +20,12 @@ import server.models.InternalHalfMap;
 import server.models.MapNode;
 import server.models.Player;
 
-// check if exists in the respective game
 public class PlayerIdRule implements IRuleValidation {
 
 	@Override
 	public void validatePlayerReg(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		
-		
-	}
+			UniqueGameIdentifier gameId) {}
 	
-	// if player exists
 	@Override
 	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
 		boolean ok = false;
@@ -43,38 +38,21 @@ public class PlayerIdRule implements IRuleValidation {
 			throw new PlayerIdException("Player Id Invalid", "Player id "+ playerId.getUniquePlayerID() + " not found in game: " + gameId.getUniqueGameID());
 		}
 	}
-	
-	// if game exists
-	@Override
-	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {
-		
-	}
 
 	@Override
-	public void validateHalfMap(HalfMap halfMap) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {}
+
+	@Override
+	public void validateHalfMap(HalfMap halfMap) {}
 
 	@Override
 	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+			UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
+	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
 
 }

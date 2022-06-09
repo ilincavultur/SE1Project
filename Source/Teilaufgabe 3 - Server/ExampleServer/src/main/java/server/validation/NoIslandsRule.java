@@ -26,8 +26,6 @@ public class NoIslandsRule implements IRuleValidation{
 	
 	private List<Coordinates> alreadyVisited = new ArrayList<Coordinates>();
 
-	
-	//reachable nodes (in theory)
 	private Map<Coordinates, HalfMapNode> getGrassMountainFields(HalfMap myMap) {
 		
 		Map<Coordinates, HalfMapNode> fieldsGrassMountain = new HashMap<Coordinates, HalfMapNode>();
@@ -72,8 +70,6 @@ public class NoIslandsRule implements IRuleValidation{
 		return (alreadyVisited.size() == this.getGrassMountainFields(mapToVerify).size());
 	}
 	
-	
-	
 	// CODE TAKEN FROM START https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
 	private void checkIfReachable(Coordinates startingPos, Map<Coordinates, HalfMapNode> mapToVerify, List<Coordinates> visitedNodes) {
 		
@@ -88,50 +84,33 @@ public class NoIslandsRule implements IRuleValidation{
 		}
 		
 	}
+	// CODE TAKEN FROM START https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
 
 	@Override
 	public void validatePlayerReg(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+			UniqueGameIdentifier gameId) {}
 	
 	@Override
-	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		
-	}
+	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
 	
-	// if game exists
 	@Override
-	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {
-		
-	}
+	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {}
 
 	@Override
 	public void validateHalfMap(HalfMap halfMap) {
 		if (hasNoIsland(halfMap) == false) {
 			throw new HalfMapException("Island found", "Half Map contains island(s)");
-		}
-		
+		}	
 	}
 
 	@Override
 	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+			UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {}
 
 	@Override
-	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void myTurn(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
 
 }

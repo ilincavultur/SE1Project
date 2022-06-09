@@ -50,6 +50,7 @@ public class GameData {
 		this.roundNo = 0;
 		pickFirstPlayerToSendMap();
 	}
+	
 	public String getGameId() {
 		return gameId;
 	}
