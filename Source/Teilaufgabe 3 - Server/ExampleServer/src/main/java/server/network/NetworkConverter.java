@@ -403,14 +403,14 @@ public class NetworkConverter {
 			
 			
 		}
-		logger.info("-------------------------------------------------------------");
+		/*logger.info("-------------------------------------------------------------");
 		
 		logger.info("player : " + playerID.getUniquePlayerID() + " has " + no + " nodes with castles on the map");
 		
 		showCastles(mapNodes);
 		
 		logger.info("-------------------------------------------------------------");
-		
+		*/
 		toRet = new FullMap(mapNodes);
 		return Optional.of(toRet);
 		
