@@ -114,6 +114,10 @@ public class GameData {
 	public void setChanged(boolean changed) {
 		this.changed = changed;
 	}
+	
+	public int getIdxPlayersTurn() {
+		return idxPlayersTurn;
+	}
 
 	// choose which player sends the first map 
 	public String pickFirstPlayerToSendMap() {
