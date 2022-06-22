@@ -109,34 +109,6 @@ public class ServerEndpoints {
 
 	}
 	
-	@RequestMapping(value = "/{gameID}/states/{playerID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
-	public @ResponseBody ResponseEnvelope<GameState> requestGameState(@Validated @PathVariable UniqueGameIdentifier gameID,
-			@Validated @PathVariable UniquePlayerIdentifier playerID) {
-		
-		try {
-			// validate if game id exists
-			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
-			// validate if player is in the respective game
-			rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), playerID, gameID));
-		} catch (GameIdException e) {
-			throw e;
-		} catch (PlayerIdException e) {
-			throw e;
-		}
-				
-		// if both maps available, create full map
-		if (gameStateController.bothHalfMapsPresent(gameID)) {
-			gameStateController.assembleHalfMaps(gameID);
-		}
-
-		GameState newGameState = gameStateController.requestGameState(playerID, gameID, networkConverter);
-		
-		ResponseEnvelope<GameState> toRet = new ResponseEnvelope<>(newGameState);
-		
-		return toRet;
-
-	}
-	
 	@RequestMapping(value = "/{gameID}/halfmaps", method = RequestMethod.POST, consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
 	public @ResponseBody ResponseEnvelope getHalfMap(
 			@Validated @PathVariable UniqueGameIdentifier gameID,
@@ -173,6 +145,34 @@ public class ServerEndpoints {
 		gameStateController.updateGameStateId(gameID);
 		
 		return toReturn;
+
+	}
+	
+	@RequestMapping(value = "/{gameID}/states/{playerID}", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
+	public @ResponseBody ResponseEnvelope<GameState> requestGameState(@Validated @PathVariable UniqueGameIdentifier gameID,
+			@Validated @PathVariable UniquePlayerIdentifier playerID) {
+		
+		try {
+			// validate if game id exists
+			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
+			// validate if player is in the respective game
+			rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), playerID, gameID));
+		} catch (GameIdException e) {
+			throw e;
+		} catch (PlayerIdException e) {
+			throw e;
+		}
+				
+		// if both maps available, create full map
+		if (gameStateController.bothHalfMapsPresent(gameID)) {
+			gameStateController.assembleHalfMaps(gameID);
+		}
+
+		GameState newGameState = gameStateController.requestGameState(playerID, gameID, networkConverter);
+		
+		ResponseEnvelope<GameState> toRet = new ResponseEnvelope<>(newGameState);
+		
+		return toRet;
 
 	}
 	
