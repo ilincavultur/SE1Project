@@ -193,10 +193,13 @@ public class GameStateController {
 	
 	public boolean bothPlayersRegistered(UniqueGameIdentifier gameID) {
 		
+		logger.info("PLAYERS SIZE: " + this.games.get(gameID.getUniqueGameID()).getPlayers().size());
+		
 		if (this.games.get(gameID.getUniqueGameID()).getPlayers().size() != 2) {
+			logger.info("DIFFERENT THAN 2");
 			return false;
 		}
-		
+		logger.info("EQUALS 2");
 		return true;
 		
 	}

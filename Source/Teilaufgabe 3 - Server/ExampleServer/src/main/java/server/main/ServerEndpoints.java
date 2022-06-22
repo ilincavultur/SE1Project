@@ -155,7 +155,7 @@ public class ServerEndpoints {
 		} catch (PlayerIdException e) {
 			throw e;
 		} catch (NotEnoughPlayersException e) {
-			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
+			//gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			throw e;
 		} catch (TooManyMapsSentException e) {
 			throw e;
