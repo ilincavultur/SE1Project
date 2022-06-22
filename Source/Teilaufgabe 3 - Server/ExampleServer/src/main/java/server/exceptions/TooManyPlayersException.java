@@ -4,7 +4,6 @@ public class TooManyPlayersException extends GenericExampleException{
 
 	public TooManyPlayersException(String errorName, String errorMessage) {
 		super(errorName, errorMessage);
-		// TODO Auto-generated constructor stub
 	}
 
 }

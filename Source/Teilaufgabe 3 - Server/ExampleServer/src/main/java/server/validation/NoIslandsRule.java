@@ -105,10 +105,6 @@ public class NoIslandsRule implements IRuleValidation{
 		}	
 	}
 
-	/*@Override
-	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {}*/
-	
 	@Override
 	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
 	

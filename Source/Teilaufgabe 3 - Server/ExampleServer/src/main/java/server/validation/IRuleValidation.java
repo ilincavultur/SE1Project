@@ -26,7 +26,6 @@ public interface IRuleValidation {
 
 	public void validateHalfMap(HalfMap halfMap);
 
-	//public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId);
 	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId);
 
 	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId);
