@@ -11,8 +11,10 @@ import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.HalfMapNode;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
+import server.controllers.GameStateController;
 import server.enums.MoveCommand;
 import server.exceptions.GameIdException;
+import server.exceptions.NotEnoughPlayersException;
 import server.exceptions.PlayerIdException;
 import server.models.Coordinates;
 import server.models.GameData;
@@ -45,9 +47,17 @@ public class PlayerIdRule implements IRuleValidation {
 	@Override
 	public void validateHalfMap(HalfMap halfMap) {}
 
-	@Override
+	/*@Override
 	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {}
+			UniqueGameIdentifier gameId) {}*/
+	
+	@Override
+	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
+	
+		if (controller.bothPlayersRegistered(gameId) == false) {
+			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
+		}
+	}
 
 	@Override
 	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {}

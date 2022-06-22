@@ -8,6 +8,7 @@ import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.HalfMapNode;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
+import server.controllers.GameStateController;
 import server.enums.MoveCommand;
 import server.models.Coordinates;
 import server.models.GameData;
@@ -25,7 +26,8 @@ public interface IRuleValidation {
 
 	public void validateHalfMap(HalfMap halfMap);
 
-	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId);
+	//public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId);
+	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId);
 
 	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId);
 	

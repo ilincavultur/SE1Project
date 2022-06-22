@@ -6,6 +6,8 @@ import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.PlayerMove;
+import server.controllers.GameStateController;
+import server.exceptions.NotEnoughPlayersException;
 import server.exceptions.TooManyMapsSentException;
 import server.models.GameData;
 
@@ -26,8 +28,9 @@ public class OnlyOneMapPerPlayerRule implements IRuleValidation{
 	public void validateHalfMap(HalfMap halfMap) {}
 
 	@Override
-	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
+	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId,
 			UniqueGameIdentifier gameId) {
+		Map<String, GameData> games = controller.getGames();
 		if (games.get(gameId.getUniqueGameID()).getPlayerWithId(playerId.getUniquePlayerID()).getHalfMap() != null) {
 			throw new TooManyMapsSentException("Too many half maps sent", "Client " + playerId.getUniquePlayerID() + " tried to send more than one half map");
 		}

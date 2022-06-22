@@ -6,6 +6,7 @@ import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.PlayerMove;
+import server.controllers.GameStateController;
 import server.exceptions.NotEnoughPlayersException;
 import server.models.GameData;
 
@@ -18,19 +19,26 @@ public class BothPlayersRegisteredRule implements IRuleValidation{
 	
 	@Override
 	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
-	
-	// if game exists
+
 	@Override
 	public void validateGameId(Map<String, GameData> games, UniqueGameIdentifier gameId) {}
 
 	@Override
 	public void validateHalfMap(HalfMap halfMap) {}
 
-	@Override
+	/*@Override
 	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
 			UniqueGameIdentifier gameId) {
 	
 		if (games.get(gameId.getUniqueGameID()).getPlayers().size() != 2) {
+			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
+		}
+	}*/
+	
+	@Override
+	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
+	
+		if (controller.bothPlayersRegistered(gameId) == false) {
 			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
 		}
 	}

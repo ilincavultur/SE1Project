@@ -13,9 +13,11 @@ import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.HalfMapNode;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
+import server.controllers.GameStateController;
 import server.enums.MapFieldType;
 import server.enums.MoveCommand;
 import server.exceptions.HalfMapException;
+import server.exceptions.NotEnoughPlayersException;
 import server.models.Coordinates;
 import server.models.GameData;
 import server.models.InternalHalfMap;
@@ -84,7 +86,7 @@ public class NoIslandsRule implements IRuleValidation{
 		}
 		
 	}
-	// CODE TAKEN FROM START https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
+	// CODE TAKEN FROM END https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
 
 	@Override
 	public void validatePlayerReg(Map<String, GameData> games, UniquePlayerIdentifier playerId,
@@ -103,9 +105,17 @@ public class NoIslandsRule implements IRuleValidation{
 		}	
 	}
 
-	@Override
+	/*@Override
 	public void validateGameState(Map<String, GameData> games, UniquePlayerIdentifier playerId,
-			UniqueGameIdentifier gameId) {}
+			UniqueGameIdentifier gameId) {}*/
+	
+	@Override
+	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
+	
+		if (controller.bothPlayersRegistered(gameId) == false) {
+			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
+		}
+	}
 
 	@Override
 	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {}

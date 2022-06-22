@@ -17,12 +17,6 @@ public class Coordinates {
 		Y = y;
 	}
 	
-	public Coordinates(Coordinates coords) {
-		super();
-		X = coords.X;
-		Y = coords.Y;
-	}
-	
 	public Coordinates() {
 		super();
 	}
@@ -143,8 +137,6 @@ public class Coordinates {
 		
 	}
 	
-
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(X, Y);
@@ -161,7 +153,5 @@ public class Coordinates {
 		Coordinates other = (Coordinates) obj;
 		return X == other.X && Y == other.Y;
 	}
-	
-	
 	
 }

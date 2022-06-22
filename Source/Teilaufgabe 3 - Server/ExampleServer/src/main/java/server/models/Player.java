@@ -34,7 +34,6 @@ public class Player {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Player.class);
 	
-	
 	public Player() {
 		super();
 		Coordinates currPos = new Coordinates(0,0);
@@ -84,18 +83,6 @@ public class Player {
 	}
 	public boolean isPlayersHalfMapPresent() {
 		return this.getHalfMap() != null;
-	}
-	public MoveCommand getCurrentDirection() {
-		return currentDirection;
-	}
-	public void setCurrentDirection(MoveCommand currentDirection) {
-		this.currentDirection = currentDirection;
-	}
-	public int getCurrentNoOfStepsToTake() {
-		return currentNoOfStepsToTake;
-	}
-	public void setCurrentNoOfStepsToTake(int currentNoOfStepsToTake) {
-		this.currentNoOfStepsToTake = currentNoOfStepsToTake;
 	}
 	public Coordinates getFortPos() {
 		return fortPos;
@@ -183,10 +170,6 @@ public class Player {
 	}
 	
 	public void updateTreasureStatus(GameData game) {
-		/*if (game.getFullMap().getFields().get(this.currPos).getFieldType() != MapFieldType.MOUNTAIN) {
-			this.setShowTreasure(false);
-		}*/
-		
 		Coordinates myTreasurePos = this.getTreasurePos();
 		if (this.currPos.equals(myTreasurePos)) {
 			this.setHasCollectedTreasure(true);

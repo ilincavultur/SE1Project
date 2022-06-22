@@ -54,36 +54,15 @@ import server.validation.WaterOnEdgesRule;
 public class GameStateController {
 
 	private Map<String, GameData> games = new HashMap<String, GameData>();
-	private static int maximumGamesNumber = 999;
+	private static int MAX_GAME_NUMBER = 999;
 	private static final Logger logger = LoggerFactory.getLogger(GameStateController.class);
-	
-	List<IRuleValidation> rules = new ArrayList<IRuleValidation>();	
 
 	public GameStateController() {
-		super();
-	
-		rules.add(new BothPlayersRegisteredRule());
-		rules.add(new DontMoveIntoWaterRule());
-		rules.add(new DontMoveOutsideMapRule());
-		rules.add(new FieldsCoordinatesRule());
-		rules.add(new FortRule());
-		rules.add(new GameIdRule());
-		rules.add(new HalfMapSizeRule());
-		rules.add(new MaxNoOfPlayersReachedRule());
-		rules.add(new MyTurnRule());
-		rules.add(new NoIslandsRule());
-		rules.add(new PlayerIdRule());
-		rules.add(new TerrainsNumberRule());
-		rules.add(new WaterOnEdgesRule());
-		
+		super();	
 	}
 
 	public Map<String, GameData> getGames() {
 		return games;
-	}
-
-	public void setGames(Map<String, GameData> games) {
-		this.games = games;
 	}
 
 	// SCHIMBA
@@ -143,7 +122,7 @@ public class GameStateController {
 	
 	public void createNewGame(UniqueGameIdentifier gameId) {
 		
-		if (this.games.size() >= maximumGamesNumber) {
+		if (this.games.size() >= MAX_GAME_NUMBER) {
 			
 			String oldestGameId = getOldestGameId();
 			
@@ -155,8 +134,7 @@ public class GameStateController {
 		newGame.setGameId(gameId.getUniqueGameID());
 		this.games.put(gameId.getUniqueGameID(), newGame);
 	}
-	
-	// validation already made in serverendpoints
+
 	public void registerPlayer (UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId, PlayerRegistration playerReg) {
 		Player newPlayer = new Player();
 		newPlayer.setPlayerId(playerId.getUniquePlayerID());

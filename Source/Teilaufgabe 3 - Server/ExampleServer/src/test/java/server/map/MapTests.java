@@ -114,7 +114,8 @@ public class MapTests {
 		//act
 		NotEnoughPlayersException e = Assertions.assertThrows(NotEnoughPlayersException.class, () -> {
 			//terrainsRule.validateHalfMap(halfMap);
-			bothPlayersRegisteredRule.validateGameState(games, playerId, gameId);
+			//bothPlayersRegisteredRule.validateGameState(games, playerId, gameId);
+			bothPlayersRegisteredRule.validateGameState(controller, playerId, gameId);
 			
 		});
 		

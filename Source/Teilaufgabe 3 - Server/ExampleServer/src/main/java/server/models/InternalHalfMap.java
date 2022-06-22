@@ -17,27 +17,17 @@ public class InternalHalfMap {
 		super();
 	}
 
-
-	public InternalHalfMap(Map<Coordinates, MapNode> fields) {
-		super();
-		this.fields = fields;
-	}
-
-
 	public Map<Coordinates, MapNode> getFields() {
 		return fields;
 	}
-
 
 	public void setFields(Map<Coordinates, MapNode> fields) {
 		this.fields = fields;
 	}
 
-
 	public Coordinates getFortPos() {
 		return fortPos;
 	}
-
 
 	public void setFortPos(Coordinates fortPos) {
 		this.fortPos = fortPos;

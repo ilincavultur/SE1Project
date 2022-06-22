@@ -20,7 +20,6 @@ public class GameData {
 	private int roundNo;
 	private boolean changed;
 	
-
 	public GameData() {
 		super();
 		this.gameId = null;
@@ -35,25 +34,7 @@ public class GameData {
 		this.roundNo = 0;
 		pickFirstPlayerToSendMap();
 	}
-	
-	public GameData(String gameId, List<Player> players, InternalFullMap fullMap) {
-		super();
-		this.gameId = gameId;
-		this.players = players;
-		this.fullMap = fullMap;
-		this.changed = false;
-		this.gameCreationTime = Instant.now();
-		this.gameStateId = UUID.randomUUID().toString();
-		Random randomNo = new Random();
-		this.idxPlayersTurn = randomNo.nextInt(2);
-		this.winnerId = null;
-		this.roundNo = 0;
-		pickFirstPlayerToSendMap();
-	}
-	
-	public String getGameId() {
-		return gameId;
-	}
+
 	public void setGameId(String gameId) {
 		this.gameId = gameId;
 	}
@@ -74,16 +55,8 @@ public class GameData {
 		return roundNo;
 	}
 
-	public void setRoundNo(int roundNo) {
-		this.roundNo = roundNo;
-	}
-
 	public String getWinnerId() {
 		return winnerId;
-	}
-
-	public void setWinnerId(String winnerId) {
-		this.winnerId = winnerId;
 	}
 
 	public String getGameStateId() {
@@ -98,10 +71,6 @@ public class GameData {
 		return gameCreationTime;
 	}
 
-	public void setGameCreationTime(Instant gameCreationTime) {
-		this.gameCreationTime = gameCreationTime;
-	}
-	
 	public void setWinner(String loserId) {
 		Player winner = getTheOtherPlayer(loserId);
 		this.winnerId = winner.getPlayerId();
@@ -119,7 +88,6 @@ public class GameData {
 		return idxPlayersTurn;
 	}
 
-	// choose which player sends the first map 
 	public String pickFirstPlayerToSendMap() {
 		Random randomNo = new Random();
 		int no = randomNo.nextInt(2);
@@ -168,6 +136,7 @@ public class GameData {
 		return toRet;
 	}
 	
+	// returns the player whose id is not equal to the parameter
 	public Player getTheOtherPlayer(String playerId) {
 		Player toRet = new Player();
 		
