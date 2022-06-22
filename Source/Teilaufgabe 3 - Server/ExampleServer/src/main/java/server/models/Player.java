@@ -36,6 +36,7 @@ public class Player {
 	
 	public Player() {
 		super();
+		this.playerId = "";
 		Coordinates currPos = new Coordinates(0,0);
 		this.currPos = currPos;
 		this.showEnemyFort = false;

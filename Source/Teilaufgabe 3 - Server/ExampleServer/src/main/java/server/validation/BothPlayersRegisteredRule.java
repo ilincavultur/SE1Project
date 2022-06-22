@@ -38,11 +38,7 @@ public class BothPlayersRegisteredRule implements IRuleValidation{
 			logger.info("only one client has registered");
 			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
 		}
-		
-		/*if (games.get(gameId.getUniqueGameID()).getPlayers().size() != 2) {
-			logger.info("only one client has registered");
-			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
-		}*/
+	
 	}
 
 	@Override

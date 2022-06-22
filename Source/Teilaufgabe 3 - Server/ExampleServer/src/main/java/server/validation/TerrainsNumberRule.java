@@ -66,12 +66,7 @@ public class TerrainsNumberRule implements IRuleValidation{
 	}
 
 	@Override
-	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
-	
-		if (controller.bothPlayersRegistered(gameId) == false) {
-			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
-		}
-	}
+	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {}
 
 	@Override
 	public void validateMove(Map<String, GameData> games, PlayerMove move, UniqueGameIdentifier gameId) {}
