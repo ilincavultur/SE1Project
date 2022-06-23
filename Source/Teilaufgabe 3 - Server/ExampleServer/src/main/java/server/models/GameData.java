@@ -116,7 +116,6 @@ public class GameData {
 			}
 		}
 		
-		
 		return false;
 	}
 	
@@ -141,7 +140,9 @@ public class GameData {
 		return toRet;
 	}
 	
-	// returns the player whose id is not equal to the parameter
+	/*
+	 *  returns the player whose id is not equal to the parameter
+	 */
 	public Player getTheOtherPlayer(String playerId) {
 		Player toRet = new Player();
 		

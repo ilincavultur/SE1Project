@@ -139,7 +139,6 @@ public class GameStateController {
 		newPlayer.setPlayerId(playerId.getUniquePlayerID());
 		newPlayer.setPlayerReg(playerReg);
 		List<Player> players = this.games.get(gameId.getUniqueGameID()).getPlayers();
-		//logger.info("players size when creating player " + players.size() );
 		players.add(newPlayer);
 		this.games.get(gameId.getUniqueGameID()).setPlayers(players);
 	}
@@ -168,10 +167,7 @@ public class GameStateController {
 	
 	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
 		List<Player> players = this.games.get(gameId).getPlayers();
-		
-		logger.warn("receibing half map from player: " + playerId + ", for game, " + gameId);
-		
-		
+	
 		for (Player player: players) {
 			if (player.getPlayerId().equals(playerId)) {
 				player.setCurrPos(halfMap.getFortPos());
@@ -217,15 +213,11 @@ public class GameStateController {
 		List<Player> registeredPlayers = game.getPlayers();
 		
 		if (registeredPlayers.size() == 1) {
-			logger.info("registeredPkayers == 1");
-			
+		
 			Player player = registeredPlayers.get(0);
 			
 			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player, false));
-			
-			/*if (player.isPlayersHalfMapPresent()) {
-				map = networkConverter.convertIHalfMapToNetworkFullMap(player, game);	
-			}*/
+		
 			return new GameState(map, players, game.getGameStateId());
 			
 		} else if (registeredPlayers.size() == 2) {
@@ -255,6 +247,7 @@ public class GameStateController {
 	}
 
 	public void receiveMove(UniqueGameIdentifier gameID, PlayerMove move, NetworkConverter networkConverter) {
+		
 		GameData game = this.games.get(gameID.getUniqueGameID());
 		
 		Player player = game.getPlayerWithId(move.getUniquePlayerID());
