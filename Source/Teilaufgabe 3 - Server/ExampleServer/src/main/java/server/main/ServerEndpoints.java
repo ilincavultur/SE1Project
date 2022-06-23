@@ -91,9 +91,7 @@ public class ServerEndpoints {
 		UniquePlayerIdentifier newPlayerID = gameStateController.createUniquePlayerId();
 		
 		try {
-			// validate if game id exists
 			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
-			// validate if max number of players not already registered
 			rules.forEach(rule -> rule.validatePlayerReg(gameStateController.getGames(), newPlayerID, gameID));
 		} catch (GameIdException gameIdException) {
 			throw gameIdException;
@@ -127,7 +125,7 @@ public class ServerEndpoints {
 		} catch (PlayerIdException e) {
 			throw e;
 		} catch (NotEnoughPlayersException e) {
-			//gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
+			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			throw e;
 		} catch (TooManyMapsSentException e) {
 			throw e;
@@ -153,9 +151,7 @@ public class ServerEndpoints {
 			@Validated @PathVariable UniquePlayerIdentifier playerID) {
 		
 		try {
-			// validate if game id exists
 			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
-			// validate if player is in the respective game
 			rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), playerID, gameID));
 		} catch (GameIdException e) {
 			throw e;

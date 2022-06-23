@@ -68,25 +68,25 @@ public class GameStateController {
 	// SCHIMBA
 	public UniqueGameIdentifier createUniqueGameId() {
 		
-		String toReturn = null;
+		String newGameId = "";
 		
 		Random randomNo = new Random();
 		String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		int no = alphabet.length();
 		
-		while (toReturn == null || games.containsKey(toReturn)) {
-			toReturn = "";
+		while (newGameId.equals("") || games.containsKey(newGameId)) {
+			//newGameId = "";
 		
 			for (int i=0; i<5; i++) {
 				int nextCharacter = randomNo.nextInt(no);
-				toReturn += alphabet.charAt(nextCharacter);
+				newGameId += alphabet.charAt(nextCharacter);
 			}
-			
+		
 		}
 		
-		UniqueGameIdentifier toRet = new UniqueGameIdentifier(toReturn);
+		UniqueGameIdentifier toReturn = new UniqueGameIdentifier(newGameId);
 		
-		return toRet;
+		return toReturn;
 	}
 	
 	public UniquePlayerIdentifier createUniquePlayerId() {
@@ -97,17 +97,17 @@ public class GameStateController {
 	}
 	
 	public String getOldestGameId() {
-		String toRet = "";
+		String toReturn = "";
 		Duration longestDur = Duration.ZERO;
 		for (Entry<String, GameData> mapEntry : this.games.entrySet()) {
 			Duration entryDur = Duration.between(mapEntry.getValue().getGameCreationTime(), Instant.now());
 			if (entryDur.compareTo(longestDur) >= 0) {
 				longestDur = entryDur;
-				toRet = mapEntry.getKey();
+				toReturn = mapEntry.getKey();
 			}
 		}
 		
-		return toRet;
+		return toReturn;
 	}
 	
 	public void removeGame(String gameId) {

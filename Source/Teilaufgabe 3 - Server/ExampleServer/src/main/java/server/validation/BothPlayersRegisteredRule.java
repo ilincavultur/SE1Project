@@ -1,5 +1,6 @@
 package server.validation;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import MessagesBase.MessagesFromClient.PlayerMove;
 import server.controllers.GameStateController;
 import server.exceptions.NotEnoughPlayersException;
 import server.models.GameData;
+import server.models.Player;
 
 // before halfmap can be received
 public class BothPlayersRegisteredRule implements IRuleValidation{
@@ -33,12 +35,14 @@ public class BothPlayersRegisteredRule implements IRuleValidation{
 	@Override
 	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
 		Map<String, GameData> games = controller.getGames();
-		
-		if (games.get(gameId.getUniqueGameID()).getTheOtherPlayer(playerId.getUniquePlayerID()) == null) {
-			logger.info("only one client has registered");
-			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
+		List<Player> players = games.get(gameId.getUniqueGameID()).getPlayers();
+
+		for (int i=0; i<players.size(); i++) {
+			if (players.get(i).getPlayerId().equals("")) {
+				throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
+			}
 		}
-	
+		
 	}
 
 	@Override
