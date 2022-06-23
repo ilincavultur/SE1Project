@@ -50,29 +50,45 @@ public class DontMoveIntoWaterRule implements IRuleValidation{
 		
 		if (move.getMove() == EMove.Up) {
 			Coordinates dir = pos.getUpNeighbour(fields);
-			if (fields.get(dir).getFieldType() == MapFieldType.WATER) {
-				throw new MoveException ("Move goes to WATER", "Client tried to move to a WATER field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  ); 
+			if (fields.containsKey(dir)) {
+				if (fields.get(dir).getFieldType() == MapFieldType.WATER) {
+					throw new MoveException ("Move goes to WATER", "Client tried to move to a WATER field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  ); 
+				}
+			} else {
+				throw new MoveException ("Move goes outside map", "Client tried to move to a non existing field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  );
 			}
 		}
 		
 		if (move.getMove() == EMove.Down) {
 			Coordinates dir = pos.getDownNeighbour(fields);
-			if (fields.get(dir).getFieldType() == MapFieldType.WATER) {
-				throw new MoveException ("Move goes to WATER", "Client tried to move to a WATER field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  ); 
+			if (fields.containsKey(dir)) {
+				if (fields.get(dir).getFieldType() == MapFieldType.WATER) {
+					throw new MoveException ("Move goes to WATER", "Client tried to move to a WATER field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  ); 
+				}
+			} else {
+				throw new MoveException ("Move goes outside map", "Client tried to move to a non existing field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  );
 			}
 		}
 		
 		if (move.getMove() == EMove.Left) {
 			Coordinates dir = pos.getLeftNeighbour(fields);
-			if (fields.get(dir).getFieldType() == MapFieldType.WATER) {
-				throw new MoveException ("Move goes to WATER", "Client tried to move to a WATER field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  ); 
+			if (fields.containsKey(dir)) {
+				if (fields.get(dir).getFieldType() == MapFieldType.WATER) {
+					throw new MoveException ("Move goes to WATER", "Client tried to move to a WATER field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  ); 
+				} 
+			} else {
+				throw new MoveException ("Move goes outside map", "Client tried to move to a non existing field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  );
 			}
 		}
 		
 		if (move.getMove() == EMove.Right) {
 			Coordinates dir = pos.getRightNeighbour(fields);
-			if (fields.get(dir).getFieldType() == MapFieldType.WATER) {
-				throw new MoveException ("Move goes to WATER", "Client tried to move to a WATER field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  ); 
+			if (fields.containsKey(dir)) {
+				if (fields.get(dir).getFieldType() == MapFieldType.WATER) {
+					throw new MoveException ("Move goes to WATER", "Client tried to move to a WATER field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  ); 
+				} 
+			} else {
+				throw new MoveException ("Move goes outside map", "Client tried to move to a non existing field: [" + dir.getX() + " " + dir.getY() + "] from field [" + pos.getX()+ " " + pos.getY() +"]"  );
 			}
 		}
 		
