@@ -31,7 +31,7 @@ public class OnlyOneMapPerPlayerRule implements IRuleValidation{
 	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId,
 			UniqueGameIdentifier gameId) {
 		Map<String, GameData> games = controller.getGames();
-		if (games.get(gameId.getUniqueGameID()).getPlayerWithId(playerId.getUniquePlayerID()).getHalfMap() != null) {
+		if (games.get(gameId.getUniqueGameID()).getPlayerWithId(playerId.getUniquePlayerID()).getHalfMap().isPresent()) {
 			throw new TooManyMapsSentException("Too many half maps sent", "Client " + playerId.getUniquePlayerID() + " tried to send more than one half map");
 		}
 		

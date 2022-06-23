@@ -289,12 +289,12 @@ public class NetworkConverter {
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
 		
 		
-		InternalHalfMap myMap = player.getHalfMap();
+		Optional<InternalHalfMap> myMap = player.getHalfMap();
 
-		Coordinates myFortPos = myMap.getFortPos();
+		Coordinates myFortPos = myMap.get().getFortPos();
 		
 
-		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.getFields().entrySet() ) {
+		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.get().getFields().entrySet() ) {
 			
 			ETerrain fieldType = convertTerrainTypeTo(mapEntry.getValue().getFieldType());
 			

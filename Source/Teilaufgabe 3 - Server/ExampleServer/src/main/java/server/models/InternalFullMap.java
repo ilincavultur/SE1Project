@@ -3,6 +3,7 @@ package server.models;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 import org.slf4j.LoggerFactory;
@@ -71,38 +72,38 @@ public class InternalFullMap {
 	
 	}
 	
-	public void assembleFullMap(GameData game, List<Player> players, InternalHalfMap halfMap1, InternalHalfMap halfMap2) {
+	public void assembleFullMap(GameData game, List<Player> players, Optional<InternalHalfMap> halfMap1, Optional<InternalHalfMap> halfMap2) {
 		
 		if (this.firstMap.equals("first")) {
 			
-			fields.putAll(halfMap1.getFields());
+			fields.putAll(halfMap1.get().getFields());
 		
-			players.get(0).setFortPos(halfMap1.getFortPos());
-			players.get(0).setTreasurePos(halfMap1.getTreasurePos());
+			players.get(0).setFortPos(halfMap1.get().getFortPos());
+			players.get(0).setTreasurePos(halfMap1.get().getTreasurePos());
 		
-			transformCoordinates(players.get(1), halfMap2);
+			transformCoordinates(players.get(1), halfMap2.get());
 			
 			if (game.isChanged() == false) {
 				game.setChanged(true);
 				
-				players.get(0).setCurrPos(halfMap1.getFortPos());
-				players.get(1).setCurrPos(halfMap2.getFortPos());
+				players.get(0).setCurrPos(halfMap1.get().getFortPos());
+				players.get(1).setCurrPos(halfMap2.get().getFortPos());
 			}
 			
 		} else {
 			
-			fields.putAll(halfMap2.getFields());
+			fields.putAll(halfMap2.get().getFields());
 	
-			players.get(1).setFortPos(halfMap2.getFortPos());
-			players.get(1).setTreasurePos(halfMap2.getTreasurePos());
+			players.get(1).setFortPos(halfMap2.get().getFortPos());
+			players.get(1).setTreasurePos(halfMap2.get().getTreasurePos());
 			
-			transformCoordinates(players.get(0), halfMap1);
+			transformCoordinates(players.get(0), halfMap1.get());
 
 			if (game.isChanged() == false) {
 				game.setChanged(true);
 				
-				players.get(0).setCurrPos(halfMap1.getFortPos());
-				players.get(1).setCurrPos(halfMap2.getFortPos());
+				players.get(0).setCurrPos(halfMap1.get().getFortPos());
+				players.get(1).setCurrPos(halfMap2.get().getFortPos());
 			} 
 	
 		}

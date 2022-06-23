@@ -139,7 +139,7 @@ public class GameStateController {
 		Player newPlayer = new Player();
 		newPlayer.setPlayerId(playerId.getUniquePlayerID());
 		newPlayer.setPlayerReg(playerReg);
-		newPlayer.setHalfMap(null);
+		//newPlayer.setHalfMap(Optional.empty());
 		List<Player> players = this.games.get(gameId.getUniqueGameID()).getPlayers();
 		players.add(newPlayer);
 		this.games.get(gameId.getUniqueGameID()).setPlayers(players);
@@ -205,7 +205,7 @@ public class GameStateController {
 	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {
 	
 		for (Player pl : this.games.get(gameID.getUniqueGameID()).getPlayers()) {
-			if (pl.getHalfMap() == null) {
+			if (pl.getHalfMap().isEmpty()) {
 				return false;
 			}
 		}
@@ -237,7 +237,7 @@ public class GameStateController {
 			
 			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player, false));
 			
-			if (player.getHalfMap() != null) {
+			if (player.isPlayersHalfMapPresent()) {
 				map = networkConverter.convertIHalfMapToNetworkFullMap(player, game);	
 			}
 			

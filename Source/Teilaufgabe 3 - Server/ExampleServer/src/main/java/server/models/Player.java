@@ -3,6 +3,7 @@ package server.models;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ import server.network.NetworkConverter;
 public class Player {
 
 	String playerId;
-	InternalHalfMap halfMap;
+	private Optional<InternalHalfMap> halfMap;
 	Coordinates currPos;
 	boolean hasCollectedTreasure;
 	PlayerRegistration playerReg;
@@ -38,6 +39,7 @@ public class Player {
 		super();
 		this.playerId = "";
 		Coordinates currPos = new Coordinates(0,0);
+		this.halfMap = Optional.empty();
 		this.currPos = currPos;
 		this.showEnemyFort = false;
 		this.currentNoOfStepsToTake = 0;
@@ -52,11 +54,11 @@ public class Player {
 	public void setPlayerId(String playerId) {
 		this.playerId = playerId;
 	}
-	public InternalHalfMap getHalfMap() {
+	public Optional<InternalHalfMap> getHalfMap() {
 		return halfMap;
 	}
 	public void setHalfMap(InternalHalfMap halfMap) {
-		this.halfMap = halfMap;
+		this.halfMap = Optional.of(halfMap);
 	}
 	public Coordinates getCurrPos() {
 		return currPos;
@@ -83,7 +85,7 @@ public class Player {
 		this.showEnemyFort = showEnemyFort;
 	}
 	public boolean isPlayersHalfMapPresent() {
-		return this.getHalfMap() != null;
+		return this.halfMap.isPresent();
 	}
 	public Coordinates getFortPos() {
 		return fortPos;
