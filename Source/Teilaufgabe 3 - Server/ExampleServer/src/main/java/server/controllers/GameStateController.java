@@ -2,8 +2,7 @@ package server.controllers;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,38 +18,19 @@ import org.slf4j.LoggerFactory;
 
 import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
-import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.FullMap;
 import MessagesBase.MessagesFromServer.GameState;
 import MessagesBase.MessagesFromServer.PlayerState;
 import server.enums.MapFieldType;
-import server.enums.MoveCommand;
 import server.enums.TreasureState;
-import server.exceptions.MoveException;
-import server.exceptions.NotEnoughPlayersException;
 import server.models.Coordinates;
 import server.models.GameData;
-import server.models.InternalFullMap;
 import server.models.InternalHalfMap;
 import server.models.MapNode;
 import server.models.Player;
 import server.network.NetworkConverter;
-import server.validation.BothPlayersRegisteredRule;
-import server.validation.DontMoveIntoWaterRule;
-import server.validation.DontMoveOutsideMapRule;
-import server.validation.FieldsCoordinatesRule;
-import server.validation.FortRule;
-import server.validation.GameIdRule;
-import server.validation.HalfMapSizeRule;
-import server.validation.IRuleValidation;
-import server.validation.MaxNoOfPlayersReachedRule;
-import server.validation.MyTurnRule;
-import server.validation.NoIslandsRule;
-import server.validation.PlayerIdRule;
-import server.validation.TerrainsNumberRule;
-import server.validation.WaterOnEdgesRule;
 
 public class GameStateController {
 

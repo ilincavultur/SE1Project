@@ -13,6 +13,12 @@ public class MapNode {
 		super();
 	}
 
+	public MapNode(Coordinates position, MapFieldType fieldType) {
+		super();
+		this.position = position;
+		this.fieldType = fieldType;
+	}
+
 	public MapFieldType getFieldType() {
 		return fieldType;
 	}
