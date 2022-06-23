@@ -66,7 +66,9 @@ public class NetworkConverter {
 		
 	}
 	
-	// enemy flag is true if the player is an enemy
+	/*
+	 *  enemy flag is true if the player is an enemy
+	 */
 	public PlayerState convertPlayerTo(GameData game, Player player, boolean enemy) {
 		
 		if (enemy) {
@@ -74,7 +76,8 @@ public class NetworkConverter {
 			String lastName = player.getPlayerReg().getStudentLastName();
 			String uaccount = player.getPlayerReg().getStudentUAccount();
 			EPlayerGameState state = EPlayerGameState.MustWait;
-			if (game.getWinnerId() != null) {
+			
+			if (game.getWinnerId().isEmpty() == false) {
 				if (game.getWinnerId().equals(player.getPlayerId())) {
 					state = EPlayerGameState.Won;	
 				} else {
@@ -88,16 +91,17 @@ public class NetworkConverter {
 				} 
 			}
 			
-		
 			UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(UUID.randomUUID().toString());
 			boolean collectedTreasure = player.isHasCollectedTreasure();
 			return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
 		}
+		
 		String firstName = player.getPlayerReg().getStudentFirstName();
 		String lastName = player.getPlayerReg().getStudentLastName();
 		String uaccount = player.getPlayerReg().getStudentUAccount();
 		EPlayerGameState state = EPlayerGameState.MustWait;
-		if (game.getWinnerId() != null) {
+		
+		if (game.getWinnerId().isEmpty() == false) {
 			if (game.getWinnerId().equals(player.getPlayerId())) {
 				state = EPlayerGameState.Won;	
 			} else {
@@ -114,7 +118,6 @@ public class NetworkConverter {
 		UniquePlayerIdentifier identifier = new UniquePlayerIdentifier(player.getPlayerId());
 		boolean collectedTreasure = player.isHasCollectedTreasure();
 		return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
-	
 	}
 	
 	private MapNode convertMapNodeFrom(HalfMapNode node) {
@@ -143,7 +146,7 @@ public class NetworkConverter {
 		if(fieldType == MapFieldType.WATER) {
 			return ETerrain.Water;
 		}
-		return null;
+		return ETerrain.Grass;
 	}
 	
 	private MapFieldType convertTerrainTypeFrom(ETerrain fieldType) {
@@ -159,7 +162,7 @@ public class NetworkConverter {
 		if(fieldType == ETerrain.Water) {
 			return MapFieldType.WATER;
 		}
-		return null;
+		return MapFieldType.GRASS;
 	}
 
 	public Coordinates getRandomEnemyPos(InternalFullMap myMap) {
@@ -183,6 +186,7 @@ public class NetworkConverter {
 		return toRet;
 	}
 	
+	/*
 	public void showCastles (Collection<FullMapNode> mapNodes) {
 		for (FullMapNode node : mapNodes) {
 			if (node.getFortState() == EFortState.EnemyFortPresent) {
@@ -192,9 +196,9 @@ public class NetworkConverter {
 				logger.info("my fort on : " + node.getX() + " " + node.getY());
 			}
 		}
-	}
+	}*/
 	
-	// server full map to network fullmap
+
 	public Optional<FullMap> convertServerFullMapTo(UniquePlayerIdentifier playerID, GameData game) {
 
 		int roundNo = game.getRoundNo();
@@ -203,7 +207,7 @@ public class NetworkConverter {
 		Player myPlayer = game.getPlayerWithId(playerID.getUniquePlayerID());
 		Player enemyPlayer = game.getTheOtherPlayer(playerID.getUniquePlayerID());
 		
-		FullMap toRet = new FullMap();
+		FullMap toReturn = new FullMap();
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
 
 		Coordinates enemyPos = getRandomEnemyPos(myMap);
@@ -230,9 +234,7 @@ public class NetworkConverter {
 			
 			if (mapEntry.getKey().equals(enemyFortPos)) {
 				if (myPlayer.isShowEnemyFort()) {
-
 					fort = EFortState.EnemyFortPresent;
-			
 				}
 			} 
 			
@@ -249,14 +251,12 @@ public class NetworkConverter {
 			if (roundNo > 10) {
 				
 				if (myPlayer.getCurrPos().equals(mapEntry.getKey()) && enemyPlayer.getCurrPos().equals(mapEntry.getKey())) {
-				
 					playerPos = EPlayerPositionState.BothPlayerPosition;	
 				} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
 					
 				} else if (mapEntry.getKey().equals(actualEnemyPosition)) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;
-					
 				}
 			
 			} else {
@@ -265,35 +265,28 @@ public class NetworkConverter {
 					playerPos = EPlayerPositionState.BothPlayerPosition;
 				} else if (myPlayer.getCurrPos().equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
-					
 				} else if (enemyPos.equals(mapEntry.getKey())) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;	
-					
 				}
 			}
 			
 			FullMapNode fullMapNode = new FullMapNode(fieldType, playerPos, treasure, fort, pos.getX(), pos.getY());
 			mapNodes.add(fullMapNode);
 			
-			
 		}
 
-		toRet = new FullMap(mapNodes);
-		return Optional.of(toRet);
+		toReturn = new FullMap(mapNodes);
+		return Optional.of(toReturn);
 		
 	}
 	
 	public Optional<FullMap> convertIHalfMapToNetworkFullMap(Player player, GameData gameState) {
 
-		FullMap toRet = new FullMap();
+		FullMap toReturn = new FullMap();
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
-		
-		
 		Optional<InternalHalfMap> myMap = player.getHalfMap();
-
 		Coordinates myFortPos = myMap.get().getFortPos();
 		
-
 		for( Map.Entry<Coordinates, MapNode> mapEntry : myMap.get().getFields().entrySet() ) {
 			
 			ETerrain fieldType = convertTerrainTypeTo(mapEntry.getValue().getFieldType());
@@ -317,8 +310,8 @@ public class NetworkConverter {
 			
 		}
 	
-		toRet = new FullMap(mapNodes);
-		return Optional.of(toRet);
+		toReturn = new FullMap(mapNodes);
+		return Optional.of(toReturn);
 		
 	}
 	
@@ -338,7 +331,7 @@ public class NetworkConverter {
 		if (move.getMove() == EMove.Right) {
 			return MoveCommand.RIGHT;
 		}
-		return null;
+		return MoveCommand.DOWN;
 	}
 	
 	public PlayerMove convertMoveTo(String uniquePlayerID, MoveCommand move) {
@@ -357,7 +350,7 @@ public class NetworkConverter {
 		if (move == MoveCommand.RIGHT) {
 			return PlayerMove.of(uniquePlayerID, EMove.Right);
 		}
-		return null;
+		return PlayerMove.of(uniquePlayerID, EMove.Down);
 	}
 	
 	

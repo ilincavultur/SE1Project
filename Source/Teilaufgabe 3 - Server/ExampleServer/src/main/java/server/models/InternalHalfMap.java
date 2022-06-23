@@ -41,7 +41,7 @@ public class InternalHalfMap {
 			}
 		
 		}
-		return null;
+		return new Coordinates(-1,-1);
 	}
 	
 }

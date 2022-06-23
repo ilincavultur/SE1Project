@@ -159,7 +159,6 @@ public class ServerEndpoints {
 			throw e;
 		}
 				
-		// if both maps available, create full map
 		if (gameStateController.bothHalfMapsPresent(gameID)) {
 			gameStateController.assembleHalfMaps(gameID);
 		}

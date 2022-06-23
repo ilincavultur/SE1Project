@@ -65,7 +65,6 @@ public class GameStateController {
 		return games;
 	}
 
-	// SCHIMBA
 	public UniqueGameIdentifier createUniqueGameId() {
 		
 		String newGameId = "";
@@ -75,8 +74,7 @@ public class GameStateController {
 		int no = alphabet.length();
 		
 		while (newGameId.equals("") || games.containsKey(newGameId)) {
-			//newGameId = "";
-		
+			
 			for (int i=0; i<5; i++) {
 				int nextCharacter = randomNo.nextInt(no);
 				newGameId += alphabet.charAt(nextCharacter);
@@ -91,9 +89,9 @@ public class GameStateController {
 	
 	public UniquePlayerIdentifier createUniquePlayerId() {
 		
-		UniquePlayerIdentifier toRet = new UniquePlayerIdentifier(UUID.randomUUID().toString());
+		UniquePlayerIdentifier toReturn = new UniquePlayerIdentifier(UUID.randomUUID().toString());
 		
-		return toRet;
+		return toReturn;
 	}
 	
 	public String getOldestGameId() {
@@ -179,18 +177,20 @@ public class GameStateController {
 		}
 	}
 	
+	/*
 	public boolean myTurn (UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID) {
 		
 		GameData game = this.games.get(gameID.getUniqueGameID());
 		
 		return game.myTurn(playerID.getUniquePlayerID());
-	}
+	}*/
 	
 	public void swapPlayerOnTurn(UniqueGameIdentifier gameID) {
 		GameData game = this.games.get(gameID.getUniqueGameID());
 		game.swapPlayerOnTurn();
 	}
 	
+	/*
 	public boolean bothPlayersRegistered(UniqueGameIdentifier gameID) {
 		
 		if (this.games.get(gameID.getUniqueGameID()).getPlayers().size() != 2) {
@@ -200,7 +200,7 @@ public class GameStateController {
 		
 		return true;
 		
-	}
+	}*/
 
 	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {
 	
@@ -260,7 +260,6 @@ public class GameStateController {
 					map = networkConverter.convertIHalfMapToNetworkFullMap(player1, game);
 					
 				} else if (player2.isPlayersHalfMapPresent()) {
-					
 					map = networkConverter.convertIHalfMapToNetworkFullMap(player2, game);
 				}	
 			}		

@@ -195,54 +195,66 @@ public class Player {
 		
 	}
 	
+	/*	
+	 * if a neighbour has wrong coordinates (lower than 0), it is simply not added to the map
+	 * 	if all neighnours are wrong, the returned Map is empty
+	 */
 	public Map<String, Coordinates> getFieldsAroundMountain(Coordinates mountainPos, Map<Coordinates, MapNode> fields) {
 		
 		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();
 		
-		if (fields.get(mountainPos.getUpNeighbour(fields)) != null) {
-			if (fields.get(mountainPos.getUpNeighbour(fields)).getFieldType() != MapFieldType.WATER) {
+		Coordinates up = mountainPos.getUpNeighbour(fields);
+		if (up.getX() >= 0 && up.getY() >= 0) {
+			if (fields.get(up).getFieldType() != MapFieldType.WATER) {
 				toReturn.put("up", mountainPos.getUpNeighbour(fields));	
 			}
 		}
 		
-		if (fields.get(mountainPos.getNorthWestNeighbour(fields)) != null) {
-			if (fields.get(mountainPos.getNorthWestNeighbour(fields)).getFieldType() != MapFieldType.WATER) {
+		Coordinates nw = mountainPos.getNorthWestNeighbour(fields);
+		if (nw.getX() >= 0 && nw.getY() >= 0) {
+			if (fields.get(nw).getFieldType() != MapFieldType.WATER) {
 				toReturn.put("nw", mountainPos.getNorthWestNeighbour(fields));	
 			}
 		}
 		
-		if (fields.get(mountainPos.getDownNeighbour(fields)) != null) {
-			if (fields.get(mountainPos.getDownNeighbour(fields)).getFieldType() != MapFieldType.WATER) {
+		Coordinates down = mountainPos.getDownNeighbour(fields);
+		if (down.getX() >= 0 && down.getY() >= 0) {
+			if (fields.get(down).getFieldType() != MapFieldType.WATER) {
 				toReturn.put("down", mountainPos.getDownNeighbour(fields));	
 			}
 		}
 		
-		if (fields.get(mountainPos.getNorthEastNeighbour(fields)) != null) {
-			if (fields.get(mountainPos.getNorthEastNeighbour(fields)).getFieldType() != MapFieldType.WATER) {
+		Coordinates ne = mountainPos.getNorthEastNeighbour(fields);
+		if (ne.getX() >= 0 && ne.getY() >= 0) {
+			if (fields.get(ne).getFieldType() != MapFieldType.WATER) {
 				toReturn.put("ne", mountainPos.getNorthEastNeighbour(fields));	
 			}
 		}
 		
-		if (fields.get(mountainPos.getLeftNeighbour(fields)) != null) {
-			if (fields.get(mountainPos.getLeftNeighbour(fields)).getFieldType() != MapFieldType.WATER) {
+		Coordinates left = mountainPos.getLeftNeighbour(fields);
+		if (left.getX() >= 0 && left.getY() >= 0) {
+			if (fields.get(left).getFieldType() != MapFieldType.WATER) {
 				toReturn.put("left", mountainPos.getLeftNeighbour(fields));		
 			}
 		}
 		
-		if (fields.get(mountainPos.getSouthEastNeighbour(fields)) != null) {
-			if (fields.get(mountainPos.getSouthEastNeighbour(fields)).getFieldType() != MapFieldType.WATER) {
+		Coordinates se = mountainPos.getSouthEastNeighbour(fields);
+		if (se.getX() >= 0 && se.getY() >= 0) {
+			if (fields.get(se).getFieldType() != MapFieldType.WATER) {
 				toReturn.put("se", mountainPos.getSouthEastNeighbour(fields));	
 			}
 		}
 	
-		if (fields.get(mountainPos.getRightNeighbour(fields)) != null) {
-			if (fields.get(mountainPos.getRightNeighbour(fields)).getFieldType() != MapFieldType.WATER) {
+		Coordinates right = mountainPos.getRightNeighbour(fields);
+		if (right.getX() >= 0 && right.getY() >= 0) {
+			if (fields.get(right).getFieldType() != MapFieldType.WATER) {
 				toReturn.put("right", mountainPos.getRightNeighbour(fields));	
 			}
 		}
 		
-		if (fields.get(mountainPos.getSouthWestNeighbour(fields)) != null) {
-			if (fields.get(mountainPos.getSouthWestNeighbour(fields)).getFieldType() != MapFieldType.WATER) {
+		Coordinates sw = mountainPos.getSouthWestNeighbour(fields);
+		if (sw.getX() >= 0 && sw.getY() >= 0) {
+			if (fields.get(sw).getFieldType() != MapFieldType.WATER) {
 				toReturn.put("sw", mountainPos.getSouthWestNeighbour(fields));	
 			}
 		}

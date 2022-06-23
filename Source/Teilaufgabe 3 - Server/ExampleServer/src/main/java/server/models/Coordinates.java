@@ -49,7 +49,7 @@ public class Coordinates {
 			return neighbour;
 		}
 				
-		return null;
+		return new Coordinates(-1,-1);
 		
 	}
 	
@@ -61,7 +61,7 @@ public class Coordinates {
 			return neighbour;
 		}
 				
-		return null;
+		return new Coordinates(-1,-1);
 		
 	}
 
@@ -73,7 +73,7 @@ public class Coordinates {
 			return neighbour;
 		}
 				
-		return null;
+		return new Coordinates(-1,-1);
 		
 	}
 	
@@ -85,7 +85,7 @@ public class Coordinates {
 			return neighbour;
 		}
 				
-		return null;
+		return new Coordinates(-1,-1);
 		
 	}
 	
@@ -97,7 +97,7 @@ public class Coordinates {
 			return neighbour;
 		}
 				
-		return null;
+		return new Coordinates(-1,-1);
 		
 	}
 	
@@ -109,7 +109,7 @@ public class Coordinates {
 			return neighbour;
 		}
 				
-		return null;
+		return new Coordinates(-1,-1);
 		
 	}
 	
@@ -121,7 +121,7 @@ public class Coordinates {
 			return neighbour;
 		}
 				
-		return null;
+		return new Coordinates(-1,-1);
 		
 	}
 	
@@ -133,7 +133,7 @@ public class Coordinates {
 			return neighbour;
 		}
 				
-		return null;
+		return new Coordinates(-1,-1);
 		
 	}
 	

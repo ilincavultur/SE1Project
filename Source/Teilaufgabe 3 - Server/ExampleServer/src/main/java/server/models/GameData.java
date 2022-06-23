@@ -22,7 +22,7 @@ public class GameData {
 	
 	public GameData() {
 		super();
-		this.gameId = null;
+		this.gameId = "";
 		this.players = new ArrayList<Player>();
 		this.fullMap = new InternalFullMap();
 		this.changed = false;
@@ -30,7 +30,7 @@ public class GameData {
 		this.gameStateId = UUID.randomUUID().toString();
 		Random randomNo = new Random();
 		this.idxPlayersTurn = randomNo.nextInt(2);
-		this.winnerId = null;
+		this.winnerId = "";
 		this.roundNo = 0;
 		pickFirstPlayerToSendMap();
 	}
