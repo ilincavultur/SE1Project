@@ -79,7 +79,7 @@ public class ServerEndpoints {
 
 		gameStateController.createNewGame(toReturn);
 		
-		logger.info("New Game Created");
+		logger.info("New Game Created, " + toReturn.getUniqueGameID());
 		
 		return toReturn;
 
@@ -96,10 +96,10 @@ public class ServerEndpoints {
 			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
 			rules.forEach(rule -> rule.validatePlayerReg(gameStateController.getGames(), newPlayerID, gameID));
 		} catch (GameIdException gameIdException) {
-			logger.info("game Id not found");
+			logger.error("game Id not found");
 			throw gameIdException;
 		} catch (TooManyPlayersException tooManyPlayersException) {
-			logger.info("max number of players reached, cannot register");
+			logger.error("max number of players reached, cannot register");
 			throw tooManyPlayersException;
 		}
 
@@ -107,7 +107,7 @@ public class ServerEndpoints {
 		
 		ResponseEnvelope<UniquePlayerIdentifier> toReturn = new ResponseEnvelope<>(newPlayerID);
 		
-		logger.info("New Player Registered");
+		logger.info("New Player Registered, " + newPlayerID.getUniquePlayerID() + " for game, " + gameID.getUniqueGameID());
 		
 		return toReturn;
 
@@ -127,23 +127,23 @@ public class ServerEndpoints {
 			rules.forEach(rule -> rule.validateHalfMap(halfMap));
 			rules.forEach(rule -> rule.myTurn(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
 		} catch (GameIdException e) {
-			logger.info("game Id not found");
+			logger.error("game Id not found");
 			throw e;
 		} catch (PlayerIdException e) {
-			logger.info("user Id not found");
+			logger.error("user Id not found");
 			throw e;
 		} catch (NotEnoughPlayersException e) {
-			logger.info("2 players must be registered, only one found");
+			logger.error("2 players must be registered, only one found");
 			throw e;
 		} catch (TooManyMapsSentException e) {
-			logger.info("Half Map was already sent, cannot send another one");
+			logger.error("Half Map was already sent, cannot send another one");
 			throw e;
 		} catch(HalfMapException e) {
-			logger.info("Half Map was incorrect");
+			logger.error("Half Map was incorrect");
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			throw e;
 		} catch (NotPlayersTurnException e) {
-			logger.info("Player sent halfmap when it wasn't his turn");
+			logger.error("Player sent halfmap when it wasn't his turn");
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			throw e;
 		}
@@ -168,10 +168,10 @@ public class ServerEndpoints {
 			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
 			rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), playerID, gameID));
 		} catch (GameIdException e) {
-			logger.info("game Id not found");
+			logger.error("game Id not found");
 			throw e;
 		} catch (PlayerIdException e) {
-			logger.info("user Id not found");
+			logger.error("user Id not found");
 			throw e;
 		}
 				
@@ -202,17 +202,17 @@ public class ServerEndpoints {
 			rules.forEach(rule -> rule.validateMove(gameStateController.getGames(), move, gameID));
 			rules.forEach(rule -> rule.myTurn(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
 		} catch (GameIdException e) {
-			logger.info("game Id not found");
+			logger.error("game Id not found");
 			throw e;
 		} catch (PlayerIdException e) {
-			logger.info("user Id not found");
+			logger.error("user Id not found");
 			throw e;
 		} catch (MoveException e) {
-			logger.info("Move sent was wrong");
+			logger.error("Move sent was wrong");
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(move.getUniquePlayerID());
 			throw e;
 		} catch (NotPlayersTurnException e) {
-			logger.info("Player sent move when it wasn't his turn");
+			logger.error("Player sent move when it wasn't his turn");
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(move.getUniquePlayerID());
 			throw e;
 		}

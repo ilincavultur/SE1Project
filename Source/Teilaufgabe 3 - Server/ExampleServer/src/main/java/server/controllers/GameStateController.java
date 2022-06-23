@@ -29,6 +29,7 @@ import server.enums.MapFieldType;
 import server.enums.MoveCommand;
 import server.enums.TreasureState;
 import server.exceptions.MoveException;
+import server.exceptions.NotEnoughPlayersException;
 import server.models.Coordinates;
 import server.models.GameData;
 import server.models.InternalFullMap;
@@ -168,6 +169,9 @@ public class GameStateController {
 	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
 		List<Player> players = this.games.get(gameId).getPlayers();
 		
+		logger.warn("receibing half map from player: " + playerId + ", for game, " + gameId);
+		
+		
 		for (Player player: players) {
 			if (player.getPlayerId().equals(playerId)) {
 				player.setCurrPos(halfMap.getFortPos());
@@ -213,15 +217,16 @@ public class GameStateController {
 		List<Player> registeredPlayers = game.getPlayers();
 		
 		if (registeredPlayers.size() == 1) {
+			logger.info("registeredPkayers == 1");
 			
 			Player player = registeredPlayers.get(0);
 			
 			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player, false));
 			
-			if (player.isPlayersHalfMapPresent()) {
+			/*if (player.isPlayersHalfMapPresent()) {
 				map = networkConverter.convertIHalfMapToNetworkFullMap(player, game);	
-			}
-			
+			}*/
+			return new GameState(map, players, game.getGameStateId());
 			
 		} else if (registeredPlayers.size() == 2) {
 			
@@ -255,7 +260,6 @@ public class GameStateController {
 		Player player = game.getPlayerWithId(move.getUniquePlayerID());
 		
 		player.processMove(game, gameID, move, networkConverter);
-		
 		player.updateTreasureStatus(game);
 		player.updateEnemyFortStatus(game);
 		player.updateMountainViewStatus(game);

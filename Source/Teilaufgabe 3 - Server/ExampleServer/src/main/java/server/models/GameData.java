@@ -102,15 +102,20 @@ public class GameData {
 	
 	public boolean myTurn (String playerId) {
 
-		if (players.get(0).getPlayerId().equals(playerId)) {
-			if (idxPlayersTurn == 0) {
-				return true;
-			}
-		} else if (players.get(1).getPlayerId().equals(playerId)) {
-			if (idxPlayersTurn == 1) {
-				return true;
+		if (this.players.size() == 1) {
+			return false;
+		} else if (this.players.size() == 2) {
+			if (players.get(0).getPlayerId().equals(playerId)) {
+				if (idxPlayersTurn == 0) {
+					return true;
+				}
+			} else if (players.get(1).getPlayerId().equals(playerId)) {
+				if (idxPlayersTurn == 1) {
+					return true;
+				}
 			}
 		}
+		
 		
 		return false;
 	}
