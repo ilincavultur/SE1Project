@@ -36,11 +36,24 @@ public class BothPlayersRegisteredRule implements IRuleValidation{
 	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
 		Map<String, GameData> games = controller.getGames();
 		List<Player> players = games.get(gameId.getUniqueGameID()).getPlayers();
+		int number = 0;
 
-		for (int i=0; i<players.size(); i++) {
+		/*for (int i=0; i<players.size(); i++) {
 			if (players.get(i).getPlayerId().isEmpty()) {
 				throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
 			}
+		}*/
+		
+		for (Player pl: players) {
+			if (pl.getPlayerId().isEmpty()) {
+				throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
+			} else {
+				number += 1;
+			}
+		}
+		
+		if (number != 2) {
+			throw new NotEnoughPlayersException("Only one client has registered", "Client tried to send half Map but not both players were registered");
 		}
 		
 	}

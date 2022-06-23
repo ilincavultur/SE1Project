@@ -134,8 +134,7 @@ public class InternalFullMap {
 		
 		// square
 		if (this.xSize == 8) {
-		// y + 4
-			 
+
 			Coordinates oldFortPos = halfMap.getFortPos();
 			Coordinates oldTreasurePos = halfMap.getTreasurePos();
 			
@@ -159,8 +158,7 @@ public class InternalFullMap {
 				fields.put(newPos, mapEntry.getValue());
 			}
 		} else if (this.xSize == 16) {
-		// x + 8
-		
+	
 			Coordinates oldFortPos = halfMap.getFortPos();
 			Coordinates oldTreasurePos = halfMap.getTreasurePos();
 			

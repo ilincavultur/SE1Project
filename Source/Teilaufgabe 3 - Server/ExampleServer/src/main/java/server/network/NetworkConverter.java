@@ -185,19 +185,6 @@ public class NetworkConverter {
 		
 		return toRet;
 	}
-	
-	/*
-	public void showCastles (Collection<FullMapNode> mapNodes) {
-		for (FullMapNode node : mapNodes) {
-			if (node.getFortState() == EFortState.EnemyFortPresent) {
-				logger.info("enemy fort on : " + node.getX() + " " + node.getY());
-			}
-			if (node.getFortState() == EFortState.MyFortPresent) {
-				logger.info("my fort on : " + node.getX() + " " + node.getY());
-			}
-		}
-	}*/
-	
 
 	public Optional<FullMap> convertServerFullMapTo(UniquePlayerIdentifier playerID, GameData game) {
 

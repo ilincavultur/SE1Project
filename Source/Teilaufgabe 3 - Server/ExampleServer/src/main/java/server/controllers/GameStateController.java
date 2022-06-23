@@ -137,8 +137,8 @@ public class GameStateController {
 		Player newPlayer = new Player();
 		newPlayer.setPlayerId(playerId.getUniquePlayerID());
 		newPlayer.setPlayerReg(playerReg);
-		//newPlayer.setHalfMap(Optional.empty());
 		List<Player> players = this.games.get(gameId.getUniqueGameID()).getPlayers();
+		//logger.info("players size when creating player " + players.size() );
 		players.add(newPlayer);
 		this.games.get(gameId.getUniqueGameID()).setPlayers(players);
 	}
@@ -167,6 +167,7 @@ public class GameStateController {
 	
 	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
 		List<Player> players = this.games.get(gameId).getPlayers();
+		
 		for (Player player: players) {
 			if (player.getPlayerId().equals(playerId)) {
 				player.setCurrPos(halfMap.getFortPos());
@@ -177,30 +178,10 @@ public class GameStateController {
 		}
 	}
 	
-	/*
-	public boolean myTurn (UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID) {
-		
-		GameData game = this.games.get(gameID.getUniqueGameID());
-		
-		return game.myTurn(playerID.getUniquePlayerID());
-	}*/
-	
 	public void swapPlayerOnTurn(UniqueGameIdentifier gameID) {
 		GameData game = this.games.get(gameID.getUniqueGameID());
 		game.swapPlayerOnTurn();
 	}
-	
-	/*
-	public boolean bothPlayersRegistered(UniqueGameIdentifier gameID) {
-		
-		if (this.games.get(gameID.getUniqueGameID()).getPlayers().size() != 2) {
-			
-			return false;
-		}
-		
-		return true;
-		
-	}*/
 
 	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {
 	

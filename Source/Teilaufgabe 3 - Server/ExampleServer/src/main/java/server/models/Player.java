@@ -21,11 +21,11 @@ import server.network.NetworkConverter;
 
 public class Player {
 
-	String playerId;
+	private String playerId;
 	private Optional<InternalHalfMap> halfMap;
-	Coordinates currPos;
+	private Coordinates currPos;
 	boolean hasCollectedTreasure;
-	PlayerRegistration playerReg;
+	private PlayerRegistration playerReg;
 	private boolean showEnemyFort;
 	private boolean showTreasure;
 	private MoveCommand currentDirection;

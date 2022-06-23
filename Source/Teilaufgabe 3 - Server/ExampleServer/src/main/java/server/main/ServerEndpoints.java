@@ -59,7 +59,7 @@ public class ServerEndpoints {
 	private GameStateController gameStateController = new GameStateController();
 	private NetworkConverter networkConverter = new NetworkConverter();
 	private static final Logger logger = LoggerFactory.getLogger(ServerEndpoints.class);
-	List<IRuleValidation> rules = List.of(	new BothPlayersRegisteredRule(), 
+	private static List<IRuleValidation> rules = List.of(	new BothPlayersRegisteredRule(), 
 											new GameIdRule(), new DontMoveIntoWaterRule(), 
 											new DontMoveOutsideMapRule(), new FieldsCoordinatesRule(), 
 											new FortRule(), new HalfMapSizeRule(), 
@@ -79,6 +79,8 @@ public class ServerEndpoints {
 
 		gameStateController.createNewGame(toReturn);
 		
+		logger.info("New Game Created");
+		
 		return toReturn;
 
 	}
@@ -94,14 +96,18 @@ public class ServerEndpoints {
 			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
 			rules.forEach(rule -> rule.validatePlayerReg(gameStateController.getGames(), newPlayerID, gameID));
 		} catch (GameIdException gameIdException) {
+			logger.info("game Id not found");
 			throw gameIdException;
 		} catch (TooManyPlayersException tooManyPlayersException) {
+			logger.info("max number of players reached, cannot register");
 			throw tooManyPlayersException;
 		}
 
 		gameStateController.registerPlayer(newPlayerID, gameID, playerRegistration);
 		
 		ResponseEnvelope<UniquePlayerIdentifier> toReturn = new ResponseEnvelope<>(newPlayerID);
+		
+		logger.info("New Player Registered");
 		
 		return toReturn;
 
@@ -121,18 +127,24 @@ public class ServerEndpoints {
 			rules.forEach(rule -> rule.validateHalfMap(halfMap));
 			rules.forEach(rule -> rule.myTurn(gameStateController.getGames(), new UniquePlayerIdentifier(halfMap.getUniquePlayerID()), gameID));
 		} catch (GameIdException e) {
+			logger.info("game Id not found");
 			throw e;
 		} catch (PlayerIdException e) {
+			logger.info("user Id not found");
 			throw e;
 		} catch (NotEnoughPlayersException e) {
-			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
+			logger.info("2 players must be registered, only one found");
 			throw e;
 		} catch (TooManyMapsSentException e) {
+			logger.info("Half Map was already sent, cannot send another one");
 			throw e;
 		} catch(HalfMapException e) {
+			logger.info("Half Map was incorrect");
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			throw e;
 		} catch (NotPlayersTurnException e) {
+			logger.info("Player sent halfmap when it wasn't his turn");
+			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(halfMap.getUniquePlayerID());
 			throw e;
 		}
 	
@@ -141,6 +153,8 @@ public class ServerEndpoints {
 		gameStateController.receiveHalfMap(iHalfMap, halfMap.getUniquePlayerID(), gameID.getUniqueGameID());
 		gameStateController.swapPlayerOnTurn(gameID);
 		gameStateController.updateGameStateId(gameID);
+		
+		logger.info("Half Map has been received and saved");
 		
 		return toReturn;
 
@@ -154,8 +168,10 @@ public class ServerEndpoints {
 			rules.forEach(rule -> rule.validateGameId(gameStateController.getGames(), gameID));
 			rules.forEach(rule -> rule.validatePlayerId(gameStateController.getGames(), playerID, gameID));
 		} catch (GameIdException e) {
+			logger.info("game Id not found");
 			throw e;
 		} catch (PlayerIdException e) {
+			logger.info("user Id not found");
 			throw e;
 		}
 				
@@ -166,6 +182,8 @@ public class ServerEndpoints {
 		GameState newGameState = gameStateController.requestGameState(playerID, gameID, networkConverter);
 		
 		ResponseEnvelope<GameState> toRet = new ResponseEnvelope<>(newGameState);
+		
+		logger.info("Game State sent");
 		
 		return toRet;
 
@@ -184,19 +202,26 @@ public class ServerEndpoints {
 			rules.forEach(rule -> rule.validateMove(gameStateController.getGames(), move, gameID));
 			rules.forEach(rule -> rule.myTurn(gameStateController.getGames(), new UniquePlayerIdentifier(move.getUniquePlayerID()), gameID));
 		} catch (GameIdException e) {
+			logger.info("game Id not found");
 			throw e;
 		} catch (PlayerIdException e) {
+			logger.info("user Id not found");
 			throw e;
 		} catch (MoveException e) {
+			logger.info("Move sent was wrong");
 			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(move.getUniquePlayerID());
 			throw e;
 		} catch (NotPlayersTurnException e) {
+			logger.info("Player sent move when it wasn't his turn");
+			gameStateController.getGames().get(gameID.getUniqueGameID()).setWinner(move.getUniquePlayerID());
 			throw e;
 		}
 
 		gameStateController.receiveMove(gameID, move, networkConverter);
 		gameStateController.swapPlayerOnTurn(gameID);
 		gameStateController.updateGameStateId(gameID);
+		
+		logger.info("Move received and processed");
 		
 		return toReturn;
 
