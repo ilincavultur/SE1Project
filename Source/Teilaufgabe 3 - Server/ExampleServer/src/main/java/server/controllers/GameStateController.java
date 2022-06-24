@@ -67,20 +67,19 @@ public class GameStateController {
 	}
 	
 	public String getOldestGameId() {
-		String toReturn = "";
+		String oldestGameId = "";
 		Duration longestDuration = Duration.ZERO;
 		
 		for (var eachGame : this.games.entrySet()) {
-			
 			Duration gameDuration = Duration.between(eachGame.getValue().getGameCreationTime(), Instant.now());
 			
 			if (gameDuration.compareTo(longestDuration) >= 0) {
 				longestDuration = gameDuration;
-				toReturn = eachGame.getKey();
+				oldestGameId = eachGame.getKey();
 			}
 		}
 		
-		return toReturn;
+		return oldestGameId;
 	}
 	
 	public void removeGame(String gameId) {
@@ -126,45 +125,37 @@ public class GameStateController {
 	}
 	
 	public void assembleHalfMaps(UniqueGameIdentifier gameID) {
-		
 		GameData game = this.games.get(gameID.getUniqueGameID());
-		game.getFullMap().assembleFullMap(game, game.getPlayers(), game.getPlayers().get(0).getHalfMap(), game.getPlayers().get(1).getHalfMap());
-		this.games.get(gameID.getUniqueGameID()).setFullMap(game.getFullMap());
-
+		this.games.get(gameID.getUniqueGameID()).getFullMap().assembleFullMap(game, game.getPlayers(), game.getPlayers().get(0).getHalfMap(), game.getPlayers().get(1).getHalfMap());
 	}
 
 	public GameState requestGameState(UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID, NetworkConverter networkConverter) {
 		
 		GameData game = this.games.get(gameID.getUniqueGameID());
-		
 		Set<PlayerState> players = new HashSet<>();
-		
 		Optional<FullMap> map = Optional.empty();
-		
 		List<Player> registeredPlayers = game.getPlayers();
+		String playerId = playerID.getUniquePlayerID();
 		
 		if (registeredPlayers.size() == 1) {
-		
-			Player player = registeredPlayers.get(0);
 			
-			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player, false));
-		
+			Player player = registeredPlayers.get(0);
+			players.add(networkConverter.convertPlayerTo(game, player, false));
+			
 			return new GameState(map, players, game.getGameStateId());
 			
 		} else if (registeredPlayers.size() == 2) {
 			
-			Player player1 = game.getPlayerWithId(playerID.getUniquePlayerID());
-			Player player2 = game.getTheOtherPlayer(playerID.getUniquePlayerID());
+			Player player1 = game.getPlayerWithId(playerId);
+			Player player2 = game.getTheOtherPlayer(playerId);
 			
-			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player1, false));
-			players.add(networkConverter.convertPlayerTo(this.games.get(gameID.getUniqueGameID()), player2, true));
+			players.add(networkConverter.convertPlayerTo(game, player1, false));
+			players.add(networkConverter.convertPlayerTo(game, player2, true));
 			
 			if (bothHalfMapsPresent(gameID)) {
 				assembleHalfMaps(gameID);
 				map = networkConverter.convertServerFullMapTo(playerID, game);
-				
 			} else {
-			
 				if (player1.isPlayersHalfMapPresent()) {
 					map = networkConverter.convertIHalfMapToNetworkFullMap(player1, game);
 					
