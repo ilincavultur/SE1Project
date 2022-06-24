@@ -29,6 +29,7 @@ import MessagesBase.MessagesFromServer.PlayerState;
 import server.models.InternalHalfMap;
 import server.models.MapNode;
 import server.models.Player;
+import server.controllers.FullMapHandler;
 import server.enums.FortState;
 import server.enums.MapFieldType;
 import server.enums.MoveCommand;
@@ -37,7 +38,6 @@ import server.enums.ServerPlayerState;
 import server.enums.TreasureState;
 import server.models.Coordinates;
 import server.models.GameData;
-import server.models.InternalFullMap;
 
 public class NetworkConverter {
 	
@@ -158,30 +158,6 @@ public class NetworkConverter {
 	}
 
 	/*
-	 * 	Gets a random enemy position for the first 10 rounds
-	 */
-	public Coordinates getRandomEnemyPos(InternalFullMap myMap) {
-		Coordinates toRet = new Coordinates();
-		Random randomNo = new Random();
-		
-		if (myMap.getxSize() == 8) {
-			int randomFortX = randomNo.nextInt(8);
-			toRet.setX(randomFortX);
-			int randomFortY = randomNo.nextInt(8);
-			toRet.setY(randomFortY);
-			
-			return toRet;
-		}
-		
-		int randomFortX = randomNo.nextInt(16);
-		toRet.setX(randomFortX);
-		int randomFortY = randomNo.nextInt(4);
-		toRet.setY(randomFortY);
-		
-		return toRet;
-	}
-
-	/*
 	 *  Convert internal FullMap to Network Optional FullMap
 	 */
 	public Optional<FullMap> convertServerFullMapTo(UniquePlayerIdentifier playerID, GameData game) {
@@ -190,14 +166,13 @@ public class NetworkConverter {
 
 		int roundNo = game.getRoundNo();
 		
-		InternalFullMap myMap = game.getFullMap();
+		FullMapHandler myMap = game.getFullMap();
 		Player myPlayer = game.getPlayerWithId(playerID.getUniquePlayerID());
 		Player enemyPlayer = game.getTheOtherPlayer(playerID.getUniquePlayerID());
 		
-		
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
 
-		Coordinates randomEnemyPosition = getRandomEnemyPos(myMap);
+		Coordinates randomEnemyPosition = myMap.getRandomEnemyPos();
 		Coordinates myFortPos = myPlayer.getFortPos();
 		Coordinates enemyFortPos = enemyPlayer.getFortPos();
 		Coordinates actualEnemyPosition = enemyPlayer.getCurrPos();

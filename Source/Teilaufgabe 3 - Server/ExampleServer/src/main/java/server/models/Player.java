@@ -1,6 +1,7 @@
 package server.models;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
+import server.controllers.FullMapHandler;
 import server.controllers.GameStateController;
 import server.enums.FortState;
 import server.enums.MapFieldType;
@@ -120,24 +122,33 @@ public class Player {
 		this.showTreasure = showTreasure;
 	}
 	
+	public void receiveHalfMap(InternalHalfMap halfMap, String gameId) {
+		this.setCurrPos(halfMap.getFortPos());
+		Coordinates treasurePosition = halfMap.placeTreasure();
+		halfMap.getFields().get(treasurePosition).setTreasureState(TreasureState.MYTREASURE);
+		this.setHalfMap(halfMap);
+	}
+	
 	/*
 	 *  Updates player position if player has finished move
 	 *  Decreases number of steps to take if player has not finished move
 	 */
-	public void processMove(GameData game, PlayerMove move, NetworkConverter networkConverter) {
+	public void processMove(FullMapHandler fullMap, PlayerMove move, NetworkConverter networkConverter) {
 		
 		MoveCommand newMove = networkConverter.convertMoveFrom(move);
+		
+		logger.info("player's " + this.playerId + "  current position: " + this.currPos.getX() + " " + this.currPos.getY());
 	
-		Coordinates target = game.getFullMap().getTargetCoordinatesFromMove(this.currPos, move);
+		Coordinates target = fullMap.getTargetCoordinatesFromMove(this.currPos, move);
 		if (this.currentNoOfStepsToTake == 0) {
 			
 			this.currentDirection = newMove;
-			this.currentNoOfStepsToTake = game.getFullMap().getPathWeight(this.currPos, target);
+			this.currentNoOfStepsToTake = fullMap.getPathWeight(this.currPos, target);
 			
 		} else if (newMove != this.currentDirection) {
 			
 			this.currentDirection = newMove;
-			this.currentNoOfStepsToTake = game.getFullMap().getPathWeight(this.currPos, target);
+			this.currentNoOfStepsToTake = fullMap.getPathWeight(this.currPos, target);
 		}
 		
 		this.currentNoOfStepsToTake -= 1;
@@ -148,6 +159,10 @@ public class Player {
 		
 	}
 	
+	/*
+	 *  If player landed on its own treasure field
+	 *  it picks it up and the treasure disappears
+	 */
 	public void updateTreasureStatus(GameData game) {
 		Coordinates myTreasurePos = this.getTreasurePos();
 		if (this.currPos.equals(myTreasurePos)) {
@@ -156,6 +171,10 @@ public class Player {
 		} 	 
 	}
 	
+	/*
+	 *  If player landed on enemy Fort position
+	 *  If it has already picked the treasure it wins
+	 */
 	public void updateEnemyFortStatus(GameData game) {
 
 		Player enemy = game.getTheOtherPlayer(this.getPlayerId());
@@ -174,20 +193,22 @@ public class Player {
 	/*
 	 *  Update player's ability to see treasure and forts
 	 */
-	public void updateMountainViewStatus(GameData game) {
+	public void updateMountainViewStatus(GameData game, FullMapHandler fullMap) {
 		
 		Coordinates myTreasurePos = this.getTreasurePos();
 		Player enemy = game.getTheOtherPlayer(this.getPlayerId());
 		Coordinates enemyFortPos = enemy.getFortPos();
 		
-		if (game.getFullMap().getFields().get(this.currPos).getFieldType() == MapFieldType.MOUNTAIN) {
+		if (fullMap.getFields().get(this.currPos).getFieldType() == MapFieldType.MOUNTAIN) {
 			
-			if (game.getFullMap().checkFortsAroundMountain(enemyFortPos, this.currPos)) {
+			if (fullMap.checkFortsAroundMountain(enemyFortPos, this.currPos)) {
 				this.setShowEnemyFort(true);
 			}
 			
 			if (this.isHasCollectedTreasure() == false) {
-				if (game.getFullMap().checkTreasuresAroundMountain(myTreasurePos, this.currPos)) {
+				if (fullMap.checkTreasuresAroundMountain(myTreasurePos, this.currPos)) {
+					//logger.warn("I, " + this.playerId + " am on a mountain and I am here " + this.currPos.getX() + " " + this.currPos.getY());
+					//logger.warn("and I have discovered my treasure here: " + myTreasurePos.getX() + " " + myTreasurePos.getY());
 					this.setShowTreasure(true);	
 				}
 			}

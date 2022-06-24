@@ -1,4 +1,4 @@
-package server.models;
+package server.controllers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,18 +16,23 @@ import MessagesBase.MessagesFromServer.FullMapNode;
 import ch.qos.logback.classic.Logger;
 import server.enums.MapFieldType;
 import server.enums.TreasureState;
+import server.models.Coordinates;
+import server.models.GameData;
+import server.models.InternalHalfMap;
+import server.models.MapNode;
+import server.models.Player;
 import server.network.NetworkConverter;
 
-public class InternalFullMap {
+public class FullMapHandler {
 	
 	private Map<Coordinates, MapNode> fields = new HashMap<Coordinates, MapNode>();
 	private int xSize;
 	private int ySize;
 	private String firstMap;
 	
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(InternalFullMap.class);
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(FullMapHandler.class);
 
-	public InternalFullMap() {
+	public FullMapHandler() {
 		super();
 		setupFullMap();
 	}
@@ -106,7 +111,8 @@ public class InternalFullMap {
 		} else {
 			setFields(game, players.get(1), players.get(0), halfMap2, halfMap1);
 		}
-		
+		//logger.info("player's " + players.get(0).getPlayerId() + "  treasure position: " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
+		//logger.info("player's " + players.get(1).getPlayerId() + "  treasure position: " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
 	}
 	
 	public int getxSize() {
@@ -302,6 +308,30 @@ public class InternalFullMap {
 		}
 		
 		return toReturn;
+	}
+	
+	/*
+	 * 	Gets a random enemy position for the first 10 rounds
+	 */
+	public Coordinates getRandomEnemyPos() {
+		Coordinates toRet = new Coordinates();
+		Random randomNo = new Random();
+		
+		if (this.getxSize() == 8) {
+			int randomFortX = randomNo.nextInt(8);
+			toRet.setX(randomFortX);
+			int randomFortY = randomNo.nextInt(8);
+			toRet.setY(randomFortY);
+			
+			return toRet;
+		}
+		
+		int randomFortX = randomNo.nextInt(16);
+		toRet.setX(randomFortX);
+		int randomFortY = randomNo.nextInt(4);
+		toRet.setY(randomFortY);
+		
+		return toRet;
 	}
 	
 }

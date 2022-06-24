@@ -47,20 +47,16 @@ public class GameStateController {
 	}
 
 	public UniqueGameIdentifier createUniqueGameId() {
-		
 		String newGameId = "";
-		
 		Random randomNo = new Random();
 		String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		int no = alphabet.length();
 		
 		while (newGameId.equals("") || games.containsKey(newGameId)) {
-			
 			for (int i=0; i<5; i++) {
 				int nextCharacter = randomNo.nextInt(no);
 				newGameId += alphabet.charAt(nextCharacter);
 			}
-		
 		}
 
 		return new UniqueGameIdentifier(newGameId);
@@ -71,7 +67,6 @@ public class GameStateController {
 	}
 	
 	public String getOldestGameId() {
-		
 		String toReturn = "";
 		Duration longestDuration = Duration.ZERO;
 		
@@ -113,36 +108,12 @@ public class GameStateController {
 		this.games.get(gameId.getUniqueGameID()).setPlayers(players);
 	}
 	
-	public Coordinates placeTreasure(InternalHalfMap halfMap) {
-	
-		Map<Coordinates, MapNode> fields = halfMap.getFields();
-		
-		Random randomNo = new Random();
-		
-		int randomFortX = randomNo.nextInt(8);
-		int randomFortY = randomNo.nextInt(4);
-		
-		Coordinates treasurePosition = new Coordinates(randomFortX, randomFortY);
-		
-		while(fields.get(treasurePosition).getFieldType() != MapFieldType.GRASS) {
-			randomFortX = randomNo.nextInt(8);
-			randomFortY = randomNo.nextInt(4);
-			treasurePosition = new Coordinates(randomFortX, randomFortY);
-		}
-		
-		return treasurePosition;
-		
-	}
-	
 	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
 		List<Player> players = this.games.get(gameId).getPlayers();
 	
 		for (Player player: players) {
 			if (player.getPlayerId().equals(playerId)) {
-				player.setCurrPos(halfMap.getFortPos());
-				Coordinates treasurePosition = placeTreasure(halfMap);
-				halfMap.getFields().get(treasurePosition).setTreasureState(TreasureState.MYTREASURE);
-				player.setHalfMap(halfMap);
+				player.receiveHalfMap(halfMap, gameId);
 			}
 		}
 	}
@@ -220,10 +191,10 @@ public class GameStateController {
 		
 		Player player = game.getPlayerWithId(move.getUniquePlayerID());
 		
-		player.processMove(game, move, networkConverter);
+		player.processMove(game.getFullMap(), move, networkConverter);
 		player.updateTreasureStatus(game);
 		player.updateEnemyFortStatus(game);
-		player.updateMountainViewStatus(game);
+		player.updateMountainViewStatus(game, game.getFullMap());
 
 	}
 }

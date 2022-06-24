@@ -7,13 +7,14 @@ import java.util.Random;
 import java.util.UUID;
 
 import MessagesBase.UniqueGameIdentifier;
+import server.controllers.FullMapHandler;
 import server.enums.MoveCommand;
 
 public class GameData {
 
 	private String gameId;
 	private List<Player> players = new ArrayList<Player>();
-	private InternalFullMap fullMap = new InternalFullMap();
+	private FullMapHandler fullMap = new FullMapHandler();
 	private Instant gameCreationTime;
 	private String gameStateId;
 	private int idxPlayersTurn;
@@ -25,7 +26,7 @@ public class GameData {
 		super();
 		this.gameId = gameId;
 		this.players = new ArrayList<Player>();
-		this.fullMap = new InternalFullMap();
+		this.fullMap = new FullMapHandler();
 		this.changed = false;
 		this.gameCreationTime = Instant.now();
 		this.gameStateId = UUID.randomUUID().toString();
@@ -45,10 +46,10 @@ public class GameData {
 	public void setPlayers(List<Player> players) {
 		this.players = players;
 	}
-	public InternalFullMap getFullMap() {
+	public FullMapHandler getFullMap() {
 		return fullMap;
 	}
-	public void setFullMap(InternalFullMap fullMap) {
+	public void setFullMap(FullMapHandler fullMap) {
 		this.fullMap = fullMap;
 	}
 
