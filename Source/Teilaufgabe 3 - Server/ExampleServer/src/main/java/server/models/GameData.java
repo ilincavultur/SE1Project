@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.UUID;
 
 import MessagesBase.UniqueGameIdentifier;
+import MessagesBase.UniquePlayerIdentifier;
+import MessagesBase.MessagesFromClient.PlayerRegistration;
 import server.controllers.FullMapHandler;
 import server.enums.MoveCommand;
 
@@ -99,6 +101,10 @@ public class GameData {
 		}
 		this.idxPlayersTurn = 1;
 		return;
+	}
+	
+	public void registerPlayer (UniquePlayerIdentifier playerId, PlayerRegistration playerReg) {
+		this.players.add(new Player(playerId.getUniquePlayerID(), playerReg));
 	}
 	
 	/*

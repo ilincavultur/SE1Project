@@ -103,9 +103,7 @@ public class GameStateController {
 	}
 
 	public void registerPlayer (UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId, PlayerRegistration playerReg) {
-		List<Player> players = this.games.get(gameId.getUniqueGameID()).getPlayers();
-		players.add(new Player(playerId.getUniquePlayerID(), playerReg));
-		this.games.get(gameId.getUniqueGameID()).setPlayers(players);
+		this.games.get(gameId.getUniqueGameID()).registerPlayer(playerId, playerReg);
 	}
 	
 	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
