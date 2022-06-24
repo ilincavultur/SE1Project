@@ -107,16 +107,10 @@ public class GameStateController {
 	}
 	
 	public void receiveHalfMap(InternalHalfMap halfMap, String playerId, String gameId) {
-		List<Player> players = this.games.get(gameId).getPlayers();
-	
-		for (Player player: players) {
-			if (player.getPlayerId().equals(playerId)) {
-				player.receiveHalfMap(halfMap, gameId);
-			}
-		}
+		this.games.get(gameId).getPlayerWithId(playerId).receiveHalfMap(halfMap, gameId);
 	}
 	
-	public void swapPlayerOnTurn(UniqueGameIdentifier gameID) {
+	public void swapPlayerOnTurn(UniqueGameIdentifier gameID) {  
 		this.games.get(gameID.getUniqueGameID()).swapPlayerOnTurn();
 	}
 
