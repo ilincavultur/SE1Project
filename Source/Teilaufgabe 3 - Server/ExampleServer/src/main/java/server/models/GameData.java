@@ -20,6 +20,21 @@ public class GameData {
 	private int roundNo;
 	private boolean changed;
 	
+	public GameData(String gameId) {
+		super();
+		this.gameId = gameId;
+		this.players = new ArrayList<Player>();
+		this.fullMap = new InternalFullMap();
+		this.changed = false;
+		this.gameCreationTime = Instant.now();
+		this.gameStateId = UUID.randomUUID().toString();
+		Random randomNo = new Random();
+		this.idxPlayersTurn = randomNo.nextInt(2);
+		this.winnerId = "";
+		this.roundNo = 0;
+		pickFirstPlayerToSendMap();
+	}
+
 	public GameData() {
 		super();
 		this.gameId = "";

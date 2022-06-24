@@ -38,6 +38,9 @@ public class InternalFullMap {
 		this.fields = fields;
 	}
 
+	/*
+	 *  Choose random dimension of the map
+	 */
 	public void pickDimensions() {
 		
 		Random randomNo = new Random();
@@ -52,7 +55,9 @@ public class InternalFullMap {
 		
 	}
 	
-	// choose which half Map is the first one
+	/*
+	 *  Choose which will be the first half (from left to right / from up to down)
+	 */
 	public String pickFirstHalf() {
 		
 		Random randomNo = new Random();
@@ -64,6 +69,10 @@ public class InternalFullMap {
 		
 	}
 
+	/*
+	 *  Choose random dimension of the map
+	 *  Choose which will be the first half (from left to right / from up to down)
+	 */
 	public void setupFullMap() {
 		
 		pickDimensions();
@@ -72,40 +81,28 @@ public class InternalFullMap {
 	
 	}
 	
+	private void setFields (GameData game, Player player1, Player player2, Optional<InternalHalfMap> halfMap1, Optional<InternalHalfMap> halfMap2) {
+		fields.putAll(halfMap1.get().getFields());
+		
+		player1.setFortPos(halfMap1.get().getFortPos());
+		player1.setTreasurePos(halfMap1.get().getTreasurePos());
+	
+		transformCoordinates(player2, halfMap2.get());
+		
+		if (game.isChanged() == false) {
+			game.setChanged(true);
+			
+			player1.setCurrPos(halfMap1.get().getFortPos());
+			player2.setCurrPos(halfMap2.get().getFortPos());
+		}
+	}
+	
 	public void assembleFullMap(GameData game, List<Player> players, Optional<InternalHalfMap> halfMap1, Optional<InternalHalfMap> halfMap2) {
 		
 		if (this.firstMap.equals("first")) {
-			
-			fields.putAll(halfMap1.get().getFields());
-		
-			players.get(0).setFortPos(halfMap1.get().getFortPos());
-			players.get(0).setTreasurePos(halfMap1.get().getTreasurePos());
-		
-			transformCoordinates(players.get(1), halfMap2.get());
-			
-			if (game.isChanged() == false) {
-				game.setChanged(true);
-				
-				players.get(0).setCurrPos(halfMap1.get().getFortPos());
-				players.get(1).setCurrPos(halfMap2.get().getFortPos());
-			}
-			
+			setFields(game, players.get(0), players.get(1), halfMap1, halfMap2);
 		} else {
-			
-			fields.putAll(halfMap2.get().getFields());
-	
-			players.get(1).setFortPos(halfMap2.get().getFortPos());
-			players.get(1).setTreasurePos(halfMap2.get().getTreasurePos());
-			
-			transformCoordinates(players.get(0), halfMap1.get());
-
-			if (game.isChanged() == false) {
-				game.setChanged(true);
-				
-				players.get(0).setCurrPos(halfMap1.get().getFortPos());
-				players.get(1).setCurrPos(halfMap2.get().getFortPos());
-			} 
-	
+			setFields(game, players.get(1), players.get(0), halfMap2, halfMap1);
 		}
 		
 	}
@@ -129,60 +126,39 @@ public class InternalFullMap {
 		this.ySize = ySize;
 	}
 
-
+	/*
+	 *  Transform coordinates of the "second to come" map
+	 */
 	public void transformCoordinates(Player player, InternalHalfMap halfMap) {
 		
-		// square
-		if (this.xSize == 8) {
-
-			Coordinates oldFortPos = halfMap.getFortPos();
-			Coordinates oldTreasurePos = halfMap.getTreasurePos();
+		Coordinates oldFortPos = halfMap.getFortPos();
+		Coordinates oldTreasurePos = halfMap.getTreasurePos();
+		
+		for( var eachNode : halfMap.getFields().entrySet() ) {
 			
-			for( Map.Entry<Coordinates, MapNode> mapEntry : halfMap.getFields().entrySet() ) {
-				
-				Coordinates newPos = new Coordinates(mapEntry.getKey().getX(), mapEntry.getKey().getY() + 4);
-				
-				if (mapEntry.getKey().equals(oldTreasurePos)) {
-					player.setTreasurePos(newPos);
-				}
-				
-				mapEntry.getValue().setPosition(newPos);
-				
-				if (mapEntry.getKey().equals(oldFortPos)) {
-					
-					halfMap.setFortPos(newPos);
-					
-					player.setFortPos(newPos);
-				}
-					
-				fields.put(newPos, mapEntry.getValue());
-			}
-		} else if (this.xSize == 16) {
-	
-			Coordinates oldFortPos = halfMap.getFortPos();
-			Coordinates oldTreasurePos = halfMap.getTreasurePos();
+			Coordinates newPos = eachNode.getKey();
 			
-			for( Map.Entry<Coordinates, MapNode> mapEntry : halfMap.getFields().entrySet() ) {
-				
-				Coordinates newPos = new Coordinates(mapEntry.getKey().getX() + 8, mapEntry.getKey().getY());
-				
-				if (mapEntry.getKey().equals(oldTreasurePos)) {
-					player.setTreasurePos(newPos);
-				}
-				
-				mapEntry.getValue().setPosition(newPos);
-				
-				if (mapEntry.getKey().equals(oldFortPos)) {
-					
-					halfMap.setFortPos(newPos);
-					
-					player.setFortPos(newPos);
-					
-				}
-					
-				fields.put(newPos, mapEntry.getValue());
+			// square map
+			if (this.xSize == 8) {
+				newPos = new Coordinates(eachNode.getKey().getX(), eachNode.getKey().getY() + 4);
+			} else if (this.xSize == 16) {
+				newPos = new Coordinates(eachNode.getKey().getX() + 8, eachNode.getKey().getY());
 			}
+			
+			if (eachNode.getKey().equals(oldTreasurePos)) {
+				player.setTreasurePos(newPos);
+			}
+			
+			eachNode.getValue().setPosition(newPos);
+			
+			if (eachNode.getKey().equals(oldFortPos)) {
+				halfMap.setFortPos(newPos);
+				player.setFortPos(newPos);
+			}
+				
+			fields.put(newPos, eachNode.getValue());
 		}
+		
 	}
 	
 }

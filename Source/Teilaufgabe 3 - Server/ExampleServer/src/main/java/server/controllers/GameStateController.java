@@ -76,13 +76,17 @@ public class GameStateController {
 	}
 	
 	public String getOldestGameId() {
+		
 		String toReturn = "";
 		Duration longestDur = Duration.ZERO;
-		for (Entry<String, GameData> mapEntry : this.games.entrySet()) {
-			Duration entryDur = Duration.between(mapEntry.getValue().getGameCreationTime(), Instant.now());
-			if (entryDur.compareTo(longestDur) >= 0) {
-				longestDur = entryDur;
-				toReturn = mapEntry.getKey();
+		
+		for (var eachGame : this.games.entrySet()) {
+			
+			Duration gameDuration = Duration.between(eachGame.getValue().getGameCreationTime(), Instant.now());
+			
+			if (gameDuration.compareTo(longestDur) >= 0) {
+				longestDur = gameDuration;
+				toReturn = eachGame.getKey();
 			}
 		}
 		
@@ -95,31 +99,23 @@ public class GameStateController {
 
 	public void updateGameStateId(UniqueGameIdentifier gameID) {
 		String newGameStateId = UUID.randomUUID().toString();
-		
 		this.games.get(gameID.getUniqueGameID()).setGameStateId(newGameStateId);
 	}
 	
 	public void createNewGame(UniqueGameIdentifier gameId) {
 		
+		// first remove oldest game if no more space
 		if (this.games.size() >= MAX_GAME_NUMBER) {
-			
 			String oldestGameId = getOldestGameId();
-			
 			removeGame(oldestGameId);
-			
 		}
 		
-		GameData newGame = new GameData();
-		newGame.setGameId(gameId.getUniqueGameID());
-		this.games.put(gameId.getUniqueGameID(), newGame);
+		this.games.put(gameId.getUniqueGameID(), new GameData(gameId.getUniqueGameID()));
 	}
 
 	public void registerPlayer (UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId, PlayerRegistration playerReg) {
-		Player newPlayer = new Player();
-		newPlayer.setPlayerId(playerId.getUniquePlayerID());
-		newPlayer.setPlayerReg(playerReg);
 		List<Player> players = this.games.get(gameId.getUniqueGameID()).getPlayers();
-		players.add(newPlayer);
+		players.add(new Player(playerId.getUniquePlayerID(), playerReg));
 		this.games.get(gameId.getUniqueGameID()).setPlayers(players);
 	}
 	
@@ -139,7 +135,6 @@ public class GameStateController {
 			randomFortY = randomNo.nextInt(4);
 			fortPos = new Coordinates(randomFortX, randomFortY);
 		}
-		
 		
 		return fortPos;
 		

@@ -137,6 +137,10 @@ public class Coordinates {
 		
 	}
 	
+	public boolean isCoordinateValid() {
+		return (this.X >= 0 && this.Y >= 0);
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(X, Y);

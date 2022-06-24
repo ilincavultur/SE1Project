@@ -77,35 +77,35 @@ public class NetworkConverter {
 	 */
 	public PlayerState convertPlayerTo(GameData game, Player player, boolean enemy) {
 		
-			String firstName = player.getPlayerReg().getStudentFirstName();
-			String lastName = player.getPlayerReg().getStudentLastName();
-			String uaccount = player.getPlayerReg().getStudentUAccount();
-			EPlayerGameState state = EPlayerGameState.MustWait;
-			
-			if (game.getWinnerId().isEmpty() == false) {
-				if (game.getWinnerId().equals(player.getPlayerId())) {
-					state = EPlayerGameState.Won;	
-				} else {
-					state = EPlayerGameState.Lost;
-				}		
+		String firstName = player.getPlayerReg().getStudentFirstName();
+		String lastName = player.getPlayerReg().getStudentLastName();
+		String uaccount = player.getPlayerReg().getStudentUAccount();
+		EPlayerGameState state = EPlayerGameState.MustWait;
+		
+		if (game.getWinnerId().isEmpty() == false) {
+			if (game.getWinnerId().equals(player.getPlayerId())) {
+				state = EPlayerGameState.Won;	
 			} else {
-				if (game.myTurn(player.getPlayerId())) {
-					state = EPlayerGameState.MustAct;
-				} else {
-					state = EPlayerGameState.MustWait;
-				} 
-			}
-			
-			UniquePlayerIdentifier identifier = new UniquePlayerIdentifier();
-			
-			if (enemy) {
-				identifier = new UniquePlayerIdentifier(UUID.randomUUID().toString());
+				state = EPlayerGameState.Lost;
+			}		
+		} else {
+			if (game.myTurn(player.getPlayerId())) {
+				state = EPlayerGameState.MustAct;
 			} else {
-				identifier = new UniquePlayerIdentifier(player.getPlayerId());
-			}
-	
-			boolean collectedTreasure = player.isHasCollectedTreasure();
-			return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
+				state = EPlayerGameState.MustWait;
+			} 
+		}
+		
+		UniquePlayerIdentifier identifier = new UniquePlayerIdentifier();
+		
+		if (enemy) {
+			identifier = new UniquePlayerIdentifier(UUID.randomUUID().toString());
+		} else {
+			identifier = new UniquePlayerIdentifier(player.getPlayerId());
+		}
+
+		boolean collectedTreasure = player.isHasCollectedTreasure();
+		return new PlayerState(firstName, lastName, uaccount, state, identifier, collectedTreasure);
 	
 	}
 	
