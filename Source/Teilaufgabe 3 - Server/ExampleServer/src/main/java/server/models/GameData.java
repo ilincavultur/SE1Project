@@ -99,7 +99,6 @@ public class GameData {
 		}
 		this.idxPlayersTurn = 1;
 		return;
-		
 	}
 	
 	/*
@@ -147,8 +146,7 @@ public class GameData {
 	}
 	
 	public void updateGameStateId() {
-		String newGameStateId = UUID.randomUUID().toString();
-		this.setGameStateId(newGameStateId);
+		this.gameStateId = UUID.randomUUID().toString();
 	}
 	
 	/*

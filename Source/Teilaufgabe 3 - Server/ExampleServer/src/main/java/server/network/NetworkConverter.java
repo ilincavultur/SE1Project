@@ -176,7 +176,7 @@ public class NetworkConverter {
 		Coordinates myFortPos = myPlayer.getFortPos();
 		Coordinates enemyFortPos = enemyPlayer.getFortPos();
 		Coordinates actualEnemyPosition = enemyPlayer.getCurrentPosition();
-		Coordinates myTreasure = myPlayer.getTreasurePos();
+		Coordinates myTreasure = myPlayer.getTreasurePosition();
 
 
 		for( var eachNode : myMap.getFields().entrySet() ) {
@@ -249,7 +249,7 @@ public class NetworkConverter {
 		
 		Set<FullMapNode> mapNodes = new HashSet<FullMapNode>();
 		Optional<InternalHalfMap> myMap = player.getHalfMap();
-		Coordinates myFortPos = myMap.get().getFortPos();
+		Coordinates myFortPos = myMap.get().getFortPosition();
 		
 		for( var eachNode : myMap.get().getFields().entrySet() ) {
 			

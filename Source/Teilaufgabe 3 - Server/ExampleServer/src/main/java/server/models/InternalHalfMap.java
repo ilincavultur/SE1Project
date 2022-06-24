@@ -27,7 +27,7 @@ public class InternalHalfMap {
 		this.fields = fields;
 	}
 
-	public Coordinates getFortPos() {
+	public Coordinates getFortPosition() {
 		return fortPos;
 	}
 
@@ -56,13 +56,11 @@ public class InternalHalfMap {
 		
 	}
 	
-	public Coordinates getTreasurePos() {
+	public Coordinates getTreasurePosition() {
 		for( var eachNode : this.fields.entrySet() ) {
 			if (eachNode.getValue().getTreasureState() == TreasureState.MYTREASURE) {
-				return eachNode.getKey();
-				
+				return eachNode.getKey();	
 			}
-		
 		}
 		return new Coordinates(-1,-1);
 	}

@@ -88,16 +88,16 @@ public class FullMapHandler {
 	private void setFields (GameData game, Player player1, Player player2, Optional<InternalHalfMap> halfMap1, Optional<InternalHalfMap> halfMap2) {
 		fields.putAll(halfMap1.get().getFields());
 		
-		player1.setFortPos(halfMap1.get().getFortPos());
-		player1.setTreasurePos(halfMap1.get().getTreasurePos());
+		player1.setFortPos(halfMap1.get().getFortPosition());
+		player1.setTreasurePosition(halfMap1.get().getTreasurePosition());
 	
 		transformCoordinates(player2, halfMap2.get());
 		
 		if (game.isChanged() == false) {
 			game.setChanged(true);
 			
-			player1.setCurrentPosition(halfMap1.get().getFortPos());
-			player2.setCurrentPosition(halfMap2.get().getFortPos());
+			player1.setCurrentPosition(halfMap1.get().getFortPosition());
+			player2.setCurrentPosition(halfMap2.get().getFortPosition());
 		}
 	}
 	
@@ -108,8 +108,8 @@ public class FullMapHandler {
 		} else {
 			setFields(game, players.get(1), players.get(0), halfMap2, halfMap1);
 		}
-		logger.info("player's " + players.get(0).getPlayerId() + "  treasure position: " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
-		logger.info("player's " + players.get(1).getPlayerId() + "  treasure position: " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
+		logger.info("player's " + players.get(0).getPlayerId() + "  treasure position: " + players.get(0).getTreasurePosition().getX() + " " + players.get(0).getTreasurePosition().getY());
+		logger.info("player's " + players.get(1).getPlayerId() + "  treasure position: " + players.get(1).getTreasurePosition().getX() + " " + players.get(1).getTreasurePosition().getY());
 	}
 	
 	public int getxSize() {
@@ -136,8 +136,8 @@ public class FullMapHandler {
 	 */
 	public void transformCoordinates(Player player, InternalHalfMap halfMap) {
 		
-		Coordinates oldFortPosition = halfMap.getFortPos();
-		Coordinates oldTreasurePosition = halfMap.getTreasurePos();
+		Coordinates oldFortPosition = halfMap.getFortPosition();
+		Coordinates oldTreasurePosition = halfMap.getTreasurePosition();
 		
 		for( var eachNode : halfMap.getFields().entrySet() ) {
 			
@@ -151,7 +151,7 @@ public class FullMapHandler {
 			}
 			
 			if (eachNode.getKey().equals(oldTreasurePosition)) {
-				player.setTreasurePos(newPosition);
+				player.setTreasurePosition(newPosition);
 			}
 			
 			eachNode.getValue().setPosition(newPosition);
