@@ -90,15 +90,15 @@ public class GameData {
 		return idxPlayersTurn;
 	}
 
-	public String pickFirstPlayerToSendMap() {
+	public void pickFirstPlayerToSendMap() {
 		Random randomNo = new Random();
 		int no = randomNo.nextInt(2);
 		if (no == 0) {
 			this.idxPlayersTurn = 0;
-			return "first";
+			return;
 		}
 		this.idxPlayersTurn = 1;
-		return "second";
+		return;
 		
 	}
 	

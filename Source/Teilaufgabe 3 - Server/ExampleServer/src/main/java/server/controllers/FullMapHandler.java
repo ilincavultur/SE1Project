@@ -81,11 +81,8 @@ public class FullMapHandler {
 	 *  Choose which will be the first half (from left to right / from up to down)
 	 */
 	public void setupFullMap() {
-		
 		pickDimensions();
-		
 		this.firstMap = pickFirstHalf();
-	
 	}
 	
 	private void setFields (GameData game, Player player1, Player player2, Optional<InternalHalfMap> halfMap1, Optional<InternalHalfMap> halfMap2) {
@@ -99,8 +96,8 @@ public class FullMapHandler {
 		if (game.isChanged() == false) {
 			game.setChanged(true);
 			
-			player1.setCurrPos(halfMap1.get().getFortPos());
-			player2.setCurrPos(halfMap2.get().getFortPos());
+			player1.setCurrentPosition(halfMap1.get().getFortPos());
+			player2.setCurrentPosition(halfMap2.get().getFortPos());
 		}
 	}
 	
@@ -111,8 +108,8 @@ public class FullMapHandler {
 		} else {
 			setFields(game, players.get(1), players.get(0), halfMap2, halfMap1);
 		}
-		//logger.info("player's " + players.get(0).getPlayerId() + "  treasure position: " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
-		//logger.info("player's " + players.get(1).getPlayerId() + "  treasure position: " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
+		logger.info("player's " + players.get(0).getPlayerId() + "  treasure position: " + players.get(0).getTreasurePos().getX() + " " + players.get(0).getTreasurePos().getY());
+		logger.info("player's " + players.get(1).getPlayerId() + "  treasure position: " + players.get(1).getTreasurePos().getX() + " " + players.get(1).getTreasurePos().getY());
 	}
 	
 	public int getxSize() {
@@ -139,32 +136,32 @@ public class FullMapHandler {
 	 */
 	public void transformCoordinates(Player player, InternalHalfMap halfMap) {
 		
-		Coordinates oldFortPos = halfMap.getFortPos();
-		Coordinates oldTreasurePos = halfMap.getTreasurePos();
+		Coordinates oldFortPosition = halfMap.getFortPos();
+		Coordinates oldTreasurePosition = halfMap.getTreasurePos();
 		
 		for( var eachNode : halfMap.getFields().entrySet() ) {
 			
-			Coordinates newPos = eachNode.getKey();
+			Coordinates newPosition = eachNode.getKey();
 			
 			// square map
 			if (this.xSize == 8) {
-				newPos = new Coordinates(eachNode.getKey().getX(), eachNode.getKey().getY() + 4);
+				newPosition = new Coordinates(eachNode.getKey().getX(), eachNode.getKey().getY() + 4);
 			} else if (this.xSize == 16) {
-				newPos = new Coordinates(eachNode.getKey().getX() + 8, eachNode.getKey().getY());
+				newPosition = new Coordinates(eachNode.getKey().getX() + 8, eachNode.getKey().getY());
 			}
 			
-			if (eachNode.getKey().equals(oldTreasurePos)) {
-				player.setTreasurePos(newPos);
+			if (eachNode.getKey().equals(oldTreasurePosition)) {
+				player.setTreasurePos(newPosition);
 			}
 			
-			eachNode.getValue().setPosition(newPos);
+			eachNode.getValue().setPosition(newPosition);
 			
-			if (eachNode.getKey().equals(oldFortPos)) {
-				halfMap.setFortPos(newPos);
-				player.setFortPos(newPos);
+			if (eachNode.getKey().equals(oldFortPosition)) {
+				halfMap.setFortPos(newPosition);
+				player.setFortPos(newPosition);
 			}
 				
-			fields.put(newPos, eachNode.getValue());
+			fields.put(newPosition, eachNode.getValue());
 		}
 		
 	}
@@ -173,63 +170,63 @@ public class FullMapHandler {
 	 * if a neighbour has wrong coordinates (lower than 0), it is simply not added to the map
 	 * 	if all neighnours are wrong, the returned Map is empty
 	 */
-	public Map<String, Coordinates> getFieldsAroundMountain(Coordinates mountainPos) {
+	public Map<String, Coordinates> getFieldsAroundMountain(Coordinates mountainPosition) {
 		
 		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();
 		
-		Coordinates up = mountainPos.getUpNeighbour(fields);
+		Coordinates up = mountainPosition.getUpNeighbour(fields);
 		if (up.isCoordinateValid()) {
 			if (fields.get(up).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("up", mountainPos.getUpNeighbour(fields));	
+				toReturn.put("up", mountainPosition.getUpNeighbour(fields));	
 			}
 		}
 		
-		Coordinates nw = mountainPos.getNorthWestNeighbour(fields);
+		Coordinates nw = mountainPosition.getNorthWestNeighbour(fields);
 		if (nw.isCoordinateValid()) {
 			if (fields.get(nw).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("nw", mountainPos.getNorthWestNeighbour(fields));	
+				toReturn.put("nw", mountainPosition.getNorthWestNeighbour(fields));	
 			}
 		}
 		
-		Coordinates down = mountainPos.getDownNeighbour(fields);
+		Coordinates down = mountainPosition.getDownNeighbour(fields);
 		if (down.isCoordinateValid()) {
 			if (fields.get(down).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("down", mountainPos.getDownNeighbour(fields));	
+				toReturn.put("down", mountainPosition.getDownNeighbour(fields));	
 			}
 		}
 		
-		Coordinates ne = mountainPos.getNorthEastNeighbour(fields);
+		Coordinates ne = mountainPosition.getNorthEastNeighbour(fields);
 		if (ne.isCoordinateValid()) {
 			if (fields.get(ne).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("ne", mountainPos.getNorthEastNeighbour(fields));	
+				toReturn.put("ne", mountainPosition.getNorthEastNeighbour(fields));	
 			}
 		}
 		
-		Coordinates left = mountainPos.getLeftNeighbour(fields);
+		Coordinates left = mountainPosition.getLeftNeighbour(fields);
 		if (left.isCoordinateValid()) {
 			if (fields.get(left).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("left", mountainPos.getLeftNeighbour(fields));		
+				toReturn.put("left", mountainPosition.getLeftNeighbour(fields));		
 			}
 		}
 		
-		Coordinates se = mountainPos.getSouthEastNeighbour(fields);
+		Coordinates se = mountainPosition.getSouthEastNeighbour(fields);
 		if (se.isCoordinateValid()) {
 			if (fields.get(se).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("se", mountainPos.getSouthEastNeighbour(fields));	
+				toReturn.put("se", mountainPosition.getSouthEastNeighbour(fields));	
 			}
 		}
 	
-		Coordinates right = mountainPos.getRightNeighbour(fields);
+		Coordinates right = mountainPosition.getRightNeighbour(fields);
 		if (right.isCoordinateValid()) {
 			if (fields.get(right).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("right", mountainPos.getRightNeighbour(fields));	
+				toReturn.put("right", mountainPosition.getRightNeighbour(fields));	
 			}
 		}
 		
-		Coordinates sw = mountainPos.getSouthWestNeighbour(fields);
+		Coordinates sw = mountainPosition.getSouthWestNeighbour(fields);
 		if (sw.isCoordinateValid()) {
 			if (fields.get(sw).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("sw", mountainPos.getSouthWestNeighbour(fields));	
+				toReturn.put("sw", mountainPosition.getSouthWestNeighbour(fields));	
 			}
 		}
 		
@@ -239,9 +236,9 @@ public class FullMapHandler {
 	/*
 	 *  Check if treasure is seen from current mountain position
 	 */
-	public boolean checkTreasuresAroundMountain(Coordinates myTreasurePos, Coordinates mountainPos) {
+	public boolean checkTreasuresAroundMountain(Coordinates myTreasurePos, Coordinates mountainPosition) {
 		
-		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPos);
+		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPosition);
 		
 		if (fieldsAround.containsValue(myTreasurePos)) {
 			return true;
@@ -254,9 +251,9 @@ public class FullMapHandler {
 	/*
 	 *  Check if fort is seen from current mountain position
 	 */
-	public boolean checkFortsAroundMountain(Coordinates enemyFortPos, Coordinates mountainPos) {
+	public boolean checkFortsAroundMountain(Coordinates enemyFortPos, Coordinates mountainPosition) {
 		
-		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPos);
+		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPosition);
 		
 		if (fieldsAround.containsValue(enemyFortPos)) {
 			return true;
@@ -284,26 +281,26 @@ public class FullMapHandler {
 		
 	}
 	
-	public Coordinates getTargetCoordinatesFromMove(Coordinates pos, PlayerMove move) {
+	public Coordinates getTargetCoordinatesFromMove(Coordinates currentPosition, PlayerMove move) {
 		Coordinates toReturn = new Coordinates();
 
 		if (move.getMove() == EMove.Up) {
-			Coordinates direction = pos.getUpNeighbour(fields);
+			Coordinates direction = currentPosition.getUpNeighbour(fields);
 			return direction;
 		}
 		
 		if (move.getMove() == EMove.Down) {
-			Coordinates direction = pos.getDownNeighbour(fields);
+			Coordinates direction = currentPosition.getDownNeighbour(fields);
 			return direction;
 		}
 		
 		if (move.getMove() == EMove.Left) {
-			Coordinates direction = pos.getLeftNeighbour(fields);
+			Coordinates direction = currentPosition.getLeftNeighbour(fields);
 			return direction;
 		}
 		
 		if (move.getMove() == EMove.Right) {
-			Coordinates direction = pos.getRightNeighbour(fields);
+			Coordinates direction = currentPosition.getRightNeighbour(fields);
 			return direction;
 		}
 		
@@ -314,24 +311,20 @@ public class FullMapHandler {
 	 * 	Gets a random enemy position for the first 10 rounds
 	 */
 	public Coordinates getRandomEnemyPos() {
-		Coordinates toRet = new Coordinates();
+
 		Random randomNo = new Random();
 		
 		if (this.getxSize() == 8) {
 			int randomFortX = randomNo.nextInt(8);
-			toRet.setX(randomFortX);
 			int randomFortY = randomNo.nextInt(8);
-			toRet.setY(randomFortY);
-			
-			return toRet;
+
+			return new Coordinates(randomFortX, randomFortY);
 		}
 		
 		int randomFortX = randomNo.nextInt(16);
-		toRet.setX(randomFortX);
 		int randomFortY = randomNo.nextInt(4);
-		toRet.setY(randomFortY);
 		
-		return toRet;
+		return new Coordinates(randomFortX, randomFortY);
 	}
 	
 }

@@ -57,9 +57,9 @@ public class InternalHalfMap {
 	}
 	
 	public Coordinates getTreasurePos() {
-		for( Entry<Coordinates, MapNode> mapEntry : this.fields.entrySet() ) {
-			if (mapEntry.getValue().getTreasureState() == TreasureState.MYTREASURE) {
-				return mapEntry.getKey();
+		for( var eachNode : this.fields.entrySet() ) {
+			if (eachNode.getValue().getTreasureState() == TreasureState.MYTREASURE) {
+				return eachNode.getKey();
 				
 			}
 		

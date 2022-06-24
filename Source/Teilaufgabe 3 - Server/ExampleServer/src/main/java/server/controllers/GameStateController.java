@@ -124,8 +124,8 @@ public class GameStateController {
 
 	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {
 	
-		for (Player pl : this.games.get(gameID.getUniqueGameID()).getPlayers()) {
-			if (pl.getHalfMap().isEmpty()) {
+		for (Player player : this.games.get(gameID.getUniqueGameID()).getPlayers()) {
+			if (player.getHalfMap().isEmpty()) {
 				return false;
 			}
 		}

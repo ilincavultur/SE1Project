@@ -44,7 +44,7 @@ public class DontMoveOutsideMapRule implements IRuleValidation{
 		String playerId = move.getUniquePlayerID();
 		Player player = games.get(gameId.getUniqueGameID()).getPlayerWithId(playerId);
 		GameData game = games.get(gameId.getUniqueGameID());
-		Coordinates pos = player.getCurrPos();
+		Coordinates pos = player.getCurrentPosition();
 		Map<Coordinates, MapNode> fields = game.getFullMap().getFields();
 		
 		if (move.getMove() == EMove.Up) {

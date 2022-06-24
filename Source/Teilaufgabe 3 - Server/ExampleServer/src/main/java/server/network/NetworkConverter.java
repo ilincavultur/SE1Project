@@ -49,23 +49,23 @@ public class NetworkConverter {
 	public InternalHalfMap convertHalfMapFrom(HalfMap halfMap) {
 		
 		InternalHalfMap toReturn = new InternalHalfMap();
-		Map<Coordinates, MapNode> newMp = new HashMap<Coordinates, MapNode>();
+		Map<Coordinates, MapNode> newMapFields = new HashMap<Coordinates, MapNode>();
 		Set<HalfMapNode> halfMapFields = halfMap.getMapNodes().stream().collect(Collectors.toSet());
 
-		for (HalfMapNode node : halfMapFields) {
+		for (HalfMapNode eachNode : halfMapFields) {
 			
-			Coordinates pos = new Coordinates(node.getX(), node.getY());
-			MapNode field = convertMapNodeFrom(node);
+			Coordinates nodePosition = new Coordinates(eachNode.getX(), eachNode.getY());
+			MapNode field = convertMapNodeFrom(eachNode);
 			
-			if (node.isFortPresent()) {
-				Coordinates fortPos = new Coordinates(node.getX(), node.getY());
+			if (eachNode.isFortPresent()) {
+				Coordinates fortPos = new Coordinates(eachNode.getX(), eachNode.getY());
 				toReturn.setFortPos(fortPos);
 			}
 			
-			newMp.put(pos, field);
+			newMapFields.put(nodePosition, field);
 		}
 	
-		toReturn.setFields(newMp);
+		toReturn.setFields(newMapFields);
 
 		return toReturn;
 		
@@ -175,7 +175,7 @@ public class NetworkConverter {
 		Coordinates randomEnemyPosition = myMap.getRandomEnemyPos();
 		Coordinates myFortPos = myPlayer.getFortPos();
 		Coordinates enemyFortPos = enemyPlayer.getFortPos();
-		Coordinates actualEnemyPosition = enemyPlayer.getCurrPos();
+		Coordinates actualEnemyPosition = enemyPlayer.getCurrentPosition();
 		Coordinates myTreasure = myPlayer.getTreasurePos();
 
 
@@ -211,9 +211,9 @@ public class NetworkConverter {
 			
 			if (roundNo > 10) {
 				
-				if (myPlayer.getCurrPos().equals(eachNode.getKey()) && enemyPlayer.getCurrPos().equals(eachNode.getKey())) {
+				if (myPlayer.getCurrentPosition().equals(eachNode.getKey()) && enemyPlayer.getCurrentPosition().equals(eachNode.getKey())) {
 					playerPos = EPlayerPositionState.BothPlayerPosition;	
-				} else if (myPlayer.getCurrPos().equals(eachNode.getKey())) {
+				} else if (myPlayer.getCurrentPosition().equals(eachNode.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;	
 				} else if (eachNode.getKey().equals(actualEnemyPosition)) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;
@@ -221,9 +221,9 @@ public class NetworkConverter {
 			
 			} else {
 				
-				if (myPlayer.getCurrPos().equals(eachNode.getKey()) && randomEnemyPosition.equals(eachNode.getKey())) {
+				if (myPlayer.getCurrentPosition().equals(eachNode.getKey()) && randomEnemyPosition.equals(eachNode.getKey())) {
 					playerPos = EPlayerPositionState.BothPlayerPosition;
-				} else if (myPlayer.getCurrPos().equals(eachNode.getKey())) {
+				} else if (myPlayer.getCurrentPosition().equals(eachNode.getKey())) {
 					playerPos = EPlayerPositionState.MyPlayerPosition;
 				} else if (eachNode.getKey().equals(randomEnemyPosition)) {
 					playerPos = EPlayerPositionState.EnemyPlayerPosition;	
@@ -265,7 +265,7 @@ public class NetworkConverter {
 				fort = EFortState.MyFortPresent;
 			}
 		
-			if (player.getCurrPos().equals(eachNode.getKey())) {
+			if (player.getCurrentPosition().equals(eachNode.getKey())) {
 				playerPos = EPlayerPositionState.MyPlayerPosition;
 			} 
 		

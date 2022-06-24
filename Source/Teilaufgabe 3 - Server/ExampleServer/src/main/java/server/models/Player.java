@@ -25,7 +25,7 @@ public class Player {
 
 	private String playerId;
 	private Optional<InternalHalfMap> halfMap;
-	private Coordinates currPos;
+	private Coordinates currentPosition;
 	boolean hasCollectedTreasure;
 	private PlayerRegistration playerReg;
 	private boolean showEnemyFort;
@@ -41,9 +41,9 @@ public class Player {
 		super();
 		this.playerId = playerId;
 		this.playerReg = playerReg;
-		Coordinates currPos = new Coordinates(0,0);
+		Coordinates currentPosition = new Coordinates(0,0);
 		this.halfMap = Optional.empty();
-		this.currPos = currPos;
+		this.currentPosition = currentPosition;
 		this.showEnemyFort = false;
 		this.currentNoOfStepsToTake = 0;
 		this.hasCollectedTreasure = false;
@@ -54,9 +54,9 @@ public class Player {
 	public Player() {
 		super();
 		this.playerId = "";
-		Coordinates currPos = new Coordinates(0,0);
+		Coordinates currentPosition = new Coordinates(0,0);
 		this.halfMap = Optional.empty();
-		this.currPos = currPos;
+		this.currentPosition = currentPosition;
 		this.showEnemyFort = false;
 		this.currentNoOfStepsToTake = 0;
 		this.hasCollectedTreasure = false;
@@ -76,11 +76,11 @@ public class Player {
 	public void setHalfMap(InternalHalfMap halfMap) {
 		this.halfMap = Optional.of(halfMap);
 	}
-	public Coordinates getCurrPos() {
-		return currPos;
+	public Coordinates getCurrentPosition() {
+		return currentPosition;
 	}
-	public void setCurrPos(Coordinates currPos) {
-		this.currPos = currPos;
+	public void setCurrentPosition(Coordinates currentPosition) {
+		this.currentPosition = currentPosition;
 	}
 	public boolean isHasCollectedTreasure() {
 		return hasCollectedTreasure;
@@ -123,10 +123,10 @@ public class Player {
 	}
 	
 	public void receiveHalfMap(InternalHalfMap halfMap, String gameId) {
-		this.setCurrPos(halfMap.getFortPos());
+		this.currentPosition = halfMap.getFortPos();
 		Coordinates treasurePosition = halfMap.placeTreasure();
 		halfMap.getFields().get(treasurePosition).setTreasureState(TreasureState.MYTREASURE);
-		this.setHalfMap(halfMap);
+		this.halfMap = Optional.of(halfMap);
 	}
 	
 	/*
@@ -137,24 +137,24 @@ public class Player {
 		
 		MoveCommand newMove = networkConverter.convertMoveFrom(move);
 		
-		logger.info("player's " + this.playerId + "  current position: " + this.currPos.getX() + " " + this.currPos.getY());
+		logger.info("player's " + this.playerId + "  current position: " + this.currentPosition.getX() + " " + this.currentPosition.getY());
 	
-		Coordinates target = fullMap.getTargetCoordinatesFromMove(this.currPos, move);
+		Coordinates target = fullMap.getTargetCoordinatesFromMove(this.currentPosition, move);
 		if (this.currentNoOfStepsToTake == 0) {
 			
 			this.currentDirection = newMove;
-			this.currentNoOfStepsToTake = fullMap.getPathWeight(this.currPos, target);
+			this.currentNoOfStepsToTake = fullMap.getPathWeight(this.currentPosition, target);
 			
 		} else if (newMove != this.currentDirection) {
 			
 			this.currentDirection = newMove;
-			this.currentNoOfStepsToTake = fullMap.getPathWeight(this.currPos, target);
+			this.currentNoOfStepsToTake = fullMap.getPathWeight(this.currentPosition, target);
 		}
 		
 		this.currentNoOfStepsToTake -= 1;
 		
 		if (this.currentNoOfStepsToTake == 0) {
-			this.currPos = target;
+			this.currentPosition = target;
 		}
 		
 	}
@@ -164,8 +164,8 @@ public class Player {
 	 *  it picks it up and the treasure disappears
 	 */
 	public void updateTreasureStatus(GameData game) {
-		Coordinates myTreasurePos = this.getTreasurePos();
-		if (this.currPos.equals(myTreasurePos)) {
+		Coordinates myTreasurePosition = this.getTreasurePos();
+		if (this.currentPosition.equals(myTreasurePosition)) {
 			this.setHasCollectedTreasure(true);
 			this.setShowTreasure(false);
 		} 	 
@@ -178,13 +178,13 @@ public class Player {
 	public void updateEnemyFortStatus(GameData game) {
 
 		Player enemy = game.getTheOtherPlayer(this.getPlayerId());
-		Coordinates enemyFortPos = enemy.getFortPos();
+		Coordinates enemyFortPosition = enemy.getFortPos();
 		
-		if (this.currPos.equals(enemyFortPos)) {
+		if (this.currentPosition.equals(enemyFortPosition)) {
 			this.setShowEnemyFort(true);
 		}
 		
-		if (this.currPos.equals(enemyFortPos) && this.isHasCollectedTreasure()) {
+		if (this.currentPosition.equals(enemyFortPosition) && this.isHasCollectedTreasure()) {
 			game.setWinner(enemy.getPlayerId());
 		}
 		
@@ -195,20 +195,20 @@ public class Player {
 	 */
 	public void updateMountainViewStatus(GameData game, FullMapHandler fullMap) {
 		
-		Coordinates myTreasurePos = this.getTreasurePos();
+		Coordinates myTreasurePosition = this.getTreasurePos();
 		Player enemy = game.getTheOtherPlayer(this.getPlayerId());
-		Coordinates enemyFortPos = enemy.getFortPos();
+		Coordinates enemyFortPosition = enemy.getFortPos();
 		
-		if (fullMap.getFields().get(this.currPos).getFieldType() == MapFieldType.MOUNTAIN) {
+		if (fullMap.getFields().get(this.currentPosition).getFieldType() == MapFieldType.MOUNTAIN) {
 			
-			if (fullMap.checkFortsAroundMountain(enemyFortPos, this.currPos)) {
+			if (fullMap.checkFortsAroundMountain(enemyFortPosition, this.currentPosition)) {
 				this.setShowEnemyFort(true);
 			}
 			
 			if (this.isHasCollectedTreasure() == false) {
-				if (fullMap.checkTreasuresAroundMountain(myTreasurePos, this.currPos)) {
-					//logger.warn("I, " + this.playerId + " am on a mountain and I am here " + this.currPos.getX() + " " + this.currPos.getY());
-					//logger.warn("and I have discovered my treasure here: " + myTreasurePos.getX() + " " + myTreasurePos.getY());
+				if (fullMap.checkTreasuresAroundMountain(myTreasurePosition, this.currentPosition)) {
+					logger.warn("I, " + this.playerId + " am on a mountain and I am here " + this.currentPosition.getX() + " " + this.currentPosition.getY());
+					logger.warn("and I have discovered my treasure here: " + myTreasurePosition.getX() + " " + myTreasurePosition.getY());
 					this.setShowTreasure(true);	
 				}
 			}
