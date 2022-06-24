@@ -52,7 +52,7 @@ public class GameStateTests {
 		
 	}
 	
-	@Test
+	/*@Test
 	public void PlayerIdNotFound_ExpectedPlayerIdRuleThrows() {
 		
 		//arrange
@@ -142,5 +142,5 @@ public class GameStateTests {
 		//assert
 			Assertions.assertEquals("There are already 2 players registered for this game " + gameId.getUniqueGameID(), e.getMessage());
 		
-	}
+	}*/
 }

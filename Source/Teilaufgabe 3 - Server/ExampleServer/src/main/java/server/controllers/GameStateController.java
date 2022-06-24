@@ -98,8 +98,7 @@ public class GameStateController {
 	}
 
 	public void updateGameStateId(UniqueGameIdentifier gameID) {
-		String newGameStateId = UUID.randomUUID().toString();
-		this.games.get(gameID.getUniqueGameID()).setGameStateId(newGameStateId);
+		this.games.get(gameID.getUniqueGameID()).updateGameStateId();
 	}
 	
 	public void createNewGame(UniqueGameIdentifier gameId) {
@@ -154,8 +153,7 @@ public class GameStateController {
 	}
 	
 	public void swapPlayerOnTurn(UniqueGameIdentifier gameID) {
-		GameData game = this.games.get(gameID.getUniqueGameID());
-		game.swapPlayerOnTurn();
+		this.games.get(gameID.getUniqueGameID()).swapPlayerOnTurn();
 	}
 
 	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {
@@ -227,7 +225,7 @@ public class GameStateController {
 		
 		Player player = game.getPlayerWithId(move.getUniquePlayerID());
 		
-		player.processMove(game, gameID, move, networkConverter);
+		player.processMove(game, move, networkConverter);
 		player.updateTreasureStatus(game);
 		player.updateEnemyFortStatus(game);
 		player.updateMountainViewStatus(game);

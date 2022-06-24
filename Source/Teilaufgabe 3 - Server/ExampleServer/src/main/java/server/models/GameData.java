@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import MessagesBase.UniqueGameIdentifier;
 import server.enums.MoveCommand;
 
 public class GameData {
@@ -23,21 +24,6 @@ public class GameData {
 	public GameData(String gameId) {
 		super();
 		this.gameId = gameId;
-		this.players = new ArrayList<Player>();
-		this.fullMap = new InternalFullMap();
-		this.changed = false;
-		this.gameCreationTime = Instant.now();
-		this.gameStateId = UUID.randomUUID().toString();
-		Random randomNo = new Random();
-		this.idxPlayersTurn = randomNo.nextInt(2);
-		this.winnerId = "";
-		this.roundNo = 0;
-		pickFirstPlayerToSendMap();
-	}
-
-	public GameData() {
-		super();
-		this.gameId = "";
 		this.players = new ArrayList<Player>();
 		this.fullMap = new InternalFullMap();
 		this.changed = false;
@@ -115,7 +101,10 @@ public class GameData {
 		
 	}
 	
-	public boolean myTurn (String playerId) {
+	/*
+	 * 	If not all players registered it means it is not player's turn to send map
+	 */
+	public boolean myTurn(String playerId) {
 
 		if (this.players.size() == 1) {
 			return false;
@@ -153,6 +142,11 @@ public class GameData {
 			}
 		}
 		return toRet;
+	}
+	
+	public void updateGameStateId() {
+		String newGameStateId = UUID.randomUUID().toString();
+		this.setGameStateId(newGameStateId);
 	}
 	
 	/*

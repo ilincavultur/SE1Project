@@ -121,65 +121,23 @@ public class Player {
 	}
 	
 	/*
-	 * 	Get number of moves to enter/escape the field
+	 *  Updates player position if player has finished move
+	 *  Decreases number of steps to take if player has not finished move
 	 */
-	private int getMoves(MapNode field) {
-		if (field.getFieldType() == MapFieldType.MOUNTAIN) {
-			return 2;
-		} 
-		return 1;
-	}
-
-	private int getPathWeight(Player player, GameData game, Coordinates currentField, Coordinates nextField) {
-
-		int firstFieldMoves = this.getMoves(game.getFullMap().getFields().get(currentField)); 
-		int secondFieldMoves = this.getMoves(game.getFullMap().getFields().get(nextField)); 
- 		
-		return firstFieldMoves + secondFieldMoves;
-		
-	}
-	
-	private Coordinates getTargetCoordinatesFromMove(GameData game, Coordinates pos, PlayerMove move) {
-		Coordinates toReturn = new Coordinates();
-		Map<Coordinates, MapNode> fields = game.getFullMap().getFields();
-		
-		if (move.getMove() == EMove.Up) {
-			Coordinates direction = pos.getUpNeighbour(fields);
-			return direction;
-		}
-		
-		if (move.getMove() == EMove.Down) {
-			Coordinates direction = pos.getDownNeighbour(fields);
-			return direction;
-		}
-		
-		if (move.getMove() == EMove.Left) {
-			Coordinates direction = pos.getLeftNeighbour(fields);
-			return direction;
-		}
-		
-		if (move.getMove() == EMove.Right) {
-			Coordinates direction = pos.getRightNeighbour(fields);
-			return direction;
-		}
-		
-		return toReturn;
-	}
-	
-	public void processMove(GameData game, UniqueGameIdentifier gameID, PlayerMove move, NetworkConverter networkConverter) {
+	public void processMove(GameData game, PlayerMove move, NetworkConverter networkConverter) {
 		
 		MoveCommand newMove = networkConverter.convertMoveFrom(move);
 	
-		Coordinates target = getTargetCoordinatesFromMove(game, this.currPos, move);
+		Coordinates target = game.getFullMap().getTargetCoordinatesFromMove(this.currPos, move);
 		if (this.currentNoOfStepsToTake == 0) {
 			
 			this.currentDirection = newMove;
-			this.currentNoOfStepsToTake = getPathWeight(this, game, this.currPos, target);
+			this.currentNoOfStepsToTake = game.getFullMap().getPathWeight(this.currPos, target);
 			
 		} else if (newMove != this.currentDirection) {
 			
 			this.currentDirection = newMove;
-			this.currentNoOfStepsToTake = getPathWeight(this, game, this.currPos, target);
+			this.currentNoOfStepsToTake = game.getFullMap().getPathWeight(this.currPos, target);
 		}
 		
 		this.currentNoOfStepsToTake -= 1;
@@ -213,102 +171,6 @@ public class Player {
 		
 	}
 	
-	/*	
-	 * if a neighbour has wrong coordinates (lower than 0), it is simply not added to the map
-	 * 	if all neighnours are wrong, the returned Map is empty
-	 */
-	public Map<String, Coordinates> getFieldsAroundMountain(Coordinates mountainPos, Map<Coordinates, MapNode> fields) {
-		
-		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();
-		
-		Coordinates up = mountainPos.getUpNeighbour(fields);
-		if (up.isCoordinateValid()) {
-			if (fields.get(up).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("up", mountainPos.getUpNeighbour(fields));	
-			}
-		}
-		
-		Coordinates nw = mountainPos.getNorthWestNeighbour(fields);
-		if (nw.isCoordinateValid()) {
-			if (fields.get(nw).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("nw", mountainPos.getNorthWestNeighbour(fields));	
-			}
-		}
-		
-		Coordinates down = mountainPos.getDownNeighbour(fields);
-		if (down.isCoordinateValid()) {
-			if (fields.get(down).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("down", mountainPos.getDownNeighbour(fields));	
-			}
-		}
-		
-		Coordinates ne = mountainPos.getNorthEastNeighbour(fields);
-		if (ne.isCoordinateValid()) {
-			if (fields.get(ne).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("ne", mountainPos.getNorthEastNeighbour(fields));	
-			}
-		}
-		
-		Coordinates left = mountainPos.getLeftNeighbour(fields);
-		if (left.isCoordinateValid()) {
-			if (fields.get(left).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("left", mountainPos.getLeftNeighbour(fields));		
-			}
-		}
-		
-		Coordinates se = mountainPos.getSouthEastNeighbour(fields);
-		if (se.isCoordinateValid()) {
-			if (fields.get(se).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("se", mountainPos.getSouthEastNeighbour(fields));	
-			}
-		}
-	
-		Coordinates right = mountainPos.getRightNeighbour(fields);
-		if (right.isCoordinateValid()) {
-			if (fields.get(right).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("right", mountainPos.getRightNeighbour(fields));	
-			}
-		}
-		
-		Coordinates sw = mountainPos.getSouthWestNeighbour(fields);
-		if (sw.isCoordinateValid()) {
-			if (fields.get(sw).getFieldType() != MapFieldType.WATER) {
-				toReturn.put("sw", mountainPos.getSouthWestNeighbour(fields));	
-			}
-		}
-		
-		return toReturn;	
-	}
-	
-	/*
-	 *  Check if treasure is seen from current mountain position
-	 */
-	public boolean checkTreasuresAroundMountain(Coordinates myTreasurePos, Coordinates mountainPos, Map<Coordinates, MapNode> fields) {
-		
-		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPos, fields);
-		
-		if (fieldsAround.containsValue(myTreasurePos)) {
-			return true;
-		}
-
-		return false;
-		
-	}
-	
-	/*
-	 *  Check if fort is seen from current mountain position
-	 */
-	public boolean checkFortsAroundMountain(Coordinates enemyFortPos, Coordinates mountainPos, Map<Coordinates, MapNode> fields) {
-		
-		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPos, fields);
-		
-		if (fieldsAround.containsValue(enemyFortPos)) {
-			return true;
-		}
-
-		return false;
-	}
-	
 	/*
 	 *  Update player's ability to see treasure and forts
 	 */
@@ -320,12 +182,12 @@ public class Player {
 		
 		if (game.getFullMap().getFields().get(this.currPos).getFieldType() == MapFieldType.MOUNTAIN) {
 			
-			if (checkFortsAroundMountain(enemyFortPos, this.currPos, game.getFullMap().getFields())) {
+			if (game.getFullMap().checkFortsAroundMountain(enemyFortPos, this.currPos)) {
 				this.setShowEnemyFort(true);
 			}
 			
 			if (this.isHasCollectedTreasure() == false) {
-				if (checkTreasuresAroundMountain(myTreasurePos, this.currPos, game.getFullMap().getFields())) {
+				if (game.getFullMap().checkTreasuresAroundMountain(myTreasurePos, this.currPos)) {
 					this.setShowTreasure(true);	
 				}
 			}

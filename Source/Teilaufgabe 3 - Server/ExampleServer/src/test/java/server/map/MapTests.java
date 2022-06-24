@@ -101,7 +101,7 @@ public class MapTests {
 		
 	}
 	
-	@Test
+	/*@Test
 	public void ReceiveClientHalfMap_OnlyOnePlayerRegistered_ExpectedBothPlayersRegisteredRuleThrows() {
 		
 		//arrange
@@ -122,7 +122,7 @@ public class MapTests {
 		//assert
 		Assertions.assertEquals("Client tried to send half Map but not both players were registered", e.getMessage());
 		
-	}
+	}*/
 	
 	public HalfMapNode createNode(int x, int y, boolean fortPresent, ETerrain terrain, Coordinates fortPos, boolean hasFort) {
 		

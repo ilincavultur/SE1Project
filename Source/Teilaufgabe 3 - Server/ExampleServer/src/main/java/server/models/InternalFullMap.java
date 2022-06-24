@@ -8,8 +8,10 @@ import java.util.Random;
 
 import org.slf4j.LoggerFactory;
 
+import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.ETerrain;
 import MessagesBase.MessagesFromClient.HalfMapNode;
+import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromServer.FullMapNode;
 import ch.qos.logback.classic.Logger;
 import server.enums.MapFieldType;
@@ -159,6 +161,147 @@ public class InternalFullMap {
 			fields.put(newPos, eachNode.getValue());
 		}
 		
+	}
+	
+	/*	
+	 * if a neighbour has wrong coordinates (lower than 0), it is simply not added to the map
+	 * 	if all neighnours are wrong, the returned Map is empty
+	 */
+	public Map<String, Coordinates> getFieldsAroundMountain(Coordinates mountainPos) {
+		
+		Map<String, Coordinates> toReturn = new HashMap<String, Coordinates>();
+		
+		Coordinates up = mountainPos.getUpNeighbour(fields);
+		if (up.isCoordinateValid()) {
+			if (fields.get(up).getFieldType() != MapFieldType.WATER) {
+				toReturn.put("up", mountainPos.getUpNeighbour(fields));	
+			}
+		}
+		
+		Coordinates nw = mountainPos.getNorthWestNeighbour(fields);
+		if (nw.isCoordinateValid()) {
+			if (fields.get(nw).getFieldType() != MapFieldType.WATER) {
+				toReturn.put("nw", mountainPos.getNorthWestNeighbour(fields));	
+			}
+		}
+		
+		Coordinates down = mountainPos.getDownNeighbour(fields);
+		if (down.isCoordinateValid()) {
+			if (fields.get(down).getFieldType() != MapFieldType.WATER) {
+				toReturn.put("down", mountainPos.getDownNeighbour(fields));	
+			}
+		}
+		
+		Coordinates ne = mountainPos.getNorthEastNeighbour(fields);
+		if (ne.isCoordinateValid()) {
+			if (fields.get(ne).getFieldType() != MapFieldType.WATER) {
+				toReturn.put("ne", mountainPos.getNorthEastNeighbour(fields));	
+			}
+		}
+		
+		Coordinates left = mountainPos.getLeftNeighbour(fields);
+		if (left.isCoordinateValid()) {
+			if (fields.get(left).getFieldType() != MapFieldType.WATER) {
+				toReturn.put("left", mountainPos.getLeftNeighbour(fields));		
+			}
+		}
+		
+		Coordinates se = mountainPos.getSouthEastNeighbour(fields);
+		if (se.isCoordinateValid()) {
+			if (fields.get(se).getFieldType() != MapFieldType.WATER) {
+				toReturn.put("se", mountainPos.getSouthEastNeighbour(fields));	
+			}
+		}
+	
+		Coordinates right = mountainPos.getRightNeighbour(fields);
+		if (right.isCoordinateValid()) {
+			if (fields.get(right).getFieldType() != MapFieldType.WATER) {
+				toReturn.put("right", mountainPos.getRightNeighbour(fields));	
+			}
+		}
+		
+		Coordinates sw = mountainPos.getSouthWestNeighbour(fields);
+		if (sw.isCoordinateValid()) {
+			if (fields.get(sw).getFieldType() != MapFieldType.WATER) {
+				toReturn.put("sw", mountainPos.getSouthWestNeighbour(fields));	
+			}
+		}
+		
+		return toReturn;	
+	}
+	
+	/*
+	 *  Check if treasure is seen from current mountain position
+	 */
+	public boolean checkTreasuresAroundMountain(Coordinates myTreasurePos, Coordinates mountainPos) {
+		
+		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPos);
+		
+		if (fieldsAround.containsValue(myTreasurePos)) {
+			return true;
+		}
+
+		return false;
+		
+	}
+	
+	/*
+	 *  Check if fort is seen from current mountain position
+	 */
+	public boolean checkFortsAroundMountain(Coordinates enemyFortPos, Coordinates mountainPos) {
+		
+		Map<String, Coordinates> fieldsAround = getFieldsAroundMountain(mountainPos);
+		
+		if (fieldsAround.containsValue(enemyFortPos)) {
+			return true;
+		}
+
+		return false;
+	}
+	
+	/*
+	 * 	Get number of moves to enter/escape the field
+	 */
+	private int getMoves(MapNode field) {
+		if (field.getFieldType() == MapFieldType.MOUNTAIN) {
+			return 2;
+		} 
+		return 1;
+	}
+
+	public int getPathWeight(Coordinates currentField, Coordinates nextField) {
+
+		int firstFieldMoves = getMoves(fields.get(currentField)); 
+		int secondFieldMoves = getMoves(fields.get(nextField)); 
+ 		
+		return firstFieldMoves + secondFieldMoves;
+		
+	}
+	
+	public Coordinates getTargetCoordinatesFromMove(Coordinates pos, PlayerMove move) {
+		Coordinates toReturn = new Coordinates();
+
+		if (move.getMove() == EMove.Up) {
+			Coordinates direction = pos.getUpNeighbour(fields);
+			return direction;
+		}
+		
+		if (move.getMove() == EMove.Down) {
+			Coordinates direction = pos.getDownNeighbour(fields);
+			return direction;
+		}
+		
+		if (move.getMove() == EMove.Left) {
+			Coordinates direction = pos.getLeftNeighbour(fields);
+			return direction;
+		}
+		
+		if (move.getMove() == EMove.Right) {
+			Coordinates direction = pos.getRightNeighbour(fields);
+			return direction;
+		}
+		
+		return toReturn;
 	}
 	
 }
