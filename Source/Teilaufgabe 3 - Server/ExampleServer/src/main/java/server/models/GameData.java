@@ -103,6 +103,7 @@ public class GameData {
 	
 	/*
 	 * 	If not all players registered it means it is not player's turn to send map
+	 *  Returns true if player's turn
 	 */
 	public boolean myTurn(String playerId) {
 
@@ -133,15 +134,15 @@ public class GameData {
 	}
 
 	public Player getPlayerWithId(String playerId) {
-		Player toRet = new Player();
+		Player toReturn = new Player();
 		
 		for (Player player: players) {
 			if (player.getPlayerId().equals(playerId)) {
-				toRet = player;
+				toReturn = player;
 				break;
 			}
 		}
-		return toRet;
+		return toReturn;
 	}
 	
 	public void updateGameStateId() {
@@ -153,15 +154,15 @@ public class GameData {
 	 *  returns the player whose id is not equal to the parameter
 	 */
 	public Player getTheOtherPlayer(String playerId) {
-		Player toRet = new Player();
+		Player toReturn = new Player();
 		
 		for (Player player: players) {
 			if (!player.getPlayerId().equals(playerId)) {
-				toRet = player;
+				toReturn = player;
 				break;
 			}
 		}
-		return toRet;
+		return toReturn;
 	}
 	
 }

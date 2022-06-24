@@ -62,30 +62,25 @@ public class GameStateController {
 			}
 		
 		}
-		
-		UniqueGameIdentifier toReturn = new UniqueGameIdentifier(newGameId);
-		
-		return toReturn;
+
+		return new UniqueGameIdentifier(newGameId);
 	}
 	
-	public UniquePlayerIdentifier createUniquePlayerId() {
-		
-		UniquePlayerIdentifier toReturn = new UniquePlayerIdentifier(UUID.randomUUID().toString());
-		
-		return toReturn;
+	public UniquePlayerIdentifier createUniquePlayerId() {		
+		return new UniquePlayerIdentifier(UUID.randomUUID().toString());
 	}
 	
 	public String getOldestGameId() {
 		
 		String toReturn = "";
-		Duration longestDur = Duration.ZERO;
+		Duration longestDuration = Duration.ZERO;
 		
 		for (var eachGame : this.games.entrySet()) {
 			
 			Duration gameDuration = Duration.between(eachGame.getValue().getGameCreationTime(), Instant.now());
 			
-			if (gameDuration.compareTo(longestDur) >= 0) {
-				longestDur = gameDuration;
+			if (gameDuration.compareTo(longestDuration) >= 0) {
+				longestDuration = gameDuration;
 				toReturn = eachGame.getKey();
 			}
 		}
@@ -127,15 +122,15 @@ public class GameStateController {
 		int randomFortX = randomNo.nextInt(8);
 		int randomFortY = randomNo.nextInt(4);
 		
-		Coordinates fortPos = new Coordinates(randomFortX, randomFortY);
+		Coordinates treasurePosition = new Coordinates(randomFortX, randomFortY);
 		
-		while(fields.get(fortPos).getFieldType() != MapFieldType.GRASS) {
+		while(fields.get(treasurePosition).getFieldType() != MapFieldType.GRASS) {
 			randomFortX = randomNo.nextInt(8);
 			randomFortY = randomNo.nextInt(4);
-			fortPos = new Coordinates(randomFortX, randomFortY);
+			treasurePosition = new Coordinates(randomFortX, randomFortY);
 		}
 		
-		return fortPos;
+		return treasurePosition;
 		
 	}
 	
@@ -145,8 +140,8 @@ public class GameStateController {
 		for (Player player: players) {
 			if (player.getPlayerId().equals(playerId)) {
 				player.setCurrPos(halfMap.getFortPos());
-				Coordinates treasurePos = placeTreasure(halfMap);
-				halfMap.getFields().get(treasurePos).setTreasureState(TreasureState.MYTREASURE);
+				Coordinates treasurePosition = placeTreasure(halfMap);
+				halfMap.getFields().get(treasurePosition).setTreasureState(TreasureState.MYTREASURE);
 				player.setHalfMap(halfMap);
 			}
 		}
