@@ -6,10 +6,10 @@ import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.PlayerMove;
-import server.controllers.GameStateController;
 import server.exceptions.NotEnoughPlayersException;
 import server.exceptions.TooManyMapsSentException;
-import server.models.GameData;
+import server.game.GameData;
+import server.game.GameStateController;
 
 public class OnlyOneMapPerPlayerRule implements IRuleValidation{
 

@@ -7,21 +7,21 @@ import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
-import server.controllers.GameStateController;
 import server.exceptions.NotEnoughPlayersException;
 import server.exceptions.PlayerIdException;
 import server.exceptions.TooManyPlayersException;
-import server.models.Coordinates;
-import server.models.GameData;
-import server.models.MapNode;
-import server.models.Player;
+import server.game.GameData;
+import server.game.GameStateController;
+import server.map.Coordinates;
+import server.map.MapNode;
+import server.player.Player;
 
 public class MaxNoOfPlayersReachedRule implements IRuleValidation{
 
 	@Override
 	public void validatePlayerReg(Map<String, GameData> games, UniquePlayerIdentifier playerId,
 			UniqueGameIdentifier gameId) {
-		if (games.get(gameId.getUniqueGameID()).getPlayers().size() == 2) {
+		if (games.get(gameId.getUniqueGameID()).getPlayerController().getPlayers().size() == 2) {
 			throw new TooManyPlayersException("Registration failed", "There are already 2 players registered for this game " + gameId.getUniqueGameID());
 		}
 	}

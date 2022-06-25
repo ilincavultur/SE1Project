@@ -10,16 +10,16 @@ import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.HalfMapNode;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
-import server.controllers.GameStateController;
 import server.enums.MapFieldType;
 import server.enums.MoveCommand;
 import server.exceptions.HalfMapException;
 import server.exceptions.NotEnoughPlayersException;
-import server.models.InternalHalfMap;
-import server.models.MapNode;
-import server.models.Player;
-import server.models.Coordinates;
-import server.models.GameData;
+import server.game.GameData;
+import server.game.GameStateController;
+import server.map.Coordinates;
+import server.map.InternalHalfMap;
+import server.map.MapNode;
+import server.player.Player;
 
 public class FortRule implements IRuleValidation{
 

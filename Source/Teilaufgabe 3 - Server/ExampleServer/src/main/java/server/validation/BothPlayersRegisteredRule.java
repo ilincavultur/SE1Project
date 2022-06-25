@@ -10,10 +10,10 @@ import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.PlayerMove;
-import server.controllers.GameStateController;
 import server.exceptions.NotEnoughPlayersException;
-import server.models.GameData;
-import server.models.Player;
+import server.game.GameData;
+import server.game.GameStateController;
+import server.player.Player;
 
 // before halfmap can be received
 public class BothPlayersRegisteredRule implements IRuleValidation{
@@ -35,7 +35,7 @@ public class BothPlayersRegisteredRule implements IRuleValidation{
 	@Override
 	public void validateGameState(GameStateController controller, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
 		Map<String, GameData> games = controller.getGames();
-		List<Player> players = games.get(gameId.getUniqueGameID()).getPlayers();
+		List<Player> players = games.get(gameId.getUniqueGameID()).getPlayerController().getPlayers();
 		int number = 0;
 
 		for (Player pl: players) {

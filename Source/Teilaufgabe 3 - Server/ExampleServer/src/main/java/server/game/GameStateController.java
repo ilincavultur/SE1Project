@@ -1,4 +1,4 @@
-package server.controllers;
+package server.game;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -25,12 +25,11 @@ import MessagesBase.MessagesFromServer.GameState;
 import MessagesBase.MessagesFromServer.PlayerState;
 import server.enums.MapFieldType;
 import server.enums.TreasureState;
-import server.models.Coordinates;
-import server.models.GameData;
-import server.models.InternalHalfMap;
-import server.models.MapNode;
-import server.models.Player;
+import server.map.Coordinates;
+import server.map.InternalHalfMap;
+import server.map.MapNode;
 import server.network.NetworkConverter;
+import server.player.Player;
 
 public class GameStateController {
 
@@ -114,58 +113,11 @@ public class GameStateController {
 	}
 
 	public boolean bothHalfMapsPresent(UniqueGameIdentifier gameID) {
-	
-		for (Player player : this.games.get(gameID.getUniqueGameID()).getPlayers()) {
-			if (player.getHalfMap().isEmpty()) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	public void assembleHalfMaps(UniqueGameIdentifier gameID) {
-		GameData game = this.games.get(gameID.getUniqueGameID());
-		this.games.get(gameID.getUniqueGameID()).getFullMap().assembleFullMap(game, game.getPlayers(), game.getPlayers().get(0).getHalfMap(), game.getPlayers().get(1).getHalfMap());
+		return this.games.get(gameID.getUniqueGameID()).bothHalfMapsPresent(gameID);
 	}
 
 	public GameState requestGameState(UniquePlayerIdentifier playerID, UniqueGameIdentifier gameID, NetworkConverter networkConverter) {
-		
-		GameData game = this.games.get(gameID.getUniqueGameID());
-		Set<PlayerState> players = new HashSet<>();
-		Optional<FullMap> map = Optional.empty();
-		List<Player> registeredPlayers = game.getPlayers();
-		String playerId = playerID.getUniquePlayerID();
-		
-		if (registeredPlayers.size() == 1) {
-			
-			Player player = registeredPlayers.get(0);
-			players.add(networkConverter.convertPlayerTo(game, player, false));
-			
-			return new GameState(map, players, game.getGameStateId());
-			
-		} else if (registeredPlayers.size() == 2) {
-			
-			Player player1 = game.getPlayerWithId(playerId);
-			Player player2 = game.getTheOtherPlayer(playerId);
-			
-			players.add(networkConverter.convertPlayerTo(game, player1, false));
-			players.add(networkConverter.convertPlayerTo(game, player2, true));
-			
-			if (bothHalfMapsPresent(gameID)) {
-				assembleHalfMaps(gameID);
-				map = networkConverter.convertServerFullMapTo(playerID, game);
-			} else {
-				if (player1.isPlayersHalfMapPresent()) {
-					map = networkConverter.convertIHalfMapToNetworkFullMap(player1, game);
-					
-				} else if (player2.isPlayersHalfMapPresent()) {
-					map = networkConverter.convertIHalfMapToNetworkFullMap(player2, game);
-				}	
-			}		
-		}
-		
-		return new GameState(map, players, game.getGameStateId());
+		return this.games.get(gameID.getUniqueGameID()).requestGameState(playerID, gameID, networkConverter);
 	}
 
 	public void receiveMove(UniqueGameIdentifier gameID, PlayerMove move, NetworkConverter networkConverter) {

@@ -11,16 +11,16 @@ import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.HalfMapNode;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
-import server.controllers.GameStateController;
 import server.enums.MoveCommand;
 import server.exceptions.GameIdException;
 import server.exceptions.NotEnoughPlayersException;
 import server.exceptions.PlayerIdException;
-import server.models.Coordinates;
-import server.models.GameData;
-import server.models.InternalHalfMap;
-import server.models.MapNode;
-import server.models.Player;
+import server.game.GameData;
+import server.game.GameStateController;
+import server.map.Coordinates;
+import server.map.InternalHalfMap;
+import server.map.MapNode;
+import server.player.Player;
 
 public class PlayerIdRule implements IRuleValidation {
 
@@ -31,7 +31,7 @@ public class PlayerIdRule implements IRuleValidation {
 	@Override
 	public void validatePlayerId(Map<String, GameData> games, UniquePlayerIdentifier playerId, UniqueGameIdentifier gameId) {
 		boolean ok = false;
-		for (Player player: games.get(gameId.getUniqueGameID()).getPlayers())
+		for (Player player: games.get(gameId.getUniqueGameID()).getPlayerController().getPlayers())
 			if (player.getPlayerId().equals(playerId.getUniquePlayerID())) {
 				ok = true;
 			}

@@ -26,18 +26,18 @@ import MessagesBase.MessagesFromServer.ETreasureState;
 import MessagesBase.MessagesFromServer.FullMap;
 import MessagesBase.MessagesFromServer.FullMapNode;
 import MessagesBase.MessagesFromServer.PlayerState;
-import server.models.InternalHalfMap;
-import server.models.MapNode;
-import server.models.Player;
-import server.controllers.FullMapHandler;
 import server.enums.FortState;
 import server.enums.MapFieldType;
 import server.enums.MoveCommand;
 import server.enums.PlayerPositionState;
 import server.enums.ServerPlayerState;
 import server.enums.TreasureState;
-import server.models.Coordinates;
-import server.models.GameData;
+import server.game.GameData;
+import server.map.Coordinates;
+import server.map.FullMapHandler;
+import server.map.InternalHalfMap;
+import server.map.MapNode;
+import server.player.Player;
 
 public class NetworkConverter {
 	

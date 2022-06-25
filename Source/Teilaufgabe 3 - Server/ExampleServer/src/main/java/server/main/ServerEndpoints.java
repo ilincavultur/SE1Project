@@ -24,7 +24,6 @@ import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.GameState;
-import server.controllers.GameStateController;
 import server.validation.PlayerIdRule;
 import server.exceptions.GameIdException;
 import server.exceptions.GenericExampleException;
@@ -35,7 +34,8 @@ import server.exceptions.NotPlayersTurnException;
 import server.exceptions.PlayerIdException;
 import server.exceptions.TooManyMapsSentException;
 import server.exceptions.TooManyPlayersException;
-import server.models.InternalHalfMap;
+import server.game.GameStateController;
+import server.map.InternalHalfMap;
 import server.network.NetworkConverter;
 import server.validation.BothPlayersRegisteredRule;
 import server.validation.DontMoveIntoWaterRule;
@@ -173,10 +173,6 @@ public class ServerEndpoints {
 		} catch (PlayerIdException e) {
 			logger.error("user Id not found");
 			throw e;
-		}
-				
-		if (gameStateController.bothHalfMapsPresent(gameID)) {
-			gameStateController.assembleHalfMaps(gameID);
 		}
 
 		GameState newGameState = gameStateController.requestGameState(playerID, gameID, networkConverter);

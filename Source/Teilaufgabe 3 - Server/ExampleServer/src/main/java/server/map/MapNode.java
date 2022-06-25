@@ -1,4 +1,4 @@
-package server.models;
+package server.map;
 import server.enums.*;
 
 public class MapNode {

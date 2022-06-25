@@ -7,12 +7,12 @@ import MessagesBase.UniquePlayerIdentifier;
 import MessagesBase.MessagesFromClient.HalfMap;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
-import server.controllers.GameStateController;
 import server.exceptions.NotEnoughPlayersException;
 import server.exceptions.NotPlayersTurnException;
-import server.models.Coordinates;
-import server.models.GameData;
-import server.models.MapNode;
+import server.game.GameData;
+import server.game.GameStateController;
+import server.map.Coordinates;
+import server.map.MapNode;
 
 public class MyTurnRule implements IRuleValidation{
 

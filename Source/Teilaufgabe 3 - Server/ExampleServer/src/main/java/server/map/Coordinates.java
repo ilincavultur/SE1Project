@@ -1,4 +1,4 @@
-package server.models;
+package server.map;
 
 import java.util.Map;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package server.models;
+package server.player;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,12 +13,15 @@ import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.MessagesFromClient.EMove;
 import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
-import server.controllers.FullMapHandler;
-import server.controllers.GameStateController;
 import server.enums.FortState;
 import server.enums.MapFieldType;
 import server.enums.MoveCommand;
 import server.enums.TreasureState;
+import server.game.GameData;
+import server.game.GameStateController;
+import server.map.Coordinates;
+import server.map.FullMapHandler;
+import server.map.InternalHalfMap;
 import server.network.NetworkConverter;
 
 public class Player {
