@@ -121,15 +121,6 @@ public class GameStateController {
 	}
 
 	public void receiveMove(UniqueGameIdentifier gameID, PlayerMove move, NetworkConverter networkConverter) {
-		
-		GameData game = this.games.get(gameID.getUniqueGameID());
-		
-		Player player = game.getPlayerWithId(move.getUniquePlayerID());
-		
-		player.processMove(game.getFullMap(), move, networkConverter);
-		player.updateTreasureStatus(game);
-		player.updateEnemyFortStatus(game);
-		player.updateMountainViewStatus(game, game.getFullMap());
-
+		this.games.get(gameID.getUniqueGameID()).receiveMove(gameID, move, networkConverter);
 	}
 }

@@ -5,7 +5,10 @@ import java.util.List;
 
 import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
+import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
+import server.game.GameData;
+import server.network.NetworkConverter;
 
 public class PlayerController {
 	
@@ -78,5 +81,14 @@ public class PlayerController {
 		}
 		
 		return true;
+	}
+	
+	public void movePlayer(GameData game, PlayerMove move, NetworkConverter networkConverter) {
+		Player player = this.getPlayerWithId(move.getUniquePlayerID());
+		
+		player.processMove(game.getFullMap(), move, networkConverter);
+		player.updateTreasureStatus(game);
+		player.updateEnemyFortStatus(game);
+		player.updateMountainViewStatus(game, game.getFullMap());
 	}
 }

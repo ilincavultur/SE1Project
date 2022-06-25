@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import MessagesBase.UniqueGameIdentifier;
 import MessagesBase.UniquePlayerIdentifier;
+import MessagesBase.MessagesFromClient.PlayerMove;
 import MessagesBase.MessagesFromClient.PlayerRegistration;
 import MessagesBase.MessagesFromServer.FullMap;
 import MessagesBase.MessagesFromServer.GameState;
@@ -187,6 +188,9 @@ public class GameData {
 		
 		return new GameState(map, players, this.gameStateId);
 	}
-
+	
+	public void receiveMove(UniqueGameIdentifier gameID, PlayerMove move, NetworkConverter networkConverter) {
+		playerController.movePlayer(this, move, networkConverter);
+	}
 	
 }
